@@ -179,5 +179,5 @@
   }
 </style>
 <style type="text/css">
-	.distpicker select{ width: 32% !important; height:36px; line-height:36px; padding:0.25rem ; outline:none;}
+	.distpicker select{ width: 32% !important; height:36px; line-height:36px; padding:0.25rem ; outline:none; border:1px solid #aaa}
 </style>

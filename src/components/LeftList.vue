@@ -11,20 +11,20 @@
         </el-submenu>
         <el-submenu index="1-3">
           <template slot="title"><router-link class="el-lvtwo" to="/collaborate">合作行业</router-link></template>
-          <el-menu-item index="1-3-1"  class="menu-border-bottom el-lvthree">新增合作行业客户</el-menu-item>
-          <el-menu-item index="1-3-2"  class="menu-border-bottom el-lvthree">查阅行业客户证件</el-menu-item>
+          <el-menu-item index="/collaborateadd"  class="menu-border-bottom el-lvthree">新增合作行业客户</el-menu-item>
+          <el-menu-item index="/collaboratecheck"  class="menu-border-bottom el-lvthree">查阅行业客户证件</el-menu-item>
         </el-submenu>
       </el-submenu>
-      <el-menu-item index="2"  class="menu-border-bottom">订单管理</el-menu-item>
+      <el-menu-item index="/order"  class="menu-border-bottom">订单管理</el-menu-item>
       <el-submenu index="3">
       	<template slot="title">产品管理</template>
-      	<el-menu-item index="3-1"  class="menu-border-bottom el-lvtwo">产品通道基础管理</el-menu-item>
+      	<el-menu-item index="channel"  class="menu-border-bottom el-lvtwo">产品通道基础管理</el-menu-item>
       </el-submenu>
 	  <el-submenu index="4">
 	  	<template slot="title">医疗后台管理</template>
-	  	<el-menu-item index="4-1"  class="menu-border-bottom el-lvtwo">三大目录上传</el-menu-item>
-	  	<el-menu-item index="4-2"  class="menu-border-bottom el-lvtwo">三大目录列表</el-menu-item>
-	  	<el-menu-item index="4-3"  class="menu-border-bottom el-lvtwo">三大目录管理</el-menu-item>
+	  	<el-menu-item index="/uploaddir"  class="menu-border-bottom el-lvtwo">三大目录上传</el-menu-item>
+	  	<el-menu-item index="/dirlist"  class="menu-border-bottom el-lvtwo">三大目录列表</el-menu-item>
+	  	<el-menu-item index="/dirmanage"  class="menu-border-bottom el-lvtwo">三大目录管理</el-menu-item>
 	  	<el-submenu index="4-4">
 	  		<template slot="title">卫生站管理</template>
 	  		<el-menu-item index="4-4-1"  class="menu-border-bottom el-lvthree">添加卫生站</el-menu-item>
