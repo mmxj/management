@@ -42,7 +42,7 @@
           <el-col :span="2"><label>客户证件号</label></el-col>
           <el-col :span="6"><input type="text"></el-col>
           <el-col :span="2">
-            <el-button>搜索</el-button>
+            <el-button class="search">搜索</el-button>
           </el-col>
           <el-col :span="3">
             <el-button>添加新行业用户</el-button>
@@ -96,5 +96,8 @@
   .downText{
     line-height:36px;
     text-align:center;
+  }
+  .search{
+    margin-left:20px;
   }
 </style>
