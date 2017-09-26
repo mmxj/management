@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import PageIndex from '../components/PageIndex.vue'
+import Login from '../components/Login'
+import Message from '../components/Message'
 import User from '../components/User' //用户信息
 import Merchant from '../components/Merchant' //商户信息
 import MerchantAdd from '../components/MerchantAdd' //添加新商户
@@ -13,16 +14,25 @@ import Channel from '../components/Channel' //产品渠道管理
 import UploadDir from '../components/UploadDir' //三大目录上传
 import DirList from '../components/DirList' //三大目录列表
 import DirManage from '../components/DirManage' //三大目录管理
-
+import HealthStation from '../components/HealthStation' //卫生站管理
+import HealthStationAdd from '../components/HealthStationAdd' //添加卫生站卫生站
+import DoctorAdd from '../components/DoctorAdd'//添加村医
+import DoctorManage from '../components/DoctorManage'//添加村医
+import MerchantChannel from '../components/MerchantChannel' //导入商户信息
 Vue.use(Router)
 
 export default new Router({
 	mode: 'history',
   	routes: [
+      {
+        path: '/',
+        name: 'Login',
+        component: Login
+      },
     	{
-	      	path: '/',
-	      	name: 'PageIndex',
-	      	component: PageIndex
+	      	path: '/message',
+	      	name: 'Message',
+	      	component: Message
     	},
     	{
     		path: '/user',
@@ -83,7 +93,31 @@ export default new Router({
         path: '/dirmanage',
         name: 'DirManage',
         component: DirManage
+      },
+      {
+        path: '/healthstation',
+        name: 'HealthStation',
+        component: HealthStation
+      },
+      {
+        path: '/healthstationadd',
+        name: 'HealthStationAdd',
+        component: HealthStationAdd
+      },
+      {
+        path: '/doctoradd',
+        name: 'DoctorAdd',
+        component: DoctorAdd
+      },
+      {
+        path: '/doctormanage',
+        name: 'DoctorManage',
+        component: DoctorManage
+      },
+      {
+        path: '/merchantchannel',
+        name: 'MerchantChannel',
+        component: MerchantChannel
       }
-
-  	]
+    ]
 })

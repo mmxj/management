@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Gheader></Gheader>
-    <el-row>
+    <el-row id="elRow">
         <el-col :span="4"><LeftList ></LeftList></el-col>
         <el-col :span="20"><RightPage ></RightPage></el-col>
     </el-row>
@@ -37,4 +37,8 @@ body{
 #RightPage{
   height: 100%;
 }
+  #elRow{
+    position: static;
+  }
 </style>
+

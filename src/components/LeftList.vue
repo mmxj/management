@@ -8,6 +8,7 @@
           <template slot="title"><router-link class="el-lvtwo" to="/merchant">商户信息</router-link></template>
           <el-menu-item index="/merchantadd"  class="menu-border-bottom el-lvthree">添加新商户</el-menu-item>
           <el-menu-item index="/merchantcheck"  class="menu-border-bottom el-lvthree">查阅商户证件</el-menu-item>
+          <el-menu-item index="/merchantchannel"  class="menu-border-bottom el-lvthree">导入商户信息</el-menu-item>
         </el-submenu>
         <el-submenu index="1-3">
           <template slot="title"><router-link class="el-lvtwo" to="/collaborate">合作行业</router-link></template>
@@ -26,10 +27,10 @@
 	  	<el-menu-item index="/dirlist"  class="menu-border-bottom el-lvtwo">三大目录列表</el-menu-item>
 	  	<el-menu-item index="/dirmanage"  class="menu-border-bottom el-lvtwo">三大目录管理</el-menu-item>
 	  	<el-submenu index="4-4">
-	  		<template slot="title">卫生站管理</template>
-	  		<el-menu-item index="4-4-1"  class="menu-border-bottom el-lvthree">添加卫生站</el-menu-item>
-	  		<el-menu-item index="4-4-2"  class="menu-border-bottom el-lvthree">添加村医</el-menu-item>
-	  		<el-menu-item index="4-4-3"  class="menu-border-bottom el-lvthree">管理村医</el-menu-item>
+        <template slot="title"><router-link class="el-lvtwo" to="/healthstation">卫生站管理</router-link></template>
+	  		<el-menu-item index="/healthstationadd"  class="menu-border-bottom el-lvthree">添加卫生站</el-menu-item>
+	  		<el-menu-item index="/doctoradd"  class="menu-border-bottom el-lvthree">添加村医</el-menu-item>
+	  		<el-menu-item index="/doctormanage"  class="menu-border-bottom el-lvthree">管理村医</el-menu-item>
 	  	</el-submenu>
 	  	<el-submenu index="4-5">
 	  		<template slot="title">医疗后台信息发布</template>

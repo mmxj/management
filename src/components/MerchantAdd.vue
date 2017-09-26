@@ -2,7 +2,7 @@
 	<div id="MerchantAdd">
 		<div>
 			<el-row :gutter="20">
-				<el-col :span="2"><div class="girid-content"><label>商户类型</label></div></el-col>
+				<el-col :span="2" ><div class="girid-content"><label>商户类型</label></div></el-col>
 				<el-col :span="6">
 					<div class="girid-content girid-ipt">
 						<select>
@@ -177,7 +177,35 @@
   .checkImg{
   	line-height:36px;
   }
+  /*媒体查询做兼容*/
+  @media screen and (max-width: 1760px) {
+    label{
+      font-size:15px;
+      min-width: 5em;
+    }
+  }
+  @media screen and (max-width: 1700px) {
+    .el-col-2{
+      width:10%;
+    }
+    .el-col-6{
+      width:23.333333%;
+    }
+  }
+  @media screen and (max-width: 1420px) {
+    .el-col-2{
+      width:12%;
+    }
+    .el-col-6{
+      width:21.333333%;
+    }
+  }
 </style>
 <style type="text/css">
 	.distpicker select{ width: 32% !important; height:36px; line-height:36px; padding:0.25rem ; outline:none; border:1px solid #aaa}
+  @media screen and (max-width: 1420px) {
+    .distpicker select{
+      width: 31% !important;
+    }
+  }
 </style>

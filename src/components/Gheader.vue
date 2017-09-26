@@ -11,7 +11,7 @@
 				惠州市惠来县水丰镇
 			</div>
 		</header>
-		<h2 class="page1 left-title">运营管理后台首页</h2>
+    <router-link to="/message" class="page1 left-title">运营管理后台首页</router-link>
 	</div>
 
 </template>
@@ -65,5 +65,10 @@
 	}
 	.page1{
 		background:#fff;
+    display:block;
+    font-size:18px;
+    height: 100%;
+    text-decoration: none;
+    font-weight: bold;
 	}
 </style>

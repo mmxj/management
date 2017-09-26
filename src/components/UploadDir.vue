@@ -18,10 +18,7 @@
           </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :offset="3" :span="6">
-          <input type="text">
-        </el-col>
-        <el-col :span="3">
+        <el-col :offset="3" :span="3">
           <el-button>浏览上传三大目录列表</el-button>
         </el-col>
         <el-col :span="3">
@@ -60,9 +57,21 @@
     height:36px;
     line-height:36px;
   }
-
+  @media screen and (max-width: 1450px) {
+    .el-col-3 {
+      width: 17.5%;
+    }
+    .el-col-offset-3{
+      margin-left:17.5%;
+    }
+  }
 </style>
 <style type="text/css">
   .distpicker select{ width: 32% !important; height:36px; line-height:36px; padding:0.25rem ; outline:none; border:1px solid #aaa}
+  @media screen and (max-width: 1450px) {
+    .distpicker select{
+      width: 31% !important;
+    }
+  }
 </style>
 

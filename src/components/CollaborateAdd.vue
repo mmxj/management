@@ -111,25 +111,25 @@
         <el-col :span="3"><div class="girid-content"><label>营业执照上传</label></div></el-col>
         <el-col :span="8"><div class="girid-content girid-ipt"><input type="text" name=""></div></el-col>
         <el-col :span="3"><div class="upload-btn">浏览选择附件<input type="file" name=""></div></el-col>
-        <el-col :span="2"><div class="checkImg">点击查看大图</div></el-col>
+        <el-col :span="3"><div class="checkImg">点击查看大图</div></el-col>
       </el-row>
       <el-row  :gutter="20">
         <el-col :span="3"><div class="girid-content"><label>从业资格证上传</label></div></el-col>
         <el-col :span="8"><div class="girid-content girid-ipt"><input type="text" name=""></div></el-col>
         <el-col :span="3"><div class="upload-btn">浏览选择附件<input type="file" name=""></div></el-col>
-        <el-col :span="2"><div class="checkImg">点击查看大图</div></el-col>
+        <el-col :span="3"><div class="checkImg">点击查看大图</div></el-col>
       </el-row>
       <el-row  :gutter="20">
         <el-col :span="3"><div class="girid-content"><label>银行卡资料上传</label></div></el-col>
         <el-col :span="8"><div class="girid-content girid-ipt"><input type="text" name=""></div></el-col>
         <el-col :span="3"><div class="upload-btn">浏览选择附件<input type="file" name=""></div></el-col>
-        <el-col :span="2"><div class="checkImg">点击查看大图</div></el-col>
+        <el-col :span="3"><div class="checkImg">点击查看大图</div></el-col>
       </el-row>
       <el-row  :gutter="20">
         <el-col :span="3"><div class="girid-content"><label>法人身份证照片上传</label></div></el-col>
         <el-col :span="8"><div class="girid-content girid-ipt"><input type="text" name=""></div></el-col>
         <el-col :span="3"><div class="upload-btn">浏览选择附件<input type="file" name=""></div></el-col>
-        <el-col :span="2"><div class="checkImg">点击查看大图</div></el-col>
+        <el-col :span="3"><div class="checkImg">点击查看大图</div></el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="2" :offset="20"><button type="button" class="grid-content upload-btn">添加商户</button></el-col>
@@ -214,7 +214,41 @@
   .checkImg{
     line-height:36px;
   }
+  /*媒体查询做兼容*/
+  @media screen and (max-width: 1790px) {
+    label{
+      font-size:15px;
+      min-width: 5em;
+    }
+  }
+  @media screen and (max-width: 1700px) {
+    .el-col-2{
+      width:10%;
+    }
+    .el-col-6{
+      width:23.333333%;
+    }
+    .el-col-3 {
+      width: 15.5%;
+    }
+  }
+  @media screen and (max-width: 1450px) {
+    .el-col-2{
+      width:12%;
+    }
+    .el-col-6{
+      width:21.333333%;
+    }
+    .el-col-3 {
+      width: 17.5%;
+    }
+  }
 </style>
 <style type="text/css">
   .distpicker select{ width: 32% !important; height:36px; line-height:36px; padding:0.25rem ; outline:none; border:1px solid #aaa}
+  @media screen and (max-width: 1450px) {
+    .distpicker select{
+      width: 31% !important;
+    }
+  }
 </style>

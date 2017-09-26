@@ -6,11 +6,15 @@ import router from './router'
 import '../theme/index.css'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
+import $ from 'jquery'
+// import './assets/js/xlsx.full.min.js'
+// import xlsx from 'js-xlsx'
+//处理上传表格组件
+
 //地址组件
 import Distpicker from 'v-distpicker'
-Vue.component('v-distpicker',Distpicker);
 
-
+Vue.component('v-distpicker',Distpicker)
 Vue.use(ElementUI)
 
 Vue.config.productionTip = false

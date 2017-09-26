@@ -152,6 +152,41 @@
   .search{
     margin-left:20px;
   }
+  /*媒体查询做兼容*/
+  @media screen and (max-width: 1760px) {
+    label{
+      font-size:15px;
+      min-width: 5em;
+    }
+  }
+  @media screen and (max-width: 1700px) {
+    .el-col-2{
+      width:10%;
+    }
+    .el-col-6{
+      width:23.333333%;
+    }
+    .el-col-3 {
+      width: 15.5%;
+    }
+    .search{
+      margin-left:12px;
+    }
+  }
+  @media screen and (max-width: 1420px) {
+    .el-col-2{
+      width:12%;
+    }
+    .el-col-6{
+      width:21.333333%;
+    }
+    .el-col-3 {
+      width: 17.5%;
+    }
+    .search{
+      margin-left:12px;
+    }
+  }
 </style>
 <style type="text/css">
   .el-table th{

@@ -89,7 +89,11 @@
   .dirTable{
     margin-top:30px;
   }
-
+  @media screen and (max-width: 1510px) {
+    .el-col-2{
+      width:12%;
+    }
+  }
 </style>
 <style type="text/css">
   .distpicker select{ width: 32% !important; height:36px; line-height:36px; padding:0.25rem ; outline:none; border:1px solid #aaa}
