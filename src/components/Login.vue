@@ -1,13 +1,21 @@
 <template>
   <div id="Login">
     <div class="bg"></div>
-    <div class="loginWindow"></div>
+    <div class="loginWindow">
+      <el-row>
+          <el-col :span="12">
+            <img :src="urlImg" alt="">
+          </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 <script type="text/javascript">
   export default{
       data(){
-        return {}
+        return {
+            urlImg:require("@/assets/img/login_bg.png")
+        }
       },
       methods:{
         setHeight(){
@@ -21,7 +29,7 @@
 
   }
 </script>
-<style scoped>
+<style lang="scss" scoped>
   #Login{
     background:#FBFCEE;
     position:absolute;
@@ -42,6 +50,10 @@
     width: 1128px;
     height:600px;
     background:#fff;
-    position:absolute;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left:-564px;
+    margin-top:-300px;
   }
 </style>
