@@ -34,17 +34,17 @@
 	  	</el-submenu>
 	  	<el-submenu index="4-5">
 	  		<template slot="title">医疗后台信息发布</template>
-	  		<el-menu-item index="4-5-1"  class="menu-border-bottom el-lvthree">业务专区发布</el-menu-item>
-	  		<el-menu-item index="4-5-2"  class="menu-border-bottom el-lvthree">信息专区发布</el-menu-item>
+	  		<el-menu-item index="/businessissue"  class="menu-border-bottom el-lvthree">业务专区发布</el-menu-item>
+	  		<el-menu-item index="/informationup"  class="menu-border-bottom el-lvthree">信息专区发布</el-menu-item>
 	  	</el-submenu>
 		<el-submenu index="4-6">
 	  		<template slot="title">数据管理系统</template>
-	  		<el-menu-item index="4-6-1"  class="menu-border-bottom el-lvthree">支付流水数据</el-menu-item>
-	  		<el-menu-item index="4-6-2"  class="menu-border-bottom el-lvthree">绑卡数据管理</el-menu-item>
-	  		<el-menu-item index="4-6-3"  class="menu-border-bottom el-lvthree">数据报表</el-menu-item>
+	  		<el-menu-item index="/paydata"  class="menu-border-bottom el-lvthree">支付流水数据</el-menu-item>
+	  		<el-menu-item index="/dataadministration"  class="menu-border-bottom el-lvthree">绑卡数据管理</el-menu-item>
+	  		<el-menu-item index="/datareport"  class="menu-border-bottom el-lvthree">数据报表</el-menu-item>
 	  	</el-submenu>
 	  </el-submenu>
-	  <el-menu-item index="5"  class="menu-border-bottom">社保受理终端管理平台</el-menu-item>
+	  <el-menu-item index="/terminal"  class="menu-border-bottom">社保受理终端管理平台</el-menu-item>
       <el-submenu index="6">
       		<template slot="title">系统管理</template>
       		<el-menu-item index="6-1"  class="menu-border-bottom el-lvtwo">系统用户管理</el-menu-item>

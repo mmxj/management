@@ -6,6 +6,7 @@ import router from './router'
 import '../theme/index.css'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
+import store from './store'
 import $ from 'jquery'
 // import './assets/js/xlsx.full.min.js'
 // import xlsx from 'js-xlsx'
@@ -23,6 +24,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App }
 })

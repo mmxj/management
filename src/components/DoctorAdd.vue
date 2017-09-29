@@ -130,7 +130,7 @@
 
   }
 </script>
-<style lang="scss">
+<style lang="scss" scoped="">
   #HeadlthStationAdd{
     margin: 15px;
     padding: 20px;

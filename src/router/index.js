@@ -19,13 +19,23 @@ import HealthStationAdd from '../components/HealthStationAdd' //添加卫生站�
 import DoctorAdd from '../components/DoctorAdd'//添加村医
 import DoctorManage from '../components/DoctorManage'//添加村医
 import MerchantChannel from '../components/MerchantChannel' //导入商户信息
+import BusinessIssue from '../components/BusinessIssue' //业务专区发布
+import InformationUp from '../components/InformationUp'//信息专区发布
+import PayData from '../components/PayData'//支付流水数据
+import DataAdministration from '../components/DataAdministration'//绑卡数据管理
+import Terminal from '../components/Terminal'//社保受理终端管理平台
+import DataReport from '../components/DataReport' //数据报表
 Vue.use(Router)
 
 export default new Router({
-	mode: 'history',
+	  mode: 'history',
   	routes: [
       {
-        path: '/',
+        path: '*',
+        redirect: '/login'
+      },
+      {
+        path: '/login',
         name: 'Login',
         component: Login
       },
@@ -118,6 +128,36 @@ export default new Router({
         path: '/merchantchannel',
         name: 'MerchantChannel',
         component: MerchantChannel
+      },
+      {
+	      path: '/businessissue',
+        name: 'BusinessIssue',
+        component: BusinessIssue
+      },
+      {
+        path: '/informationup',
+        name: 'InformationUp',
+        component: InformationUp
+      },
+      {
+	      path: '/paydata',
+        name: 'PayData',
+        component: PayData
+      },
+      {
+	      path: '/dataadministration',
+        name: 'DataAdministration',
+        component: DataAdministration
+      },
+      {
+	      path: '/terminal',
+        name: Terminal,
+        component: Terminal
+      },
+      {
+        path: '/datareport',
+        name: DataReport,
+        component: DataReport
       }
     ]
 })

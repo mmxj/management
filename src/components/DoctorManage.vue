@@ -52,7 +52,7 @@
     }
   }
 </script>
-<style lang="scss">
+<style lang="scss" scoped="">
   #DoctorManage{
     margin:15px;
     padding:15px;
