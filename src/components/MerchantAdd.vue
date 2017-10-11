@@ -35,8 +35,19 @@
 				<el-col :span="6"><div class="girid-content girid-ipt"><input type="text" name=""></div></el-col>
 				<el-col :span="2"><div class="girid-content"><label>商户地址</label></div></el-col>
 				<el-col :span="6">
-					<div class="distpicker"><v-distpicker province="省" city="市" area="区"></v-distpicker></div>
-				</el-col>
+					<!--<div class="distpicker"><v-distpicker province="省" city="市" area="区"></v-distpicker></div>-->
+				  <div class="distpicker">
+            <select name="" id="province"  @change="setCity()">
+              <option v-for="data in provinceData" v-bind:value="data.id">{{data.name}}</option>
+            </select>
+            <select name="" id="city" >
+              <option v-for="data in cityData" v-bind:value="data.id">{{data.name}}</option>
+            </select>
+            <select name="" id="district">
+              <option v-for="datas in districtData" v-bind:value="datas.id">{{datas.name}}</option>
+            </select>
+          </div>
+        </el-col>
 				<el-col :span="2"><div class="girid-content"><label>详细地址</label></div></el-col>
 				<el-col :span="6"><div class="girid-content girid-ipt"><input type="text" name=""></div></el-col>
 			</el-row>
@@ -97,9 +108,64 @@
 <script type="text/javascript">
 	import VDistpicker from 'v-distpicker'
 	export default{
-		compontents: {
+		data(){
+		    return {
+          provinceData:[{'name':'省'}],
+          cityData:[{'name':'市'}],
+          districtData:[{'name':'区'}],
+          session:null
+        }
+    },
+    compontents: {
 			VDistpicker
-		}
+		},
+		methods:{
+		    getArea(){
+          this.session=sessionStorage.getItem('session');//本地存储保存session状态
+          var getArea=new RemoteCall();
+          getArea.init({
+              router:"/base/area/idname/get",
+              session:this.session,
+              data:{
+                parentAreaId:0
+              }
+            });
+            this.provinceData=getArea.res.rows
+		      },
+        setCity(){
+            var mySelect=document.getElementById('province');
+            var index=mySelect.selectedIndex;
+            var parentId=mySelect.getElementsByTagName('option')[index].value;
+           var getCity=new RemoteCall();
+           getCity.init({
+             router:"/base/area/idname/get",
+             session:this.session,
+             data:{
+               parentAreaId:parentId
+             }
+           });
+           this.cityData=getCity.res.rows;
+          this.setDistrict();
+         },
+        setDistrict(){
+          var mySelect=document.getElementById('city');
+          var index=mySelect.selectedIndex;
+          var parentId=mySelect.getElementsByTagName('option')[index].value;
+          var getDistrict=new RemoteCall();
+          getDistrict.init({
+            router:"/base/area/idname/get",
+            session:this.session,
+            data:{
+              parentAreaId:parentId
+            }
+          });
+          this.districtData=getDistrict.res.rows;
+          console.log(getDistrict.res);
+        }
+    },
+    mounted:function(){
+      this.getArea();
+    }
 	}
 </script>
 <style type="text/css" lang="scss" scoped>
@@ -130,6 +196,7 @@
   		height:36px;
   		border-radius:3px;
   		border:1px solid #aaa;
+
   	}
   }
   .girid-ipt{
@@ -202,7 +269,7 @@
   }
 </style>
 <style type="text/css">
-	.distpicker select{ width: 32% !important; height:36px; line-height:36px; padding:0.25rem ; outline:none; border:1px solid #aaa}
+	.distpicker select{ width: 32% !important; height:36px; line-height:36px; padding:0.25rem ; outline:none; border:1px solid #aaa ;border-radius:3px;}
   @media screen and (max-width: 1420px) {
     .distpicker select{
       width: 31% !important;

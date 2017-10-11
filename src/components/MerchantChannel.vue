@@ -26,6 +26,7 @@
 <!--<script src="http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js"></script>-->
 <script>
 //  import xlsx from '../../static/js/table-xlsx'
+  import {mapGetters,mapActions} from 'vuex'
   export default{
       data(){
           return {
@@ -33,7 +34,8 @@
               MerchantUp:null,
           }
       },
-    methods:{
+      computed:mapGetters(['saveSession']),
+      methods:{
       importf(e) {//导入
           var _this=this;
           var obj = e.currentTarget;
@@ -109,6 +111,7 @@
             _this.MerchantUp=new RemoteCall();
             _this.MerchantUp.init({
                   router:"/company/import",
+                  session:this.saveSession,
                   data:{
                         terminalNo: _this.tableData[i].POSNumber,
                         eaderMobile: _this.tableData[i].linkMobile,

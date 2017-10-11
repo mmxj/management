@@ -81,18 +81,16 @@
               myData:'hhhh'
           }
       },
-      computed:mapGetters(['show','getData']),
+      computed:mapGetters(['show','getData','saveSession']),
       methods:{
-        ...mapActions(['change','saveData']),//设置数据传输
+        ...mapActions(['saveData']),//设置数据传输
         start(){
-            console.log(this.show);//获取store数据
             console.log(this.getData)//获取设置的数据
+            console.log(this.saveSession);
         }
       },
     mounted:function(){
       this.saveData(this.myData);
-
-      this.change();
       this.start();
     }
   }

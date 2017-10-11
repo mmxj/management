@@ -25,6 +25,13 @@ import PayData from '../components/PayData'//支付流水数据
 import DataAdministration from '../components/DataAdministration'//绑卡数据管理
 import Terminal from '../components/Terminal'//社保受理终端管理平台
 import DataReport from '../components/DataReport' //数据报表
+import UserDetails from '../components/UserDetails' //用户详情
+import UserInformation from '../components/UserInformation' //基本信息
+import Social from '../components/Social'//社保卡信息
+import UserBank from '../components/UserBank' //银行卡信息
+import UserFamily from '../components/UserFamily' //家人关系
+import UserRecord from '../components/UserRecord' //使用记录
+import UserTownship from '../components/UserTownship'//用户乡银宝
 Vue.use(Router)
 
 export default new Router({
@@ -151,13 +158,49 @@ export default new Router({
       },
       {
 	      path: '/terminal',
-        name: Terminal,
+        name: 'Terminal',
         component: Terminal
       },
       {
         path: '/datareport',
-        name: DataReport,
+        name: 'DataReport',
         component: DataReport
+      },
+      {
+        path: '/userdetails',
+        component: UserDetails,
+        children:[
+          {
+            path:'',
+            name:'UserInformation',
+            component:UserInformation
+          },
+          {
+            path: '/userdetails/social',
+            name: 'Social',
+            component: Social
+          },
+          {
+            path: '/userdetails/bank',
+            name: 'UserBank',
+            component: UserBank
+          },
+          {
+            path: '/userdetails/family',
+            name: 'UserFamily',
+            component: UserFamily
+          },
+          {
+            path: '/userdetails/userrecord',
+            name: 'UserRecord',
+            component: UserRecord
+          },
+          {
+            path: '/userdetails/usertownship',
+            name:'UserTownship',
+            component: UserTownship
+          }
+        ]
       }
     ]
 })

@@ -19,7 +19,7 @@
 			<el-table :data="tableData" border style="width:100%" max-height="600">
 				<el-table-column label="管理" width="120">
 					<template scope='scope'>
-						<el-button type="text"><router-link to="userDetails">用户详情</router-link></el-button>
+						<el-button type="text"><router-link to="/userdetails">用户详情</router-link></el-button>
 					</template>
 				</el-table-column>
 				<el-table-column prop="ordinal" label="序号" width="120">

@@ -10,7 +10,12 @@ export default {
   },
   saveData:({//处理传进来的数据
     commit
-  },getData)=>{
-    commit(types.SAVEDATA,getData)//getData来自state
+  },saveData)=>{
+    commit(types.SAVEDATA,saveData)//getData来自state
+  },
+  saveSession:({
+    commit
+  },saveSession)=>{
+    commit(types.SESSION,saveSession)//用户session信息
   }
 }

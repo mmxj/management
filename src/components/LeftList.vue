@@ -47,8 +47,8 @@
 	  <el-menu-item index="/terminal"  class="menu-border-bottom">社保受理终端管理平台</el-menu-item>
       <el-submenu index="6">
       		<template slot="title">系统管理</template>
-      		<el-menu-item index="6-1"  class="menu-border-bottom el-lvtwo">系统用户管理</el-menu-item>
-      		<el-menu-item index="6-2"  class="menu-border-bottom el-lvtwo">系统权限管理</el-menu-item>
+      		<el-menu-item index="/6-1"  class="menu-border-bottom el-lvtwo">系统用户管理</el-menu-item>
+      		<el-menu-item index="/6-2"  class="menu-border-bottom el-lvtwo">系统权限管理</el-menu-item>
       </el-submenu>
     </el-menu>
 </div>

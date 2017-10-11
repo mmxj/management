@@ -138,8 +138,24 @@
   </div>
 </template>
 <script type="text/javascript">
+  import {mapGetters} from 'vuex'
   export default{
+    methods:{
 
+    },
+    computed:mapGetters(['saveSession']),
+    mounted:function(){
+        var session=sessionStorage.getItem('session');
+        var getArea=new RemoteCall();
+        getArea.init({
+          router:"/base/area/idname/get",
+          session:this.saveSession,
+          data:{
+              parentAreaId:0
+          }
+        })
+        console.log(getArea.res)
+    }
   }
 </script>
 <style lang="scss" scoped>

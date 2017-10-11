@@ -20,7 +20,7 @@
                 <label for="">登录密码:</label>
               </el-col>
               <el-col :span="18">
-                <input type="text" placeholder="请输入登录密码" id="password">
+                <input type="password" placeholder="请输入登录密码" id="password">
               </el-col>
             </el-row>
             <el-row :gutter="10">
@@ -49,11 +49,12 @@
   export default{
       data(){
         return {
-            urlImg:require("@/assets/img/login_bg.png")
+            urlImg:require("@/assets/img/login_bg.png"),
+            validateCodeId:null
         }
       },
       methods:{
-        ...mapActions(['changed']),
+        ...mapActions(['saveSession']),
         //设置body高度等于窗口
         setHeight(){
           document.body.scrollTop=0;
@@ -77,12 +78,14 @@
           if(getCode.res){
             console.log(getCode.res);
             document.getElementById("auth").src="data:image/png;base64,"+getCode.res.validateCode;
+            this.validateCodeId=getCode.res.validateCodeId;
           };
         },
         login(){//登录按钮点击事件
-          var password=document.getElementById("password");
-          var loginName=document.getElementById("loginName");
-          var validateCode=document.getElementById("validateCode");
+          var password=$.md5(document.getElementById("password").value).toUpperCase();
+          var loginName=document.getElementById("loginName").value;
+          var validateCode=document.getElementById("validateCode").value;
+          this.$router.push({path: '/Message'});//点击跳转测试用记得删除这个事件
           var login=new RemoteCall();
           login.init({
             router:"/company/staff/login",
@@ -90,19 +93,21 @@
               "deviceType": 3,
               "password":password,
               "loginName": loginName,
-              "validateCode":validateCode
+              "validateCode":validateCode,
+              "validateCodeId":this.validateCodeId
             }
           });
           if(login.res){
-            console.log(login.res);
+            var session=login.res.session;
+            this.saveSession(session);
+            sessionStorage.setItem('session',session);
             this.resSize()
             this.$router.push({path: '/Message'});
-          }
+        }
         }
       },
       mounted: function(){
         //调用默认函数
-        console.log(1111);
         this.setHeight();
         this.getPicture();
       }

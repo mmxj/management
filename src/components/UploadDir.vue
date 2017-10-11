@@ -28,7 +28,20 @@
   </div>
 </template>
 <script type="text/javascript">
+  export default{
+      data(){
+          return {
 
+          }
+      },
+      methods:{
+
+
+      },
+      mounted:function(){
+
+    }
+  }
 </script>
 <style lang="scss" scoped>
   #UploadDir{

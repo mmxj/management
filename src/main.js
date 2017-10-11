@@ -8,6 +8,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import store from './store'
 import $ from 'jquery'
+import '@/assets/js/jquery.md5.js'
 // import './assets/js/xlsx.full.min.js'
 // import xlsx from 'js-xlsx'
 //处理上传表格组件
