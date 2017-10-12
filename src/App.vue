@@ -12,12 +12,22 @@
 import Gheader from './components/Gheader.vue'
 import LeftList from './components/LeftList.vue'
 import RightPage from './components/RightPage.vue'
+import {mapGetters, mapActions} from 'vuex'
 export default {
   name: 'app',
   components:{
     Gheader,
     LeftList,
     RightPage
+  },
+  methods: {
+    ...mapActions(['saveSession']),
+  },
+  mounted: function () {
+    if (sessionStorage.getItem('session')) {
+      this.saveSession(sessionStorage.getItem('session'))
+    }
+
   }
 }
 </script>

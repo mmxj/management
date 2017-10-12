@@ -10,7 +10,7 @@
       <el-table :data="tableData" border style="width:100%" max-height="600" @selection-change="handleSelectionChange">
         <el-table-column type="selection" label="选择" width="55"></el-table-column>
         <el-table-column prop="a" label="村医姓名"></el-table-column>
-        <el-table-column  label="归属卫生院"></el-table-column>
+        <el-table-column label="归属卫生院"></el-table-column>
         <el-table-column label="归属卫生站"></el-table-column>
         <el-table-column label="村医编号"></el-table-column>
         <el-table-column label="身份证号"></el-table-column>
@@ -29,7 +29,7 @@
   export default{
     data(){
       return {
-        tableData:[{
+        tableData: [{
           ordinal: "111"
         }]
       }
@@ -53,13 +53,14 @@
   }
 </script>
 <style lang="scss" scoped="">
-  #DoctorManage{
-    margin:15px;
-    padding:15px;
-    padding-top:25px;
+  #DoctorManage {
+    margin: 15px;
+    padding: 15px;
+    padding-top: 25px;
     background: #fff;
   }
-  .tables{
-    margin-top:20px;
+
+  .tables {
+    margin-top: 20px;
   }
 </style>

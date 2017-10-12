@@ -27,7 +27,7 @@
     <div class="content">
       <el-row :guttter="20">
         <el-col :span="8">
-            <span>国家人社部最新社保政策发布</span>
+          <span>国家人社部最新社保政策发布</span>
         </el-col>
         <el-col :span="8">
           <span>最新社保金融创新发展</span>
@@ -73,50 +73,51 @@
   </div>
 </template>
 <script type="text/javascript">
-  import {mapGetters,mapActions} from 'vuex'
+  import {mapGetters, mapActions} from 'vuex'
   export default{
-      data(){
-          return {
-              imgUrl: require("@/assets/img/login_bg.png"),
-              myData:'hhhh'
-          }
-      },
-      computed:mapGetters(['show','getData','saveSession']),
-      methods:{
-        ...mapActions(['saveData']),//设置数据传输
-        start(){
-            console.log(this.getData)//获取设置的数据
-            console.log(this.saveSession);
-        }
-      },
-    mounted:function(){
+    data(){
+      return {
+        imgUrl: require("@/assets/img/login_bg.png"),
+        myData: 'hhhh'
+      }
+    },
+    computed: mapGetters(['show', 'getData', 'saveSession']),
+    methods: {
+      ...mapActions(['saveData']),//设置数据传输
+      start(){
+        console.log(this.getData)//获取设置的数据;
+        console.log(this.saveSession);
+      }
+    },
+    mounted: function () {
       this.saveData(this.myData);
       this.start();
     }
   }
 </script>
 <style lang="scss" scoped>
-  #Message{
-    background:#fff;
-    margin:15px;
-    padding:20px;
-    img{
+  #Message {
+    background: #fff;
+    margin: 15px;
+    padding: 20px;
+    img {
       width: 100%;
-      max-height:350px;
-      border:1px solid #aaa;
+      max-height: 350px;
+      border: 1px solid #aaa;
     }
   }
 
-  #banner{
-    p{
-      text-align:center;
-      line-height:30px;
+  #banner {
+    p {
+      text-align: center;
+      line-height: 30px;
     }
   }
-  .content{
-    padding:20px;
-    .el-col{
-      text-align:center;
+
+  .content {
+    padding: 20px;
+    .el-col {
+      text-align: center;
     }
   }
 </style>

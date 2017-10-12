@@ -1,49 +1,55 @@
 <template>
   <div id="DataAdministration">
     <div>
-    <el-row :gutter="20">
-      <el-col :span="2">
-        <label for="">社保卡类型</label>
-      </el-col>
-      <el-col :span="6">
-        <input type="text">
-      </el-col>
-      <el-col :span="2">
-        <label for="">卡归属地</label>
-      </el-col>
-      <el-col :span="6">
-        <input type="text">
-      </el-col>
-      <el-col :span="2">
-        <label for="">绑卡商户号</label>
-      </el-col>
-      <el-col :span="6">
-        <input type="text">
-      </el-col>
-    </el-row>
-    <el-row :gutter="20">
-      <el-col :span="2">
-        <label for="">绑卡终端号</label>
-      </el-col>
-      <el-col :span="6">
-        <input type="text">
-      </el-col>
-      <el-col :span="2">
-      <label for="">卡有效期</label>
-      </el-col>
-      <el-col :span="6" class="el-timer">
-        <el-row :gutter="20">
-          <el-col :span="12"><el-date-picker v-model="value1" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions1"></el-date-picker></el-col>
-          <el-col :span="12"><el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions1"></el-date-picker></el-col>
-        </el-row>
-      </el-col>
-      <el-col :offset="2" :span="2">
-        <el-button>搜索</el-button>
-      </el-col>
-      <el-col :span="3">
-        <a href="javascript:">下载所有数据</a>
-      </el-col>
-    </el-row>
+      <el-row :gutter="20">
+        <el-col :span="2">
+          <label for="">社保卡类型</label>
+        </el-col>
+        <el-col :span="6">
+          <input type="text">
+        </el-col>
+        <el-col :span="2">
+          <label for="">卡归属地</label>
+        </el-col>
+        <el-col :span="6">
+          <input type="text">
+        </el-col>
+        <el-col :span="2">
+          <label for="">绑卡商户号</label>
+        </el-col>
+        <el-col :span="6">
+          <input type="text">
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="2">
+          <label for="">绑卡终端号</label>
+        </el-col>
+        <el-col :span="6">
+          <input type="text">
+        </el-col>
+        <el-col :span="2">
+          <label for="">卡有效期</label>
+        </el-col>
+        <el-col :span="6" class="el-timer">
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-date-picker v-model="value1" align="right" type="date" placeholder="选择日期"
+                              :picker-options="pickerOptions1"></el-date-picker>
+            </el-col>
+            <el-col :span="12">
+              <el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期"
+                              :picker-options="pickerOptions1"></el-date-picker>
+            </el-col>
+          </el-row>
+        </el-col>
+        <el-col :offset="2" :span="2">
+          <el-button>搜索</el-button>
+        </el-col>
+        <el-col :span="3">
+          <a href="javascript:">下载所有数据</a>
+        </el-col>
+      </el-row>
     </div>
     <div>
       <el-table :data="tableData" border>
@@ -96,9 +102,9 @@
         },
         value1: '',
         value2: '',
-        tableData:[
+        tableData: [
           {
-            index:1
+            index: 1
           }
         ]
       }
@@ -106,61 +112,65 @@
   }
 </script>
 <style lang="scss" scoped>
-  #DataAdministration{
-    margin:15px;
-    padding:20px;
-    background:#fff;
+  #DataAdministration {
+    margin: 15px;
+    padding: 20px;
+    background: #fff;
   }
-  .el-col{
-    margin-bottom:20px;
-    label{
-      display:block;
+
+  .el-col {
+    margin-bottom: 20px;
+    label {
+      display: block;
       width: 100%;
       text-align: right;
-      line-height:30px;
+      line-height: 30px;
     }
-    input{
+    input {
       width: 100%;
-      height:30px;
-      border-radius:3px;
-      border:1px solid #aaa;
+      height: 30px;
+      border-radius: 3px;
+      border: 1px solid #aaa;
     }
-    select{
+    select {
       width: 100%;
-      height:36px;
-      border-radius:3px;
-      border:1px solid #aaa;
+      height: 36px;
+      border-radius: 3px;
+      border: 1px solid #aaa;
     }
-    .el-date-editor.el-input{
+    .el-date-editor.el-input {
       width: 100%;
     }
-    .el-timer{
-      margin:0;
+    .el-timer {
+      margin: 0;
     }
   }
+
   @media screen and (max-width: 1760px) {
-    label{
-      font-size:14px;
+    label {
+      font-size: 14px;
       min-width: 5em;
     }
   }
-  .el-button{
+
+  .el-button {
     width: 100%;
-    background:#32BC6F;
-    border:0;
-    color:#fff;
+    background: #32BC6F;
+    border: 0;
+    color: #fff;
   }
 
-  a{
-    line-height:30px;
+  a {
+    line-height: 30px;
   }
 </style>
 <style type="text/css">
-  .el-table th{
-    text-align:center !important;
+  .el-table th {
+    text-align: center !important;
   }
-  .el-table td{
-    text-align:center !important;
+
+  .el-table td {
+    text-align: center !important;
   }
 </style>
 

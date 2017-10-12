@@ -13,24 +13,25 @@
 </template>
 
 <style scoped lang="scss">
-  #UserDetails{
-    padding:20px;
-    margin:15px;
-    background:#fff;
-    min-height:800px;
+  #UserDetails {
+    padding: 20px;
+    margin: 15px;
+    background: #fff;
+    min-height: 800px;
   }
-  .btn-nav{
-    a{
+
+  .btn-nav {
+    a {
       text-decoration: none;
-      display:inline-block;
-      background:#32BC6F;
-      color:#fff;
+      display: inline-block;
+      background: #32BC6F;
+      color: #fff;
       height: 30px;
       line-height: 30px;
-      border-radius:5px;
-      font-size:14px;
-      padding:5px 15px;
-      margin-right:10px;
+      border-radius: 5px;
+      font-size: 14px;
+      padding: 5px 15px;
+      margin-right: 10px;
     }
   }
 

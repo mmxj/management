@@ -16,23 +16,21 @@
   export default{
     data(){
       return {
-        tableData:[
+        tableData: [
           {
-            withUser:'父亲'
+            withUser: '父亲'
           },
           {
-            withUser:'母亲'
+            withUser: '母亲'
           },
           {
-            withUser:'妻子'
+            withUser: '妻子'
           },
         ]
       }
     },
-    methods:{
-
-    },
-    mounted:function(){
+    methods: {},
+    mounted: function () {
 
 
     }
@@ -40,18 +38,18 @@
   }
 </script>
 <style lang="scss">
-  #UserRecord{
+  #UserRecord {
     margin-top: 20px;
-    .el-table{
-      th,td{
-        .cell{
-          text-align:center;
+    .el-table {
+      th, td {
+        .cell {
+          text-align: center;
         }
       }
     }
-    td:last-child{
-      .cell{
-        display:none;
+    td:last-child {
+      .cell {
+        display: none;
       }
     }
   }

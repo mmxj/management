@@ -15,28 +15,29 @@
 </template>
 <script>
   export default{
-      data(){
-          return {
-              tableData:[{
-                drugName:"111"
-              }]
-          }
+    data(){
+      return {
+        tableData: [{
+          drugName: "111"
+        }]
       }
+    }
   }
 </script>
 <style lang="scss" scoped>
-  #DirList{
-    margin:15px;
-    padding:20px;
-    background:#fff;
+  #DirList {
+    margin: 15px;
+    padding: 20px;
+    background: #fff;
   }
 
 </style>
 <style type="text/css">
-  .el-table th{
+  .el-table th {
     text-align: center !important;
   }
-  .el-table td{
+
+  .el-table td {
     text-align: center !important;
   }
 </style>

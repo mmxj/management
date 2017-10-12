@@ -24,9 +24,11 @@
           <span>本季度</span>
           <span>本年度</span>
           <span>自定义时间</span>
-          <el-date-picker v-model="value1" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions1"></el-date-picker>
+          <el-date-picker v-model="value1" align="right" type="date" placeholder="选择日期"
+                          :picker-options="pickerOptions1"></el-date-picker>
           <span class="add">至</span>
-          <el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions1"></el-date-picker>
+          <el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期"
+                          :picker-options="pickerOptions1"></el-date-picker>
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -46,7 +48,9 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-          <el-col :offset="20" :span="4"><span>下载数据</span><el-button class="search">搜索</el-button></el-col>
+        <el-col :offset="20" :span="4"><span>下载数据</span>
+          <el-button class="search">搜索</el-button>
+        </el-col>
       </el-row>
     </div>
     <div class="table-box">
@@ -136,52 +140,53 @@
   }
 </script>
 <style lang="scss" scoped>
-  #Order{
-    padding:20px;
-    padding-top:40px;
-    margin:15px;
-    background:#fff;
-    label{
-      display:block;
-      font-size:14px;
+  #Order {
+    padding: 20px;
+    padding-top: 40px;
+    margin: 15px;
+    background: #fff;
+    label {
+      display: block;
+      font-size: 14px;
       font-weight: 500;
       text-align: right;
-      min-width:7em;
-      line-height:36px;
+      min-width: 7em;
+      line-height: 36px;
     }
-    .el-col{
-      min-width:7em;
-      margin-bottom:20px;
+    .el-col {
+      min-width: 7em;
+      margin-bottom: 20px;
     }
-    span{
-      font-size:14px;
-      line-height:36px;
-      display:inline-block;
-      margin-right:15px;
+    span {
+      font-size: 14px;
+      line-height: 36px;
+      display: inline-block;
+      margin-right: 15px;
     }
-    .money{
+    .money {
       border-radius: 4px;
       border: 1px solid #bfcbd9;
       box-sizing: border-box;
-      height:36px;
-      line-height:36px;
+      height: 36px;
+      line-height: 36px;
       width: 90px;
     }
-    .add{
-      margin:0;
+    .add {
+      margin: 0;
     }
-    .search{
-      background:#32BC6F;
-      color:#fff;
-      border:0;
+    .search {
+      background: #32BC6F;
+      color: #fff;
+      border: 0;
     }
   }
 </style>
 <style type="text/css">
-  .el-table th{
-    text-align:center !important;
+  .el-table th {
+    text-align: center !important;
   }
-  .el-table td{
-    text-align:center !important;
+
+  .el-table td {
+    text-align: center !important;
   }
 </style>

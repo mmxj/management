@@ -16,7 +16,7 @@ import '@/assets/js/jquery.md5.js'
 //地址组件
 import Distpicker from 'v-distpicker'
 
-Vue.component('v-distpicker',Distpicker)
+Vue.component('v-distpicker', Distpicker)
 Vue.use(ElementUI)
 
 Vue.config.productionTip = false
@@ -27,5 +27,5 @@ new Vue({
   router,
   store,
   template: '<App/>',
-  components: { App }
+  components: {App}
 })

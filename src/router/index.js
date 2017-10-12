@@ -35,172 +35,172 @@ import UserTownship from '../components/UserTownship'//用户乡银宝
 Vue.use(Router)
 
 export default new Router({
-	  mode: 'history',
-  	routes: [
-      {
-        path: '*',
-        redirect: '/login'
-      },
-      {
-        path: '/login',
-        name: 'Login',
-        component: Login
-      },
-    	{
-	      	path: '/message',
-	      	name: 'Message',
-	      	component: Message
-    	},
-    	{
-    		path: '/user',
-    		name: 'User',
-    		component: User
-    	},
-    	{
-    		path: '/merchant',
-    		name: 'Merchant',
-    		component: Merchant
-    	},
-    	{
-    		path: '/merchantadd',
-    		name: 'MerchantAdd',
-    		component: MerchantAdd
-    	},
-      {
-        path: '/merchantcheck',
-        name: 'MerchantCheck',
-        component: MerchantCheck
-      },
-      {
-        path: '/collaborate',
-        name: 'Collaborate',
-        component: Collaborate
-      },
-      {
-        path: '/collaborateadd',
-        name: 'CollaborateAdd',
-        component: CollaborateAdd
-      },
-      {
-        path: '/collaboratecheck',
-        name: 'CollaborateCheck',
-        component: CollaborateCheck
-      },
-      {
-	      path: '/order',
-        name: 'Order',
-        component: Order
-      },
-      {
-	      path: '/channel',
-        name: 'Channel',
-        component: Channel
-      },
-      {
-        path: '/uploaddir',
-        name: 'UploadDir',
-        component: UploadDir
-      },
-      {
-        path: '/dirlist',
-        name: 'DirList',
-        component: DirList
-      },
-      {
-        path: '/dirmanage',
-        name: 'DirManage',
-        component: DirManage
-      },
-      {
-        path: '/healthstation',
-        name: 'HealthStation',
-        component: HealthStation
-      },
-      {
-        path: '/healthstationadd',
-        name: 'HealthStationAdd',
-        component: HealthStationAdd
-      },
-      {
-        path: '/doctoradd',
-        name: 'DoctorAdd',
-        component: DoctorAdd
-      },
-      {
-        path: '/doctormanage',
-        name: 'DoctorManage',
-        component: DoctorManage
-      },
-      {
-        path: '/merchantchannel',
-        name: 'MerchantChannel',
-        component: MerchantChannel
-      },
-      {
-	      path: '/businessissue',
-        name: 'BusinessIssue',
-        component: BusinessIssue
-      },
-      {
-        path: '/informationup',
-        name: 'InformationUp',
-        component: InformationUp
-      },
-      {
-	      path: '/paydata',
-        name: 'PayData',
-        component: PayData
-      },
-      {
-	      path: '/dataadministration',
-        name: 'DataAdministration',
-        component: DataAdministration
-      },
-      {
-	      path: '/terminal',
-        name: 'Terminal',
-        component: Terminal
-      },
-      {
-        path: '/datareport',
-        name: 'DataReport',
-        component: DataReport
-      },
-      {
-        path: '/userdetails',
-        component: UserDetails,
-        children:[
-          {
-            path:'',
-            name:'UserInformation',
-            component:UserInformation
-          },
-          {
-            path: '/userdetails/social',
-            name: 'Social',
-            component: Social
-          },
-          {
-            path: '/userdetails/bank',
-            name: 'UserBank',
-            component: UserBank
-          },
-          {
-            path: '/userdetails/family',
-            name: 'UserFamily',
-            component: UserFamily
-          },
-          {
-            path: '/userdetails/userrecord',
-            name: 'UserRecord',
-            component: UserRecord
-          },
-          {
-            path: '/userdetails/usertownship',
-            name:'UserTownship',
-            component: UserTownship
-          }
-        ]
-      }
-    ]
+  mode: 'history',
+  routes: [
+    {
+      path: '*',
+      redirect: '/login'
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login
+    },
+    {
+      path: '/message',
+      name: 'Message',
+      component: Message
+    },
+    {
+      path: '/user',
+      name: 'User',
+      component: User
+    },
+    {
+      path: '/merchant',
+      name: 'Merchant',
+      component: Merchant
+    },
+    {
+      path: '/merchantadd',
+      name: 'MerchantAdd',
+      component: MerchantAdd
+    },
+    {
+      path: '/merchantcheck',
+      name: 'MerchantCheck',
+      component: MerchantCheck
+    },
+    {
+      path: '/collaborate',
+      name: 'Collaborate',
+      component: Collaborate
+    },
+    {
+      path: '/collaborateadd',
+      name: 'CollaborateAdd',
+      component: CollaborateAdd
+    },
+    {
+      path: '/collaboratecheck',
+      name: 'CollaborateCheck',
+      component: CollaborateCheck
+    },
+    {
+      path: '/order',
+      name: 'Order',
+      component: Order
+    },
+    {
+      path: '/channel',
+      name: 'Channel',
+      component: Channel
+    },
+    {
+      path: '/uploaddir',
+      name: 'UploadDir',
+      component: UploadDir
+    },
+    {
+      path: '/dirlist',
+      name: 'DirList',
+      component: DirList
+    },
+    {
+      path: '/dirmanage',
+      name: 'DirManage',
+      component: DirManage
+    },
+    {
+      path: '/healthstation',
+      name: 'HealthStation',
+      component: HealthStation
+    },
+    {
+      path: '/healthstationadd',
+      name: 'HealthStationAdd',
+      component: HealthStationAdd
+    },
+    {
+      path: '/doctoradd',
+      name: 'DoctorAdd',
+      component: DoctorAdd
+    },
+    {
+      path: '/doctormanage',
+      name: 'DoctorManage',
+      component: DoctorManage
+    },
+    {
+      path: '/merchantchannel',
+      name: 'MerchantChannel',
+      component: MerchantChannel
+    },
+    {
+      path: '/businessissue',
+      name: 'BusinessIssue',
+      component: BusinessIssue
+    },
+    {
+      path: '/informationup',
+      name: 'InformationUp',
+      component: InformationUp
+    },
+    {
+      path: '/paydata',
+      name: 'PayData',
+      component: PayData
+    },
+    {
+      path: '/dataadministration',
+      name: 'DataAdministration',
+      component: DataAdministration
+    },
+    {
+      path: '/terminal',
+      name: 'Terminal',
+      component: Terminal
+    },
+    {
+      path: '/datareport',
+      name: 'DataReport',
+      component: DataReport
+    },
+    {
+      path: '/userdetails',
+      component: UserDetails,
+      children: [
+        {
+          path: '',
+          name: 'UserInformation',
+          component: UserInformation
+        },
+        {
+          path: '/userdetails/social',
+          name: 'Social',
+          component: Social
+        },
+        {
+          path: '/userdetails/bank',
+          name: 'UserBank',
+          component: UserBank
+        },
+        {
+          path: '/userdetails/family',
+          name: 'UserFamily',
+          component: UserFamily
+        },
+        {
+          path: '/userdetails/userrecord',
+          name: 'UserRecord',
+          component: UserRecord
+        },
+        {
+          path: '/userdetails/usertownship',
+          name: 'UserTownship',
+          component: UserTownship
+        }
+      ]
+    }
+  ]
 })

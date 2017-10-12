@@ -7,22 +7,34 @@
         </el-col>
         <el-col :span="22">
           <el-row :gutter="20">
-            <el-col :span="12"  class="el-timer">
+            <el-col :span="12" class="el-timer">
               <el-row>
-                <el-col :span="4"><el-button>今天</el-button></el-col>
-                <el-col :span="4"><el-button>近三天</el-button></el-col>
-                <el-col :span="4"><el-button>近一周</el-button></el-col>
-                <el-col :span="4"><el-button>本月</el-button></el-col>
-                <el-col :span="4"><el-button>本季度</el-button></el-col>
+                <el-col :span="4">
+                  <el-button>今天</el-button>
+                </el-col>
+                <el-col :span="4">
+                  <el-button>近三天</el-button>
+                </el-col>
+                <el-col :span="4">
+                  <el-button>近一周</el-button>
+                </el-col>
+                <el-col :span="4">
+                  <el-button>本月</el-button>
+                </el-col>
+                <el-col :span="4">
+                  <el-button>本季度</el-button>
+                </el-col>
               </el-row>
             </el-col>
             <el-col :span="12">
               <el-row :gutter="20">
                 <el-col :span="6" class="el-timer">
-                  <el-date-picker v-model="value1" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions1"></el-date-picker>
+                  <el-date-picker v-model="value1" align="right" type="date" placeholder="选择日期"
+                                  :picker-options="pickerOptions1"></el-date-picker>
                 </el-col>
                 <el-col :span="6" class="el-timer">
-                  <el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions1"></el-date-picker>
+                  <el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期"
+                                  :picker-options="pickerOptions1"></el-date-picker>
                 </el-col>
               </el-row>
             </el-col>
@@ -30,11 +42,21 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-row>
-                <el-col :span="4"><el-button>行业客户报表</el-button></el-col>
-                <el-col :span="4"><el-button>商户报表</el-button></el-col>
-                <el-col :span="4"><el-button>地区报表</el-button></el-col>
-                <el-col :span="4"><el-button>支付类型报表</el-button></el-col>
-                <el-col :span="4"><el-button>业务类型报表</el-button></el-col>
+                <el-col :span="4">
+                  <el-button>行业客户报表</el-button>
+                </el-col>
+                <el-col :span="4">
+                  <el-button>商户报表</el-button>
+                </el-col>
+                <el-col :span="4">
+                  <el-button>地区报表</el-button>
+                </el-col>
+                <el-col :span="4">
+                  <el-button>支付类型报表</el-button>
+                </el-col>
+                <el-col :span="4">
+                  <el-button>业务类型报表</el-button>
+                </el-col>
               </el-row>
             </el-col>
             <el-col :span="3">
@@ -85,9 +107,9 @@
         },
         value1: '',
         value2: '',
-        tableData:[
+        tableData: [
           {
-            index:1
+            index: 1
           }
         ]
       }
@@ -95,68 +117,72 @@
   }
 </script>
 <style lang="scss" scoped>
-  #DataReport{
-    margin:15px;
-    padding:20px;
-    background:#fff;
+  #DataReport {
+    margin: 15px;
+    padding: 20px;
+    background: #fff;
   }
-  .el-col{
-    margin-bottom:20px;
-    label{
-      display:block;
+
+  .el-col {
+    margin-bottom: 20px;
+    label {
+      display: block;
       width: 100%;
       text-align: right;
-      line-height:30px;
+      line-height: 30px;
     }
-    input{
+    input {
       width: 100%;
-      height:30px;
-      border-radius:3px;
-      border:1px solid #aaa;
+      height: 30px;
+      border-radius: 3px;
+      border: 1px solid #aaa;
     }
-    select{
+    select {
       width: 100%;
-      height:36px;
-      border-radius:3px;
-      border:1px solid #aaa;
+      height: 36px;
+      border-radius: 3px;
+      border: 1px solid #aaa;
     }
-    .el-date-editor.el-input{
+    .el-date-editor.el-input {
       width: 100%;
     }
-    .el-timer{
-      margin:0;
+    .el-timer {
+      margin: 0;
     }
   }
+
   @media screen and (max-width: 1560px) {
-    label{
-      font-size:14px;
+    label {
+      font-size: 14px;
       min-width: 5em;
     }
-    .el-button{
-      font-size:14px;
+    .el-button {
+      font-size: 14px;
       min-width: 6em;
     }
   }
 
-  .el-button{
+  .el-button {
     width: 100%;
   }
-  .elButton{
-    background:#32BC6F;
-    border:0;
-    color:#fff;
+
+  .elButton {
+    background: #32BC6F;
+    border: 0;
+    color: #fff;
   }
 
-  a{
-    line-height:30px;
+  a {
+    line-height: 30px;
   }
 </style>
 <style type="text/css">
-  .el-table th{
-    text-align:center !important;
+  .el-table th {
+    text-align: center !important;
   }
-  .el-table td{
-    text-align:center !important;
+
+  .el-table td {
+    text-align: center !important;
   }
 </style>
 

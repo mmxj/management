@@ -9,7 +9,9 @@ function RemoteCall(){
 	this.setting={//外部传进来的参数http://192.168.0.104
 		openUrl : "http://onlinepay.site:8091",//设置请求的域名
 		router:"/base/validatecode/picture/get", //设置请求的地址路径
-		appid:3
+    appid: 3,
+    callback: function () {
+    }
 	}
 	//
 	this.tempSignature = "";//计算后返回的signature 算法在下面makeSignature中
@@ -50,11 +52,13 @@ RemoteCall.prototype.init = function(opt){
         dataType: 'json',
         success: function (resp) {
         		_this.res=resp;
+          _this.setting.callback(resp)//成功的回调函数
         },
         error:function (resp) {
         }
     });
 }
+
 //md5转码函数
 RemoteCall.prototype.makeSignature = function(session, biz_content){
 	this.md5Content = $.md5(biz_content).toUpperCase();
