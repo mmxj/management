@@ -315,8 +315,11 @@
     methods: {
       //地市联动方法 //找个时间封装
       getArea(){
-        this.session = sessionStorage.getItem('session');//本地存储保存session状态
-        console.log(this.session);
+        if (sessionStorage.getItem('session')) {
+          this.session = sessionStorage.getItem('session');//获取本地存储保存session状态
+        } else {
+          this.$router.push({path: '/login'})
+        }
         var _this = this;
         var getArea = new RemoteCall();
         getArea.init({
