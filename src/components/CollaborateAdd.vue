@@ -490,7 +490,6 @@
                   default:
                     alert("照片上传错误请重新上传")
                     break
-
                 }
               }
             }
