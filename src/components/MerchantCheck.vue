@@ -7,13 +7,13 @@
         </el-col>
         <el-col :span="2">
           <div class="el-btn">
-            <button type="button">搜索</button>
+            <button type="button" @click="getPicture">搜索</button>
           </div>
         </el-col>
       </el-row>
     </div>
     <div>
-      <el-row :gutter="10">
+      <el-row :gutter="10" class="logoContent">
         <el-col :span="16" :offset="4">
           <img class="MerchantImg" :src="imgUrl"/>
         </el-col>
@@ -37,6 +37,42 @@
     data(){
       return {
         imgUrl: require("@/assets/img/login_bg.png")
+      }
+    },
+    methods: {
+      getPicture(){
+        var pictureMessage = new RemoteCall();
+        pictureMessage.init({
+          router: "/company/certificate/get",
+          session: this.session,
+          data: {
+            companyNo: null,
+            companyName: "广东",
+            pageInfo: {
+              pageSize: 1,
+              pageNum: 1
+            }
+          }
+        })
+
+      },
+      getPic(){//根据名字查找图片
+        var vm = this;
+        $.ajax({
+          url: "http://192.168.0.137:18081/yxsj-openapi-web/openapi/download/download_base64.do",
+          type: 'post',
+          data: {
+            'download_type': '4',
+            'file_name': '1507898492455-xyb_512x512.png',
+            'id': '0'
+          },
+          success: function (res) {
+//              console.log()
+            if (res) {
+              vm.imgUrl = 'data:image/png;base64,' + JSON.parse(res).data;
+            }
+          }
+        })
       }
     }
   }
@@ -82,5 +118,9 @@
 
   .el-page-title {
     line-height: 36px;
+  }
+
+  .logoContent {
+    margin: 40px 0;
   }
 </style>

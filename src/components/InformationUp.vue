@@ -148,4 +148,30 @@
       text-align: right;
     }
   }
+
+  /*媒体查询做兼容*/
+  @media screen and (max-width: 1790px) {
+    label {
+      font-size: 15px;
+      min-width: 5em;
+    }
+  }
+
+  @media screen and (max-width: 1700px) {
+    .el-col-2 {
+      width: 10%;
+    }
+    .el-col-6 {
+      width: 30%;
+    }
+    .el-col-3 {
+      width: 14%;
+    }
+    .el-col-5 {
+      width: 17.8333%;
+    }
+    .addHealth {
+      text-indent: 1em;
+    }
+  }
 </style>

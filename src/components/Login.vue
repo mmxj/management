@@ -31,7 +31,7 @@
               <input type="text" placeholder="请输入验证码" id="validateCode">
             </el-col>
             <el-col :span="8">
-              <b class="authCode">点击刷新验证码</b>
+              <b class="authCode" @click="resetVal">点击刷新验证码</b>
             </el-col>
           </el-row>
           <el-row>
@@ -102,11 +102,17 @@
 
       },
       loginCallback(data){
-        var session = data.session;
-        this.saveSession(session);
-        sessionStorage.setItem('session', session);
-        this.resSize()
-        this.$router.push({path: '/Message'});
+        console.log(data);
+        if (data.ret.errorCode === 0) {
+          var session = data.session;
+          this.saveSession(session);
+          sessionStorage.setItem('session', session);
+          this.resSize()
+          this.$router.push({path: '/Message'});
+        }
+      },
+      resetVal(){
+        this.getPicture();
       }
     },
     mounted: function () {
@@ -176,6 +182,7 @@
       }
     }
     .loginBtn {
+      cursor: pointer;
       width: 100%;
       height: 100%;
       border: 0;

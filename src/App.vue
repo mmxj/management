@@ -24,8 +24,10 @@ export default {
     ...mapActions(['saveSession']),
   },
   mounted: function () {
+//      console.log(sessionStorage.getItem('session'));
     if (sessionStorage.getItem('session')) {
-      this.saveSession(sessionStorage.getItem('session'))
+      this.saveSession(sessionStorage.getItem('session'));
+//      console.log(sessionStorage.getItem('session'));
     }
 
   }

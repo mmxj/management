@@ -1,26 +1,96 @@
 <template>
   <div id="DirList">
-    <el-table :data="tableData" border style="width:100%">
-      <el-table-column prop="drugName" label="药品"></el-table-column>
-      <el-table-column prop="common" label="通用名称"></el-table-column>
-      <el-table-column prop="drugId" label="医药编号"></el-table-column>
-      <el-table-column prop="expenseType" label="结算费用类型"></el-table-column>
-      <el-table-column prop="specification" label="规格"></el-table-column>
-      <el-table-column prop="unitPrice" label="单价"></el-table-column>
-      <el-table-column prop="unit" label="单位"></el-table-column>
-      <el-table-column prop="socialNumber" label="社保项目编号"></el-table-column>
-      <el-table-column prop="validity" label="有效期"></el-table-column>
-    </el-table>
+    <div class="block">
+      <el-table :data="tableData" border width="100%" max-height="700" align="center">
+        <el-table-column prop="companyId" label="医院编号" width="120"></el-table-column>
+        <el-table-column prop="itemCode" label="项目类别" width="150"></el-table-column>
+        <el-table-column prop="itemNo" label="项目编码" width="150"></el-table-column>
+        <el-table-column prop="itemNameCh" label="项目中文名称" width="150"></el-table-column>
+        <el-table-column prop="itemNameEn" label="项目英文名称" width="200"></el-table-column>
+        <el-table-column prop="commonNames" label="通用名" width="200"></el-table-column>
+        <el-table-column prop="specifications" label="规格" width="200"></el-table-column>
+        <el-table-column prop="dosageForms" label="剂型" width="150"></el-table-column>
+        <el-table-column prop="materialCategory" label="材料类别" width="150"></el-table-column>
+        <el-table-column prop="materialType" label="材料分类" width="150"></el-table-column>
+        <el-table-column prop="hospitalTypeCode" label="医院分类代码" width="300"></el-table-column>
+        <el-table-column prop="unitPrice" label="单价" width="150"></el-table-column>
+        <el-table-column prop="unit" label="单位" width="100"></el-table-column>
+        <el-table-column prop="internationalCode" label="国际码" width="150"></el-table-column>
+        <el-table-column prop="mnemonicCode" label="助记码" width="100"></el-table-column>
+        <el-table-column prop="effectiveDate" label="生效日期" width="100"></el-table-column>
+        <el-table-column porp="remark" label="备注" width="100"></el-table-column>
+        <el-table-column porp="socialSecurityCode" label="社保项目编码" width="100"></el-table-column>
+      </el-table>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
+    </div>
   </div>
 </template>
 <script>
+  import {mapGetters} from "vuex"
   export default{
     data(){
       return {
         tableData: [{
           drugName: "111"
-        }]
+        }],
+        currentPage: 1,
+        pageSize: 20,
+        total: 100,
+
+
       }
+    },
+    computed: mapGetters(['saveSession']),
+    methods: {
+      getCatalog(){//获取目录数据
+        var getCatalog = new RemoteCall();
+        getCatalog.init({
+          router: "/base/hospital_charging_item_detail/get",
+          session: this.saveSession,
+          data: {
+            pageInfo: {
+              pageSize: this.pageSize,
+              pageNum: this.currentPage
+            }
+          },
+          callback: this.getCatalogCallback
+        })
+      },
+      getCatalogCallback(data){
+        console.log(data);
+        if (data.pageInfo.total) {
+          this.total = data.pageInfo.total;
+        }
+        this.tableData = data.rows;
+        for (var i = 0; i < this.tableData.length; i++) {
+          this.tableData[i].unitPrice = this.tableData[i].unitPrice / 100;
+        }
+      },
+      handleSizeChange(val) {
+
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(val)
+        this.currentPage = val;
+        this.getCatalog();
+      }
+    },
+    mounted: function () {
+      var timer;
+      var _this = this;
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        _this.getCatalog()
+      }, 0)
+
     }
   }
 </script>
@@ -29,8 +99,12 @@
     margin: 15px;
     padding: 20px;
     background: #fff;
+    .el-pagination {
+      margin: 0 auto;
+      text-align: center;
+      padding-top: 10px;
+    }
   }
-
 </style>
 <style type="text/css">
   .el-table th {
