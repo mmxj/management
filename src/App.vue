@@ -22,12 +22,46 @@ export default {
   },
   methods: {
     ...mapActions(['saveSession']),
+    getArea(){
+      if (sessionStorage.getItem('session')) {
+        this.session = sessionStorage.getItem('session');//获取本地存储保存session状态
+      } else {
+        this.$router.push({path: '/login'})
+      }
+      var _this = this;
+      var getArea = new RemoteCall();
+      getArea.init({
+        router: "/base/area/idname/get",
+        session: _this.session,
+        data: {
+          parentAreaId: 0
+        },
+        callback: function (data) {
+          console.log(data)
+        }
+      });
+    },
   },
   mounted: function () {
 //      console.log(sessionStorage.getItem('session'));
     if (sessionStorage.getItem('session')) {
       this.saveSession(sessionStorage.getItem('session'));
 //      console.log(sessionStorage.getItem('session'));
+    }
+
+  },
+  watch: {
+    $route(){
+      if (sessionStorage.getItem('session')) {
+        this.saveSession(sessionStorage.getItem('session'));
+//      console.log(sessionStorage.getItem('session'));
+      }
+      if (this.$route.path != '/login') {
+        document.body.scrollTop = 0;
+        document.getElementsByTagName('body')[0].style.height = "";
+        document.getElementsByTagName('body')[0].style.overflow = "";
+      }
+      ;
     }
 
   }

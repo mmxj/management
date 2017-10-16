@@ -5,7 +5,7 @@
         <el-table-column prop="companyId" label="医院编号" width="120"></el-table-column>
         <el-table-column prop="itemCode" label="项目类别" width="150"></el-table-column>
         <el-table-column prop="itemNo" label="项目编码" width="150"></el-table-column>
-        <el-table-column prop="itemNameCh" label="项目中文名称" width="150"></el-table-column>
+        <el-table-column prop="itemNameCh" label="项目中文名称" width="200"></el-table-column>
         <el-table-column prop="itemNameEn" label="项目英文名称" width="200"></el-table-column>
         <el-table-column prop="commonNames" label="通用名" width="200"></el-table-column>
         <el-table-column prop="specifications" label="规格" width="200"></el-table-column>
@@ -17,9 +17,9 @@
         <el-table-column prop="unit" label="单位" width="100"></el-table-column>
         <el-table-column prop="internationalCode" label="国际码" width="150"></el-table-column>
         <el-table-column prop="mnemonicCode" label="助记码" width="100"></el-table-column>
-        <el-table-column prop="effectiveDate" label="生效日期" width="100"></el-table-column>
-        <el-table-column porp="remark" label="备注" width="100"></el-table-column>
-        <el-table-column porp="socialSecurityCode" label="社保项目编码" width="100"></el-table-column>
+        <el-table-column prop="effectiveDate" label="生效日期" width="216"></el-table-column>
+        <el-table-column prop="remark" label="备注" width="100"></el-table-column>
+        <el-table-column prop="socialSecurityCode" label="社保项目编码" width="200"></el-table-column>
       </el-table>
       <el-pagination
         @size-change="handleSizeChange"
@@ -42,9 +42,7 @@
         }],
         currentPage: 1,
         pageSize: 20,
-        total: 100,
-
-
+        total: 100
       }
     },
     computed: mapGetters(['saveSession']),
@@ -71,6 +69,7 @@
         this.tableData = data.rows;
         for (var i = 0; i < this.tableData.length; i++) {
           this.tableData[i].unitPrice = this.tableData[i].unitPrice / 100;
+          console.log(this.tableData[i].socialSecurityCode)
         }
       },
       handleSizeChange(val) {
@@ -113,5 +112,9 @@
 
   .el-table td {
     text-align: center !important;
+    word-break: keep-all !important; /* 不换行 */
+    white-space: nowrap !important; /* 不换行 */
+    overflow: hidden !important; /* 内容超出宽度时隐藏超出部分的内容 */
+    text-overflow: ellipsis !important; /* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
   }
 </style>

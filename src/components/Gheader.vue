@@ -13,7 +13,6 @@
     </header>
     <router-link to="/message" class="page1 left-title">运营管理后台首页</router-link>
   </div>
-
 </template>
 <script type="text/javascript">
   export default{}
