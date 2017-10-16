@@ -127,7 +127,7 @@
     </div>
     <div class="upload">
       <el-row :gutter="20">
-        <el-col :span="3">
+        <el-col :span="4">
           <div class="girid-content"><label>营业执照上传</label></div>
         </el-col>
         <el-col :span="8">
@@ -148,12 +148,12 @@
             </form>
           </div>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="3">
           <div class="checkImg" @click="showImg(0)">点击查看大图</div>
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="3">
+        <el-col :span="4">
           <div class="girid-content"><label>从业资格证上传</label></div>
         </el-col>
         <el-col :span="8">
@@ -175,12 +175,12 @@
             </form>
           </div>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="3">
           <div class="checkImg" @click="showImg(1)">点击查看大图</div>
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="3">
+        <el-col :span="4">
           <div class="girid-content"><label>银行卡资料上传</label></div>
         </el-col>
         <el-col :span="8">
@@ -198,12 +198,12 @@
             </form>
           </div>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="3">
           <div class="checkImg" @click="showImg(2)">点击查看大图</div>
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="3">
+        <el-col :span="4">
           <div class="girid-content"><label>法人身份证照片上传</label></div>
         </el-col>
         <el-col :span="8">
@@ -221,7 +221,7 @@
             </form>
           </div>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="3">
           <div class="checkImg" @click="showImg(3)">点击查看大图</div>
         </el-col>
       </el-row>
@@ -247,7 +247,7 @@
         districtData: [{'name': '区'}],
         session: sessionStorage.getItem('session'),
         inputData: {//输入框值
-          companyTypeId: 1,//商户类型
+          companyTypeId: 4,//商户类型
           code: '1',
           name: null,//名称
           certificateType: 1,//商户证件类型
@@ -258,7 +258,8 @@
             cityId: null,
             townId: null,
           },
-          address: null,//详细地址
+          address: null,//详细地址,
+          areaId: null,
           leaderName: null, //商户联系人，负责人
           corporation: null,
           telephone: null,//商户联系电话
@@ -314,8 +315,11 @@
     methods: {
       //地市联动方法 //找个时间封装
       getArea(){
-        this.session = sessionStorage.getItem('session');//本地存储保存session状态
-        console.log(this.session);
+        if (sessionStorage.getItem('session')) {
+          this.session = sessionStorage.getItem('session');//获取本地存储保存session状态
+        } else {
+          this.$router.push({path: '/login'})
+        }
         var _this = this;
         var getArea = new RemoteCall();
         getArea.init({
@@ -380,6 +384,7 @@
         var index = myCity.selectedIndex;
         var parentId = myCity.getElementsByTagName('option')[index].value;
         this.inputData.addressPathId.areaId = parentId;
+        this.inputData.areaId = parentId;
       },
       //地市联动结束
 
@@ -461,7 +466,6 @@
       }
       ,
       checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
-
         for (var i = 0; i < 4; i++) {
           if (!this.inputData.certificateList[i].picSavePath) {
 //            console.log(this.inputData.certificateList[i].picSavePath);

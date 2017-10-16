@@ -109,7 +109,7 @@
     </div>
     <div class="upload">
       <el-row :gutter="20">
-        <el-col :span="3">
+        <el-col :span="4">
           <div class="girid-content"><label>营业执照上传</label></div>
         </el-col>
         <el-col :span="8">
@@ -118,12 +118,12 @@
         <el-col :span="3">
           <div class="upload-btn">浏览选择附件<input type="file" name=""></div>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="3">
           <div class="checkImg">点击查看大图</div>
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="3">
+        <el-col :span="4">
           <div class="girid-content"><label>从业资格证上传</label></div>
         </el-col>
         <el-col :span="8">
@@ -132,12 +132,12 @@
         <el-col :span="3">
           <div class="upload-btn">浏览选择附件<input type="file" name=""></div>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="3">
           <div class="checkImg">点击查看大图</div>
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="3">
+        <el-col :span="4">
           <div class="girid-content"><label>银行卡资料上传</label></div>
         </el-col>
         <el-col :span="8">
@@ -146,12 +146,12 @@
         <el-col :span="3">
           <div class="upload-btn">浏览选择附件<input type="file" name=""></div>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="3">
           <div class="checkImg">点击查看大图</div>
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="3">
+        <el-col :span="4">
           <div class="girid-content"><label>法人身份证照片上传</label></div>
         </el-col>
         <el-col :span="8">
@@ -160,7 +160,7 @@
         <el-col :span="3">
           <div class="upload-btn">浏览选择附件<input type="file" name=""></div>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="3">
           <div class="checkImg">点击查看大图</div>
         </el-col>
       </el-row>
@@ -262,13 +262,12 @@
   }
 
   .el-col-3 {
-    width: 11%;
+    width: 12%;
   }
 
   .el-col-5 {
-    width: 22.333%;
+    width: 21.333%;
   }
-
   /*媒体查询做兼容*/
   @media screen and (max-width: 1790px) {
     label {
@@ -278,23 +277,53 @@
   }
 
   @media screen and (max-width: 1700px) {
-    .el-col-2 {
-      width: 10%;
-    }
-    .el-col-6 {
-      width: 23.333333%;
-    }
     .el-col-3 {
-      width: 14%;
+      width: 12%;
     }
+
     .el-col-5 {
-      width: 17.8333%;
-    }
-    .addHealth {
-      text-indent: 1em;
+      width: 21.333%;
     }
   }
 
+  @media screen and (max-width: 1366px) {
+    .el-col-3 {
+      width: 13%;
+    }
+
+    .el-col-5 {
+      width: 20.333%;
+    }
+  }
+
+  .showImg {
+    display: none;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1190px;
+    img {
+      width: 800px;
+      display: block;
+      margin: 50px auto;
+    }
+    .close {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      font-size: 30px;
+      text-align: center;
+      line-height: 50px;
+      border-radius: 25px;
+      right: 10px;
+      top: 10px;
+
+    }
+  }
 </style>
 <style type="text/css">
   .distpicker select {
@@ -306,7 +335,7 @@
     border: 1px solid #aaa
   }
 
-  @media screen and (max-width: 1700px) {
+  @media screen and (max-width: 1500px) {
     .distpicker select {
       width: 31% !important;
     }
