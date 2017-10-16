@@ -148,7 +148,6 @@
       text-align: right;
     }
   }
-
   /*媒体查询做兼容*/
   @media screen and (max-width: 1790px) {
     label {

@@ -133,8 +133,8 @@
   }
 
   .bg {
-    background: #32BC6F;
     width: 100%;
+    background: #32BC6F;
     height: 50%;
     top: 0;
     left: 0;

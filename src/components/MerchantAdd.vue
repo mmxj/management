@@ -247,7 +247,7 @@
         districtData: [{'name': '区'}],
         session: sessionStorage.getItem('session'),
         inputData: {//输入框值
-          companyTypeId: 4,//商户类型
+          companyTypeId: 1,//商户类型
           code: '1',
           name: null,//名称
           certificateType: 1,//商户证件类型
@@ -258,8 +258,7 @@
             cityId: null,
             townId: null,
           },
-          address: null,//详细地址,
-          areaId: null,
+          address: null,//详细地址
           leaderName: null, //商户联系人，负责人
           corporation: null,
           telephone: null,//商户联系电话
@@ -315,11 +314,8 @@
     methods: {
       //地市联动方法 //找个时间封装
       getArea(){
-        if (sessionStorage.getItem('session')) {
-          this.session = sessionStorage.getItem('session');//获取本地存储保存session状态
-        } else {
-          this.$router.push({path: '/login'})
-        }
+        this.session = sessionStorage.getItem('session');//本地存储保存session状态
+        console.log(this.session);
         var _this = this;
         var getArea = new RemoteCall();
         getArea.init({
@@ -384,7 +380,6 @@
         var index = myCity.selectedIndex;
         var parentId = myCity.getElementsByTagName('option')[index].value;
         this.inputData.addressPathId.areaId = parentId;
-        this.inputData.areaId = parentId;
       },
       //地市联动结束
 
