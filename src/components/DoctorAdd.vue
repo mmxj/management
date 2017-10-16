@@ -30,11 +30,11 @@
           <label for="">归属卫生站</label>
         </el-col>
         <el-col :span="5">
-          <select>
+          <select ref="mySelect2">
             <option>
               请选择归属卫生站
             </option>
-            <option v-for="data in hospital" v-bind="data.id">
+            <option v-for="data in hospital" v-bind:value="data.id" ref="options2">
               {{data.name}}
             </option>
           </select>
@@ -498,10 +498,15 @@
           data: {
             parentCompanyId: this.parentCompanyId
           },
-          callback: function (data) {
-            console.log(data)
-          }
+          callback: this.hospitalCallback
         })
+      },
+      hospitalCallback(data){
+        this.hospital = data.rows;
+      },
+      hospitalChange(){
+        var index = this.$refs.mySelect2.selectedIndex;
+        this.inputData.parentCompanyId = this.$refs.options2[index].value;
       }
     },
     mounted: function () {
