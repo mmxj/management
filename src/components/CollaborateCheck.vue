@@ -27,7 +27,7 @@
         <el-col :offset="9" :span="2">
           <el-button @click="pageDown">上一页</el-button>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="4">
           <div class="el-page-title">{{pictureName}}</div>
         </el-col>
         <el-col :span="2">

@@ -38,7 +38,7 @@
           <el-col :span="4">
             <label for="">可阅读范围</label>
           </el-col>
-          <el-col :span="16">
+          <el-col :span="18">
             <ul id="checkBoxWrap">
               <li v-for="(value,key) in checkBoxData">
                 <input :id="key" :checked="checkOn" type="checkbox"><label :for="key">{{value}}</label>
@@ -161,7 +161,7 @@
       width: 10%;
     }
     .el-col-6 {
-      width: 30%;
+      width: 34%;
     }
     .el-col-3 {
       width: 14%;

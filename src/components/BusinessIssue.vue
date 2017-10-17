@@ -12,7 +12,7 @@
             <label for="">产品名称：</label>
           </el-col>
           <el-col :span="18">
-            <input type="text">
+            <input type="text" v-model="inputData.productName">
           </el-col>
         </el-row>
         <el-row :gutter="20">
@@ -20,7 +20,7 @@
             <label for="">一句话介绍：</label>
           </el-col>
           <el-col :span="18">
-            <input type="text">
+            <input type="text" v-model="inputData.summary">
           </el-col>
         </el-row>
         <el-row :gutter="20">
@@ -28,7 +28,7 @@
             <label for="">页面链接地址：</label>
           </el-col>
           <el-col :span="18">
-            <input type="text">
+            <input type="text" v-model="inputData.url">
           </el-col>
           <el-col :span="6">
             <label for="">可阅读范围：</label>
@@ -37,20 +37,27 @@
             <el-row :gutter="20">
               <el-col>
                 <ul id="checkBoxWrap">
-                  <li v-for="(value,key) in checkBoxData">
-                    <input :id="key" :checked="checkOn" type="checkbox"><label :for="key">{{value}}</label>
+                  <li v-for="(value,index) in checkBoxData">
+                    <input :id="index" ref="check" type="checkbox" :value="value" v-model="checkedNames"><label
+                    :for="index">{{value}}</label>
                   </li>
                 </ul>
               </el-col>
             </el-row>
             <el-row class="el-btn">
-              <el-button>发布业务</el-button>
+              <el-button @click="dataUp">发布业务</el-button>
             </el-row>
           </el-col>
         </el-row>
       </el-col>
       <el-col class="imglog" :span="12">
-        <img :src="urlImg" alt="">
+        <iframe name="frame" frameborder="0" height="0"></iframe>
+        <form action="" class="upPic" target="frame" id="from">
+          <input type="file" v-on:change="imgUrl" name="file" class="upFile"
+                 accept="image/gif,image/jpeg,image/jpg,image/png,image/svg">
+          <input type="text" name="upload_type" value="4" style="display:none">;
+          <img :src="urlImg" alt="">
+        </form>
       </el-col>
     </el-row>
   </div>
@@ -60,44 +67,82 @@
     data(){
       return {
         urlImg: require('@/assets/img/u51.png'),
-        checkBoxData: {
-          0: '全选',
-          1: '广州市',
-          2: '韶关市',
-          3: '深圳市',
-          4: '珠海市',
-          5: '汕头市',
-          6: '佛山市',
-          7: '江门市',
-          8: '湛江市',
-          9: '茂名市',
-          10: '肇庆市',
-          11: '惠州市',
-          12: '梅州市',
-          13: '汕尾市',
-          14: '河源市',
-          15: '阳江市',
-          16: '清远市',
-          17: '东莞市',
-          18: '中山市',
-          19: '潮州市',
-          20: '揭阳市',
-          21: '云浮市'
+        checkBoxData: [
+          '全选',
+          '广州市',
+          '韶关市',
+          '深圳市',
+          '珠海市',
+          '汕头市',
+          '佛山市',
+          '江门市',
+          '湛江市',
+          '茂名市',
+          '肇庆市',
+          '惠州市',
+          '梅州市',
+          '汕尾市',
+          '河源市',
+          '阳江市',
+          '清远市',
+          '东莞市',
+          '中山市',
+          '潮州市',
+          '揭阳市',
+          '云浮市'
+        ],
+        inputData: {
+
         },
-        checkOn: false
+        checkedNames: []
       }
     },
     methods: {
-      checkAll(){
-        var checkAll = document.getElementById('0');
-        var _this = this;
-        checkAll.onclick = function () {
-          _this.checkOn = !_this.checkOn;
+      dataUp(){
+        if (this.checkedNames[0] != '全选') {
+          this.inputData.areaRange = this.checkedNames.join();
+        } else {
+          this.inputData.areaRange = '全选'
+        }
+        this.setPicture('#from');
+        console.log(this.inputData)
+      },
+      setPicture(id){
+        var vm = this;
+        $(id).ajaxSubmit({//上传图片接口 有回调可以使用
+          type: "POST",
+          url: "http://192.168.0.137:18081/yxsj-openapi-web/openapi/upload/upload.do",
+          success: function (data) {
+            if (data) {
+              if (JSON.parse(data).data.length > 0) {
+                console.log(data);
+                vm.inputData.enableFlag = JSON.parse(data).data[0].saved_file
+              }
+            }
+          }
+        })
+
+      },
+      imgUrl(e){ //获取图片路径实现预览
+        var vm = this;
+        var files = e.target.files || e.dataTransfer.files;
+        if (!files.length)return;
+        var reader = new FileReader();
+        reader.readAsDataURL(files[0]);
+        reader.onload = function () {
+          vm.urlImg = this.result;
         }
       }
     },
     mounted: function () {
-      this.checkAll()
+    },
+    watch: {
+      checkedNames(data){
+//          console.log(data);
+        if (data[0] == '全选') {
+          this.checkedNames = this.checkBoxData;
+        }
+      }
     }
 
   }
@@ -139,7 +184,70 @@
       }
     }
     .imglog {
-      padding: 30px;
+      /*padding: 30px;*/
+      height: 400px;
+      overflow: hidden;
+      img {
+        width: 250px;
+      }
+    }
+  }
+
+  .upPic {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .upFile {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    cursor: pointer;
+    opacity: 0;
+  }
+
+  /*媒体查询做兼容*/
+  @media screen and (max-width: 1790px) {
+    label {
+      font-size: 15px;
+      min-width: 5em;
+    }
+  }
+
+  @media screen and (max-width: 1750px) {
+    .el-col-2 {
+      width: 10%;
+    }
+    .el-col-6 {
+      width: 23.333333%;
+    }
+    .el-col-3 {
+      width: 15.5%;
+    }
+  }
+
+  @media screen and (max-width: 1450px) {
+    .el-col-2 {
+      width: 12%;
+    }
+    .el-col-6 {
+      width: 25.333333%;
+    }
+    .el-col-18 {
+      width: 73%;
+    }
+    .el-col-3 {
+      width: 17.5%;
+    }
+  }
+
+  @media screen and (max-width: 1280px) {
+
+    .el-col-6 {
+      width: 26.333333%;
+    }
+    .el-col-18 {
+      width: 73%;
     }
   }
 </style>

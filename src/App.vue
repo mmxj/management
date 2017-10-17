@@ -70,7 +70,7 @@ export default {
 <style>
 @import './assets/css/reset.css';
 body{
-  min-width: 1280px;
+  min-width: 1200px;
   background:#EEEEEE;
 }
 [class^="el-icon-my"], [class*=" el-icon-my"] {

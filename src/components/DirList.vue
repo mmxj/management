@@ -62,14 +62,12 @@
         })
       },
       getCatalogCallback(data){
-        console.log(data);
         if (data.pageInfo.total) {
           this.total = data.pageInfo.total;
         }
         this.tableData = data.rows;
         for (var i = 0; i < this.tableData.length; i++) {
           this.tableData[i].unitPrice = this.tableData[i].unitPrice / 100;
-          console.log(this.tableData[i].socialSecurityCode)
         }
       },
       handleSizeChange(val) {
@@ -77,7 +75,6 @@
         console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
-        console.log(val)
         this.currentPage = val;
         this.getCatalog();
       }

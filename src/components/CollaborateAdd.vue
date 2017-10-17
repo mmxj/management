@@ -449,12 +449,17 @@
           addMerchant.init({
             router: "/company/add",
             session: this.session,
-            data: this.inputData
+            data: this.inputData,
+            callback: routerGo
           })
         }
+      },
+      routerGo(data){
+        if (data.ret.errorMessage == 'success') {
+          window.location.reload()
+        }
       }
-      ,
-      checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
+      , checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
 
         for (var i = 0; i < 4; i++) {
           if (!this.inputData.certificateList[i].picSavePath) {
@@ -592,14 +597,14 @@
   }
 
   /*媒体查询做兼容*/
-  @media screen and (max-width: 1790px) {
+  @media screen and (max-width: 1800px) {
     label {
       font-size: 15px;
       min-width: 5em;
     }
   }
 
-  @media screen and (max-width: 1700px) {
+  @media screen and (max-width: 1750px) {
     .el-col-2 {
       width: 10%;
     }
@@ -613,10 +618,13 @@
 
   @media screen and (max-width: 1450px) {
     .el-col-2 {
-      width: 12%;
+      width: 13%;
     }
     .el-col-6 {
-      width: 21.333333%;
+      width: 20.333333%;
+    }
+    .el-col-4 {
+      width: 17.66667%;
     }
     .el-col-3 {
       width: 17.5%;

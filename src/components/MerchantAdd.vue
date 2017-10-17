@@ -455,16 +455,20 @@
             this.inputData.certificateList[i].imgVal = null;
             this.inputData.certificateList[i].certificateName = null;
           }
-          console.log(typeof this.inputData)
           var addMerchant = new RemoteCall();
           addMerchant.init({
             router: "/company/add",
             session: this.session,
-            data: this.inputData
+            data: this.inputData,
+            callback: routerGo
           })
         }
-      }
-      ,
+      },
+      routerGo(data){
+        if (data.ret.errorMessage == 'success') {
+          window.location.reload()
+        }
+      },
       checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
         for (var i = 0; i < 4; i++) {
           if (!this.inputData.certificateList[i].picSavePath) {
@@ -668,7 +672,7 @@
 </style>
 <style type="text/css">
   .distpicker select {
-    width: 32% !important;
+    width: 31%;
     height: 36px;
     line-height: 36px;
     padding: 0.25rem;
@@ -677,7 +681,7 @@
     border-radius: 3px;
   }
 
-  @media screen and (max-width: 1420px) {
+  @media screen and (max-width: 1280px) {
     .distpicker select {
       width: 31% !important;
     }

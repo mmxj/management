@@ -33,9 +33,10 @@
         <el-menu-item index="/dirmanage" class="menu-border-bottom el-lvtwo">三大目录管理</el-menu-item>
         <el-submenu index="4-4">
           <template slot="title">
-            <router-link class="el-lvtwo" to="/healthstation">卫生站管理</router-link>
+            卫生站管理
           </template>
           <el-menu-item index="/healthstationadd" class="menu-border-bottom el-lvthree">添加卫生站</el-menu-item>
+          <el-menu-item index="/healthstation" class="menu-border-bottom el-lvthree">管理卫生站</el-menu-item>
           <el-menu-item index="/doctoradd" class="menu-border-bottom el-lvthree">添加村医</el-menu-item>
           <el-menu-item index="/doctormanage" class="menu-border-bottom el-lvthree">管理村医</el-menu-item>
         </el-submenu>

@@ -3,11 +3,13 @@
     <div>
       <el-row :gutter="20">
         <el-col :span="3"><label for="">村医名称</label></el-col>
-        <el-col :span="5"><input type="text" v-model="inputData.name"></el-col>
+        <el-col :span="5">
+          <input type="text" v-model="inputData.name">
+        </el-col>
         <el-col :span="3"><label for="">归属卫生院</label></el-col>
         <el-col :span="5">
           <select @change="getparentChange" ref="mySelect">
-            <option>
+            <option ref="options">
               请选择归属卫生院
             </option>
             <option v-for="data in parentId" v-bind:value="data.id" ref="options">
@@ -24,14 +26,14 @@
           <label for="">村医身份证号</label>
         </el-col>
         <el-col :span="5">
-          <input type="text">
+          <input type="text" v-model="inputData.certificateNo">
         </el-col>
         <el-col :span="3">
           <label for="">归属卫生站</label>
         </el-col>
         <el-col :span="5">
-          <select ref="mySelect2">
-            <option>
+          <select ref="mySelect2" @change="hospitalChange">
+            <option ref="options2">
               请选择归属卫生站
             </option>
             <option v-for="data in hospital" v-bind:value="data.id" ref="options2">
@@ -40,7 +42,7 @@
           </select>
         </el-col>
         <el-col :span="7">
-          <a href="javascript:" class="addHealth">找不到对应的卫生站？请点击添加</a>
+          <router-link to="/healthstationadd" class="addHealth">找不到对应的卫生站？请点击添加</router-link>
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -48,38 +50,40 @@
           <label for="">村医邮箱</label>
         </el-col>
         <el-col :span="5">
-          <input type="text">
+          <input type="text" v-model="inputData.email">
         </el-col>
         <el-col :span="3">
           <label for="">联系电话</label>
         </el-col>
         <el-col :span="5">
-          <input type="text">
+          <input type="text" v-model="inputData.telephone">
         </el-col>
         <el-col :span="2">
           <label for="">村医编码</label>
         </el-col>
         <el-col :span="5">
-          <input type="text">
+          <input type="text" v-model="inputData.no">
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="3">
-          <label for="">银行账号名</label>
-        </el-col>
-        <el-col :span="5"><input type="text"></el-col>
-        <el-col :span="3">
           <label for="">银行账号</label>
         </el-col>
         <el-col :span="5">
-          <input type="text">
+          <input type="text" v-model="inputData.account">
+        </el-col>
+        <el-col :span="3">
+          <label for="">银行账号名</label>
+        </el-col>
+        <el-col :span="5">
+          <input type="text" v-model="inputData.accountName">
         </el-col>
       </el-row>
     </div>
     <div class="upload">
       <el-row :gutter="20">
         <el-col :span="4">
-          <div class="girid-content"><label>营业执照上传</label></div>
+          <div class="girid-content"><label>村医身份证上传</label></div>
         </el-col>
         <el-col :span="8">
           <div class="girid-content girid-ipt">
@@ -154,29 +158,6 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="4">
-          <div class="girid-content"><label>法人身份证照片上传</label></div>
-        </el-col>
-        <el-col :span="8">
-          <div class="girid-content girid-ipt"><input type="text" name=""
-                                                      v-model="inputData.certificateList[3].certificateName"></div>
-        </el-col>
-        <el-col :span="3">
-          <div class="upload-btn" @click="changeIndex(3)">浏览选择附件
-            <iframe name="frame4" frameborder="0" height="40"></iframe>
-            <form action="http://192.168.0.137:18081/yxsj-openapi-web/openapi/upload/upload.do" method="post"
-                  enctype="multipart/form-data" name="From4" id="form4" target="frame2">
-              <input type="file" name="file" v-on:change="imgUrl"
-                     accept="image/gif,image/jpeg,image/jpg,image/png,image/svg">
-              <input type="text" name="upload_type" value="4" style="display:none">;
-            </form>
-          </div>
-        </el-col>
-        <el-col :span="3">
-          <div class="checkImg" @click="showImg(3)">点击查看大图</div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
         <el-col :span="2" :offset="20">
           <button type="button" class="grid-content upload-btn" @click="addMerchant">添加村医</button>
         </el-col>
@@ -197,13 +178,13 @@
         cityData: [{'name': '市'}],
         districtData: [{'name': '区'}],
         session: sessionStorage.getItem('session'),
-        parentId: [{'name': '请先选择地区'}],
-        hospital: [{'name': '请选择卫生院'}],
+        parentId: [],
+        hospital: [],
         inputData: {//输入框值
-          companyTypeId: 4,//商户类型
+          companyTypeId: 5,//商户类型
           code: '1',
           name: null,//名称
-          certificateType: 1,//商户证件类型
+          certificateType: 1,//商户证件类型还未修改
           certificateNo: null,//商户证件号
           addressPathId: {//行政区域id
             proviceId: null,
@@ -226,14 +207,14 @@
             {
               isPersonal: 0,
               certificateType: 1,
-              certificateTypeName: "营业执照",
+              certificateTypeName: "村医身份证",
               certificateName: null,
               picSavePath: null,//保存路径
               imgUrls: null
             },
             {
               isPersonal: 0,
-              certificateType: 1,
+              certificateType: 2,
               certificateTypeName: "从业资格证",
               certificateName: null,
               picSavePath: null,
@@ -243,14 +224,6 @@
               isPersonal: 0,
               certificateType: 1,
               certificateTypeName: "银行卡资料",
-              certificateName: null,
-              picSavePath: null,
-              imgUrls: null
-            },
-            {
-              isPersonal: 0,
-              certificateType: 1,
-              certificateTypeName: "法人身份证",
               certificateName: null,
               picSavePath: null,
               imgUrls: null
@@ -267,7 +240,7 @@
       VDistpicker
     },
     methods: {
-//      //地市联动方法
+//      //地市联动方法 //这个页面不知道是否要使用到地区关联 暂不删除
 //      getArea(){
 //        if (sessionStorage.getItem('session')) {
 //          this.session = sessionStorage.getItem('session');//获取本地存储保存session状态
@@ -407,22 +380,27 @@
         if (this.checkPictureUrl()) {
           for (var i = 0; i < this.inputData.certificateList.length; i++) {
             this.inputData.certificateList[i].imgUrls = null;
-            this.inputData.certificateList[i].imgVal = null;
-            this.inputData.certificateList[i].certificateName = null;
+//            this.inputData.certificateList[i].imgVal = null;
+//            this.inputData.certificateList[i].certificateName = null;
           }
           var addMerchant = new RemoteCall();
           addMerchant.init({
             router: "/company/add",
             session: this.session,
-            data: this.inputData
+            data: this.inputData,
+            callback: this.routerGo
           })
         }
-      }
-      ,
+      },
+      routerGo(data){
+        if (data.ret.errorMessage == 'success') {
+          window.location.reload()
+        }
+      },
       checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
-        for (var i = 0; i < 4; i++) {
+        for (var i = 0; i < 3; i++) {
           if (!this.inputData.certificateList[i].picSavePath) {
-//            console.log(this.inputData.certificateList[i].picSavePath);
+            console.log(this.inputData.certificateList[i].picSavePath);
             return false
           }
         }
@@ -443,13 +421,10 @@
                     alert("营业执照上传失败")
                     break;
                   case 1:
-                    alert("从业资格证上传")
+                    alert("从业资格证上传失败")
                     break;
                   case 2:
-                    alert("银行卡资料上传")
-                    break;
-                  case 3:
-                    alert("法人身份证照片上传")
+                    alert("银行卡资料上传失败")
                     break;
                   default:
                     alert("照片上传错误请重新上传")
@@ -467,7 +442,6 @@
         if (addcompany) {
           addcompany();//判断所有图片上传成功后回调
         }
-
 //        console.log(JSON.parse(data).data[0].saved_file)
       },
       getParentId(){//获取父级卫生院数据 插入到节点中
@@ -483,10 +457,14 @@
 
       },
       parentCallback(data){
-        this.parentId = data.rows;
+        for (var i = 0; i < data.rows.length; i++) {
+          if (data.rows[i].companyType == 1) {
+            this.parentId.push(data.rows[i]);
+          }
+        }
       },
       getparentChange(){
-        var index = this.$refs.mySelect.selectedIndex;
+        var index = this.$refs.mySelect.selectedIndex - 1;
         this.parentCompanyId = this.$refs.options[index].value;
         this.gethospital();
       },
@@ -505,8 +483,12 @@
         this.hospital = data.rows;
       },
       hospitalChange(){
-        var index = this.$refs.mySelect2.selectedIndex;
-        this.inputData.parentCompanyId = this.$refs.options2[index].value;
+        var index = this.$refs.mySelect2.selectedIndex - 1;
+        console.log(this.$refs.options2[index].value)
+        if (this.$refs.options2[index].value) {
+          this.inputData.parentCompanyId = this.$refs.options2[index].value;
+        }
+
       }
     },
     mounted: function () {

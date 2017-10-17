@@ -221,12 +221,12 @@
         cityData: [{'name': '市'}],
         districtData: [{'name': '区'}],
         session: sessionStorage.getItem('session'),
-        parentId: [{'name': '请先选择地区'}],
+        parentId: [],
         inputData: {//输入框值
           companyTypeId: 4,//商户类型
           code: '1',
           name: null,//名称
-          certificateType: 1,//商户证件类型
+          certificateType: 4,//商户证件类型
           certificateNo: null,//商户证件号
           addressPathId: {//行政区域id
             proviceId: null,
@@ -437,11 +437,16 @@
           addMerchant.init({
             router: "/company/add",
             session: this.session,
-            data: this.inputData
+            data: this.inputData,
+            callback: this.routerGo
           })
         }
-      }
-      ,
+      },
+      routerGo(data){
+        if (data.ret.errorMessage == 'success') {
+          window.location.reload()
+        }
+      },
       checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
         for (var i = 0; i < 4; i++) {
           if (!this.inputData.certificateList[i].picSavePath) {
@@ -506,12 +511,18 @@
 
       },
       parentCallback(data){
-        this.parentId = data.rows;
+        for (var i = 0; i < data.rows.length; i++) {
+          if (data.rows[i].companyType == 1) {
+            this.parentId.push(data.rows[i]);
+          }
+        }
       },
       getparentChange(){
-        var index = this.$refs.mySelect.selectedIndex;
-        console.log(this.$refs.options[index].value)
-        this.inputData.parentCompanyId = this.$refs.options[index].value;
+        var index = this.$refs.mySelect.selectedIndex - 1;
+        if (index >= 0) {
+          console.log(this.$refs.options[index].value)
+          this.inputData.parentCompanyId = this.$refs.options[index].value;
+        }
       }
     },
     mounted: function () {
@@ -630,14 +641,14 @@
 
   @media screen and (max-width: 1366px) {
     .el-col-3 {
-      width: 13%;
+      width: 14%;
     }
 
     .el-col-5 {
-      width: 20.333%;
+      width: 19.333%;
     }
     .addHealth {
-      text-indent: 2em;
+      text-indent: 1em;
     }
   }
 

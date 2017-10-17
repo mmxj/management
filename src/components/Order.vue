@@ -180,6 +180,15 @@
       border: 0;
     }
   }
+
+  @media screen and (max-width: 1400px) {
+    #Order span {
+      margin-right: 10px;
+    }
+    #Order .money {
+      width: 60px;
+    }
+  }
 </style>
 <style type="text/css">
   .el-table th {

@@ -7,7 +7,15 @@
         </el-col>
         <el-col :span="6">
           <div class="distpicker">
-            <v-distpicker province="广东省" city="市" area="区"></v-distpicker>
+            <select name="" id="province" @change="setCity()">
+              <option v-for="data in provinceData" v-bind:value="data.id">{{data.name}}</option>
+            </select>
+            <select name="" id="city" @change="setDistrict()">
+              <option v-for="data in cityData" v-bind:value="data.id">{{data.name}}</option>
+            </select>
+            <select name="" id="district" @change="setAreaId()">
+              <option v-for="datas in districtData" v-bind:value="datas.id">{{datas.name}}</option>
+            </select>
           </div>
         </el-col>
         <el-col :span="2">
@@ -17,7 +25,15 @@
           <el-row>
             <el-col :span="12">
               <div class="distpicker">
-                <v-distpicker province="广东省" city="市" area="区"></v-distpicker>
+                <select name="" id="province2" @change="setCity()">
+                  <option v-for="data in provinceData" v-bind:value="data.id">{{data.name}}</option>
+                </select>
+                <select name="" id="city2" @change="setDistrict()">
+                  <option v-for="data in cityData" v-bind:value="data.id">{{data.name}}</option>
+                </select>
+                <select name="" id="district2" @change="setAreaId()">
+                  <option v-for="datas in districtData" v-bind:value="datas.id">{{datas.name}}</option>
+                </select>
               </div>
             </el-col>
             <el-col :span="12"><input type="text"></el-col>
@@ -129,6 +145,9 @@
   export default{
     data() {
       return {
+        provinceData: [{}],
+        cityData: [{}],
+        districtData: [{}],
         pickerOptions0: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7;
@@ -164,6 +183,82 @@
           }
         ]
       }
+    },
+    methods: {
+      //地市联动方法 //找个时间封装
+      getArea(){
+        if (sessionStorage.getItem('session')) {
+          this.session = sessionStorage.getItem('session');//获取本地存储保存session状态
+        } else {
+          this.$router.push({path: '/login'})
+        }
+        console.log(this.session);
+        var _this = this;
+        var getArea = new RemoteCall();
+        getArea.init({
+          router: "/base/area/idname/get",
+          session: _this.session,
+          data: {
+            parentAreaId: 0
+          },
+          callback: this.getAreaCallback
+        });
+      },
+      getAreaCallback(data){
+        var _this = this;
+        this.provinceData = data.rows
+        clearTimeout(timer)
+        var timer = setTimeout(function () {
+          _this.setCity();
+        }, 0)
+      },
+      setCity(){
+        var _this = this;
+        var mySelect = document.getElementById('province');
+        var index = mySelect.selectedIndex;
+        var parentId = mySelect.getElementsByTagName('option')[index].value;
+        var getCity = new RemoteCall();
+        getCity.init({
+          router: "/base/area/idname/get",
+          session: this.session,
+          data: {
+            parentAreaId: parentId
+          }
+        });
+        this.cityData = getCity.res.rows;
+        clearTimeout(timer);
+        var timer = setTimeout(function () {
+          _this.setDistrict();
+        }, 10)
+      },
+      setDistrict(){//县区获取
+        var myCity = document.getElementById('city');
+        var index = myCity.selectedIndex;
+        var _this = this;
+        var parentId = myCity.getElementsByTagName('option')[index].value;
+        var getDistrict = new RemoteCall();
+        getDistrict.init({
+          router: "/base/area/idname/get",
+          session: this.session,
+          data: {
+            parentAreaId: parentId
+          }
+        });
+        this.districtData = getDistrict.res.rows;
+        clearTimeout(timer);
+        var timer = setTimeout(function () {
+          _this.setAreaId();
+        }, 10)
+      },
+      setAreaId(){//获取areaid 给inputData赋值
+        var myCity = document.getElementById('district');
+        var index = myCity.selectedIndex;
+        var parentId = myCity.getElementsByTagName('option')[index].value;
+      },
+      //地市联动结束
+    },
+    mounted: function () {
+      this.getArea()
     }
   }
 </script>
@@ -208,7 +303,6 @@
     border: 0;
     color: #fff;
   }
-
   a {
     line-height: 30px;
   }
