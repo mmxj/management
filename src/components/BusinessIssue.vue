@@ -38,7 +38,8 @@
               <el-col>
                 <ul id="checkBoxWrap">
                   <li v-for="(value,index) in checkBoxData">
-                    <input :id="index" ref="check" type="checkbox" :value="value" v-model="checkedNames"><label
+                    <input :id="index" ref="check" type="checkbox" @click="getAll(index)" :value="value"
+                           v-model="checkedNames"><label
                     :for="index">{{value}}</label>
                   </li>
                 </ul>
@@ -55,7 +56,7 @@
         <form action="" class="upPic" target="frame" id="from">
           <input type="file" v-on:change="imgUrl" name="file" class="upFile"
                  accept="image/gif,image/jpeg,image/jpg,image/png,image/svg">
-          <input type="text" name="upload_type" value="4" style="display:none">;
+          <input type="text" name="upload_type" value="4" style="display:none">
           <img :src="urlImg" alt="">
         </form>
       </el-col>
@@ -67,6 +68,7 @@
     data(){
       return {
         urlImg: require('@/assets/img/u51.png'),
+        session: sessionStorage.getItem('session'),
         checkBoxData: [
           '全选',
           '广州市',
@@ -98,18 +100,27 @@
       }
     },
     methods: {
-      dataUp(){
-        if (this.checkedNames[0] != '全选') {
+      dataUp(){//提交
+        if (this.checkedNames[0] != '全选') { //对选择地区进行判断
           this.inputData.areaRange = this.checkedNames.join();
         } else {
-          this.inputData.areaRange = '全选'
+          this.inputData.areaRange = '所有区域'
         }
         this.setPicture('#from');
-        console.log(this.inputData)
+        console.log(this.inputData);
+        var dataUp = new RemoteCall();
+        dataUp.init({
+          router: '/ips/product/update',
+          session: this.session,
+          data: this.inputData,
+          callback: function (data) {
+            console.log(data);
+          }
+        })
       },
       setPicture(id){
         var vm = this;
-        $(id).ajaxSubmit({//上传图片接口 有回调可以使用
+        $(id).ajaxSubmit({//上传图片地址 有回调可以使用
           type: "POST",
           url: "http://192.168.0.137:18081/yxsj-openapi-web/openapi/upload/upload.do",
           success: function (data) {
@@ -132,6 +143,16 @@
         reader.onload = function () {
           vm.urlImg = this.result;
         }
+      },
+      getAll(index){
+        if (index == 0) {
+          if (this.checkedNames[0] == '全选') {
+            this.checkedNames = this.checkBoxData
+          } else {
+            this.checkedNames = []
+          }
+          console.log(this.checkedNames);
+        }
       }
     },
     mounted: function () {
@@ -139,9 +160,6 @@
     watch: {
       checkedNames(data){
 //          console.log(data);
-        if (data[0] == '全选') {
-          this.checkedNames = this.checkBoxData;
-        }
       }
     }
 

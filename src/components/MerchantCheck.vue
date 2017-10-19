@@ -49,12 +49,12 @@
         dataList: null,
         saveData: [],
         index: 0,
-        valChange: null,
         placeholder: '请输入商家名称或编号搜索对应商户图片信息'
       }
     },
     methods: {
       getPicture(){
+        console.log(this.valChange);
         var pictureMessage = new RemoteCall();
         pictureMessage.init({
           router: "/company/certificate/get",

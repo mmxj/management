@@ -16,6 +16,7 @@ import DirList from '../components/DirList' //三大目录列表
 import DirManage from '../components/DirManage' //三大目录管理
 import HealthStation from '../components/HealthStation' //卫生站管理
 import HealthStationAdd from '../components/HealthStationAdd' //添加卫生站卫生站
+import HealthStationUpdata from '../components/HealthStationUpdata' //添加卫生站卫生站
 import DoctorAdd from '../components/DoctorAdd'//添加村医
 import DoctorManage from '../components/DoctorManage'//添加村医
 import MerchantChannel from '../components/MerchantChannel' //导入商户信息
@@ -120,6 +121,11 @@ export default new Router({
       path: '/healthstationadd',
       name: 'HealthStationAdd',
       component: HealthStationAdd
+    },
+    {
+      path: '/healthstationupdata',
+      name: 'HealthStationUpdata',
+      component: HealthStationUpdata
     },
     {
       path: '/doctoradd',

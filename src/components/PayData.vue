@@ -64,13 +64,13 @@
           <label for="">商户名称</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.companyName">
         </el-col>
         <el-col :span="2">
           <label for="">商户编号</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.merchantNo">
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -80,12 +80,12 @@
         <el-col :span="6" class="el-timer">
           <el-row :gutter="20">
             <el-col :span="12">
-              <el-date-picker v-model="value1" align="right" type="date" placeholder="选择日期"
-                              :picker-options="pickerOptions1"></el-date-picker>
+              <el-date-picker v-model="value3" align="right" type="date" placeholder="选择日期"
+                              :picker-options="pickerOptions1" @change="clearDateStart"></el-date-picker>
             </el-col>
             <el-col :span="12">
-              <el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期"
-                              :picker-options="pickerOptions1"></el-date-picker>
+              <el-date-picker v-model="value4" align="right" type="date" placeholder="选择日期"
+                              :picker-options="pickerOptions1" @change="clearDateEnd"></el-date-picker>
             </el-col>
           </el-row>
         </el-col>
@@ -116,7 +116,7 @@
           <input type="text">
         </el-col>
         <el-col :offset="2" :span="2">
-          <el-button>搜索</el-button>
+          <el-button @click="getPayData">搜索</el-button>
         </el-col>
         <el-col :span="4">
           <a href="javascript:">下载所有数据</a>
@@ -125,33 +125,39 @@
     </div>
     <div>
       <el-table :data="tableData" border>
-        <el-table-column prop="index" label="序号" width="120"></el-table-column>
+        <el-table-column prop="index" label="序号" width="70"></el-table-column>
         <el-table-column label="清算日期" width="180"></el-table-column>
+        <el-table-column prop="orderNo" label="订单号" width="250"></el-table-column>
         <el-table-column label="交易代码" width="180"></el-table-column>
         <el-table-column label="跟踪号" width="180"></el-table-column>
-        <el-table-column label="交易日期" width="180"></el-table-column>
-        <el-table-column label="受理机构" width="180"></el-table-column>
+        <el-table-column prop="payTime" label="交易日期" width="200"></el-table-column>
+        <el-table-column prop="sfsCreate" label="提交支付时间" width="200"></el-table-column>
+        <el-table-column prop="payChannelName" label="受理机构" width="180"></el-table-column>
         <el-table-column label="转发机构" width="180"></el-table-column>
         <el-table-column label="发卡机构" width="180"></el-table-column>
         <el-table-column label="收单机构" width="180"></el-table-column>
-        <el-table-column label="卡号" width="180"></el-table-column>
+        <el-table-column prop="account" label="卡号" width="220"></el-table-column>
         <el-table-column label="交易金额" width="180"></el-table-column>
         <el-table-column label="商户类型" width="180"></el-table-column>
         <el-table-column label="参考号" width="180"></el-table-column>
+        <el-table-column prop="payChannelDealNo" label="支付通道协议" width="220"></el-table-column>
         <el-table-column label="授权码" width="180"></el-table-column>
-        <el-table-column label="终端号" width="180"></el-table-column>
-        <el-table-column label="商户编号" width="180"></el-table-column>
-        <el-table-column label="商户名称" width="180"></el-table-column>
+        <el-table-column prop="terminalNo" label="终端号" width="180"></el-table-column>
+        <el-table-column prop="departmentName" label="门店名称" width="180"></el-table-column>
+        <el-table-column prop="merchantNo" label="商户编号" width="180"></el-table-column>
+        <el-table-column prop="companyName" label="商户名称" width="180"></el-table-column>
         <el-table-column label="商户借记手续费" width="180"></el-table-column>
         <el-table-column label="商户贷记手续费" width="180"></el-table-column>
         <el-table-column label="收单借记手续费" width="180"></el-table-column>
         <el-table-column label="收单贷记手续费" width="180"></el-table-column>
-        <el-table-column label="交易状态" width="180"></el-table-column>
+        <el-table-column prop="status" label="交易状态" width="180"></el-table-column>
         <el-table-column label="原始交易跟踪号" width="180"></el-table-column>
         <el-table-column label="原始交易日期" width="180"></el-table-column>
+        <el-table-column prop="cardType" label="支付卡类型" width="180"></el-table-column>
         <el-table-column label="社保卡标志" width="180"></el-table-column>
         <el-table-column label="银联转接清算费" width="180"></el-table-column>
         <el-table-column label="收单服务机构分润" width="180"></el-table-column>
+        <el-table-column prop="extraParams" label="备注" width="180"></el-table-column>
       </el-table>
     </div>
   </div>
@@ -189,12 +195,58 @@
         },
         value1: '',
         value2: '',
+        value3: '',
+        value4: '',
         tableData: [
           {
-            index: 1
+            index: 1,
+            departmentName: '商户甲'
           }
-        ]
+        ],
+        session: sessionStorage.getItem('session'),
+        inputData: {
+          beginCreate: null,
+          endCreate: null,
+          pageInfo: {
+            pageSize: 20,
+            pageNum: 1
+          }
+        }
       }
+    },
+    methods: {
+      getPayData(){
+        var vm = this;
+        if (this.inputData.beginCreate == null) {
+          alert('请选择交易日期开始时间')
+          return false;
+        } else if (vm.inputData.endCreate == null) {
+          alert('请选择交易日期结算时间')
+          return false;
+        }
+
+        var getPayData = new RemoteCall();
+        getPayData.init({
+          router: '/payment/paymentdeal/get',
+          session: this.session,
+          data: this.inputData,
+          callback: function (data) {
+            vm.tableData = data.rows;
+            for (let i = 0; i < vm.tableData.length; i++) {
+              vm.tableData[i].index = (i + 1) + (vm.inputData.pageInfo.pageSize * (vm.inputData.pageInfo.pageNum - 1));
+            }
+          }
+        })
+      },
+      clearDateStart(data){
+        this.inputData.beginCreate = data;
+      },
+      clearDateEnd(data){
+        this.inputData.endCreate = data;
+      }
+    },
+    mounted: function () {
+
     }
   }
 </script>

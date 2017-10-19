@@ -6,7 +6,7 @@
           <label for="">社保卡类型</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.cardType">
         </el-col>
         <el-col :span="2">
           <label for="">卡归属地</label>
@@ -18,7 +18,7 @@
           <label for="">绑卡商户号</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.merchantNo">
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -26,7 +26,7 @@
           <label for="">绑卡终端号</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.terminalNo">
         </el-col>
         <el-col :span="2">
           <label for="">卡有效期</label>
@@ -44,7 +44,7 @@
           </el-row>
         </el-col>
         <el-col :offset="2" :span="2">
-          <el-button>搜索</el-button>
+          <el-button @click="dataUp">搜索</el-button>
         </el-col>
         <el-col :span="3">
           <a href="javascript:">下载所有数据</a>
@@ -54,16 +54,17 @@
     <div>
       <el-table :data="tableData" border>
         <el-table-column prop="index" label="序号" width="120"></el-table-column>
-        <el-table-column label="社保卡号" width="180"></el-table-column>
-        <el-table-column label="社保卡类型" width="180"></el-table-column>
+        <el-table-column prop="account" label="社保卡号" width="180"></el-table-column>
+        <el-table-column prop="cardTypeName" label="社保卡类型" width="180"></el-table-column>
         <el-table-column label="卡归属地" width="180"></el-table-column>
-        <el-table-column label="绑卡商户号" width="180"></el-table-column>
-        <el-table-column label="绑卡终端号" width="180"></el-table-column>
-        <el-table-column label="身份证号" width="180"></el-table-column>
-        <el-table-column label="姓名" width="180"></el-table-column>
+        <el-table-column prop="merchantNo" label="绑卡商户号" width="180"></el-table-column>
+        <el-table-column prop="terminalNo" label="绑卡终端号" width="180"></el-table-column>
+        <el-table-column prop="idCardNo" label="身份证号" width="180"></el-table-column>
+        <el-table-column prop="userName" label="姓名" width="180"></el-table-column>
         <el-table-column label="卡有效期" width="180"></el-table-column>
-        <el-table-column label="卡序列号" width="180"></el-table-column>
+        <el-table-column prop="userId" label="卡序列号" width="180"></el-table-column>
         <el-table-column label="绑卡日期" width="180"></el-table-column>
+        <el-table-column prop="issueDate" label="卡发行日期" width="180"></el-table-column>
         <el-table-column label="绑卡商户地址" width="180"></el-table-column>
       </el-table>
     </div>
@@ -106,7 +107,27 @@
           {
             index: 1
           }
-        ]
+        ],
+        session: sessionStorage.getItem('session'),
+        inputData: {
+          pageInfo: {
+            pageSize: 20,
+            pageNum: 1
+          },
+        }
+      }
+    },
+    methods: {
+      dataUp(){
+        var dataUp = new RemoteCall();
+        dataUp.init({
+          router: '/user/card/bind/get',
+          session: this.session,
+          data: this.inputData,
+          callback: function (data) {
+            console.log(data);
+          }
+        })
       }
     }
   }

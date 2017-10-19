@@ -4,7 +4,7 @@
       <el-row>
         <el-col :span="3">
           <label for="">
-            <router-link to="/healthstationadd">编辑卫生站</router-link>
+            <router-link to="/healthstationupdata">编辑卫生站</router-link>
           </label>
         </el-col>
         <el-col :span="3">

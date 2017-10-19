@@ -7,7 +7,7 @@
             <label for="">信息标题：</label>
           </el-col>
           <el-col :span="12">
-            <input type="text">
+            <input type="text" v-model="inputData.title">
           </el-col>
         </el-row>
         <el-row :gutter="10">
@@ -15,10 +15,15 @@
             <label for="">上传文件：</label>
           </el-col>
           <el-col :span="12">
-            <input type="text">
+            <input type="text" v-model="fileName">
           </el-col>
           <el-col :span="4">
-            <el-button>点击浏览上传</el-button>
+            <form enctype="multipart/form-data" name="form" id="form" style="position:relative;">
+              <el-button>点击浏览上传</el-button>
+              <input type="file" name="file" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;"
+                     v-on:change="pdfUrl">
+              <input type="text" name="uload_type" value="4" style="display:none">
+            </form>
           </el-col>
         </el-row>
         <el-row :gutter="10">
@@ -26,12 +31,12 @@
             <label for="">阅读方式：</label>
           </el-col>
           <el-col class="download" :span="6">
-            <input type="radio" name="file">
-            <label for="">点击下载文件</label>
+            <input type="radio" id="radioDown" name="file" value="1" v-model="inputData.readType">
+            <label for="radioDown">点击下载文件</label>
           </el-col>
           <el-col class="download" :span="6">
-            <input type="radio" name="file">
-            <label for="">点击网页浏览文件</label>
+            <input type="radio" id="radioRead" name="file" value="2" v-model="inputData.readType">
+            <label for="radioRead">点击网页浏览文件</label>
           </el-col>
         </el-row>
         <el-row :gutter="10">
@@ -40,15 +45,17 @@
           </el-col>
           <el-col :span="18">
             <ul id="checkBoxWrap">
-              <li v-for="(value,key) in checkBoxData">
-                <input :id="key" :checked="checkOn" type="checkbox"><label :for="key">{{value}}</label>
+              <li v-for="(value,index) in checkBoxData">
+                <input :id="index" ref="check" type="checkbox" @click="getAll(index)" :value="value"
+                       v-model="checkedNames"><label
+                :for="index">{{value}}</label>
               </li>
             </ul>
           </el-col>
         </el-row>
         <el-row>
           <el-col class="up-data" :span="20">
-            <el-button>发布信息</el-button>
+            <el-button @click="upData">发布信息</el-button>
           </el-col>
         </el-row>
       </el-col>
@@ -59,31 +66,39 @@
   export default{
     data(){
       return {
-        checkBoxData: {
-          0: '全选',
-          1: '广州市',
-          2: '韶关市',
-          3: '深圳市',
-          4: '珠海市',
-          5: '汕头市',
-          6: '佛山市',
-          7: '江门市',
-          8: '湛江市',
-          9: '茂名市',
-          10: '肇庆市',
-          11: '惠州市',
-          12: '梅州市',
-          13: '汕尾市',
-          14: '河源市',
-          15: '阳江市',
-          16: '清远市',
-          17: '东莞市',
-          18: '中山市',
-          19: '潮州市',
-          20: '揭阳市',
-          21: '云浮市'
+        checkBoxData: [
+          '全选',
+          '广州市',
+          '韶关市',
+          '深圳市',
+          '珠海市',
+          '汕头市',
+          '佛山市',
+          '江门市',
+          '湛江市',
+          '茂名市',
+          '肇庆市',
+          '惠州市',
+          '梅州市',
+          '汕尾市',
+          '河源市',
+          '阳江市',
+          '清远市',
+          '东莞市',
+          '中山市',
+          '潮州市',
+          '揭阳市',
+          '云浮市'
+        ],
+        checkOn: false,
+        checkedNames: [],
+        session: sessionStorage.getItem('session'),
+        inputData: {
+          filePath: null,
+          readType: 1,
+          title: null
         },
-        checkOn: false
+        fileName: null
       }
     },
     methods: {
@@ -93,6 +108,44 @@
         checkAll.onclick = function () {
           _this.checkOn = !_this.checkOn;
         }
+      },
+      getAll(index){
+        if (index == 0) {
+          if (this.checkedNames[0] == '全选') {
+            this.checkedNames = this.checkBoxData
+          } else {
+            this.checkedNames = []
+          }
+        }
+      },
+      upData(){
+        console.log(this.inputData.readType)
+        this.inputData.areaRange = this.checkedNames.join();
+        this.setPdf();
+//        var dataUp=new RemoteCall();
+//        dataUp.init({
+//          router:'/ips/message/add',
+//          session:this.session,
+//          data:this.inputData,
+//          callback:function(data){
+//            console.log(data);
+//          }
+//        })
+      },
+      setPdf(){
+        var vm = this;
+        $('#form').ajaxSubmit({
+          type: 'POST',
+          url: 'http://192.168.0.137:18081/yxsj-openapi-web/openapi/upload/upload.do',
+          success: function (data) {
+            console.log(data)
+          }
+        })
+      },
+      pdfUrl(e){
+        var files = e.target.files || e.dataTransfer.files;
+        if (!files.length)return;
+        console.log(files[0])
       }
     },
     mounted: function () {

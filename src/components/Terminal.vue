@@ -45,13 +45,13 @@
           <label for="">商户号</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.merchantNo">
         </el-col>
         <el-col :span="2">
           <label for="">PSAM卡</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.pSimNo">
         </el-col>
         <el-col :span="2">
           <label for="">收单行</label>
@@ -85,7 +85,7 @@
         </el-col>
         <el-col :span="6">
           <el-date-picker v-model="value1" align="right" type="date" placeholder="选择日期"
-                          :picker-options="pickerOptions1"></el-date-picker>
+                          :picker-options="pickerOptions1" @change="setDate"></el-date-picker>
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -93,19 +93,22 @@
           <label for="">商户名称</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="merchantName" :placeholder="placeholder">
+          <ul class="company" ref="searchBox">
+            <li v-for="name in companyName" v-on:click="getText(name)">{{name}}</li>
+          </ul>
         </el-col>
         <el-col :span="2">
           <label for="">商户主营业务</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.summary">
         </el-col>
         <el-col :span="2">
           <label for="">终端厂家</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.terminalCompany">
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -115,8 +118,14 @@
         <el-col :span="6">
           <input type="text">
         </el-col>
+        <el-col :span="2">
+          <label for="">终端号</label>
+        </el-col>
+        <el-col :span="6">
+          <input type="text" v-model="inputData.terminalNo">
+        </el-col>
         <el-col :offset="2" :span="2">
-          <el-button>添加</el-button>
+          <el-button @click="dataUp">添加</el-button>
         </el-col>
         <el-col :span="4">
           <a href="javascript:">下载所有数据</a>
@@ -125,7 +134,7 @@
     </div>
     <div>
       <el-table :data="tableData" border>
-        <el-table-column prop="index" label="归属地" width="120"></el-table-column>
+        <el-table-column label="归属地" width="120"></el-table-column>
         <el-table-column label="安装地址" width="180"></el-table-column>
         <el-table-column label="商户号" width="180"></el-table-column>
         <el-table-column label="PSAM卡" width="180"></el-table-column>
@@ -148,6 +157,8 @@
         provinceData: [{}],
         cityData: [{}],
         districtData: [{}],
+        companyName: [],
+        merchantName: null,
         pickerOptions0: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7;
@@ -177,11 +188,13 @@
         },
         value1: '',
         value2: '',
-        tableData: [
-          {
-            index: 1
-          }
-        ]
+        tableData: [],
+        inputData: {
+          isAppPay: 1,//是否用于移动端支付
+        },
+        session: sessionStorage.getItem('session'),
+        onoff: true,
+        placeholder: null
       }
     },
     methods: {
@@ -256,9 +269,94 @@
         var parentId = myCity.getElementsByTagName('option')[index].value;
       },
       //地市联动结束
+      //开通日期获取
+      setDate(data){
+        this.inputData.openDate = data;
+      },
+      //上传终端信息
+      dataUp(){
+        var terminal = new RemoteCall();
+        terminal.init({
+          router: '/base/terminal/add',
+          session: this.session,
+          data: this.inputData,
+          callback: function (data) {
+
+          }
+        })
+      },
+      getPicture(){//通过公司名字获取id
+        var pictureMessage = new RemoteCall();
+        pictureMessage.init({
+          router: "/company/certificate/get",
+          session: this.session,
+          data: {
+            companyName: this.inputData.merchantName,
+            pageInfo: {
+              pageSize: 15,
+              pageNum: 1
+            }
+          },
+          callback: this.dataCallback
+        })
+      },
+      dataCallback(data){//对数据进行检查 将公司名字提取出来
+        this.dataList = data.rows;
+        this.companyName = [];
+        if (data.rows) {
+          if (data.rows.length > 0) {
+            addArr:
+              for (var i = 0; i < data.rows.length; i++) {
+                for (var j = 0; j < this.companyName.length; j++) {
+                  if (data.rows[i].companyName == this.companyName[j]) {
+                    continue addArr
+                  }
+                }
+                this.companyName.push(data.rows[i].companyName);
+              }
+          }
+        }
+
+      },
+      getText(name){//点击获取
+        this.placeholder = name;
+        this.merchantName = null;
+        this.inputData.merchantName = this.placeholder;
+        this.saveData = [];
+        for (var i = 0; i < this.dataList.length; i++) {
+          if (name == this.dataList[i].companyName) {
+            this.saveData.push(this.dataList[i])//将匹配的信息保存的到数组中
+          }
+        }
+        this.$refs.searchBox.style.display = 'none';
+      },
+      holder(){
+        if (!this.valChange) {
+          this.placeholder = '请输入合作行业名称或编号搜索对应商户图片信息'
+        }
+        console.log(111)
+      }
     },
     mounted: function () {
-      this.getArea()
+      this.getArea();
+    },
+    watch: {
+      merchantName: function () {
+        this.inputData.merchantName = this.merchantName
+        this.getPicture();
+        if (this.companyName != '[]') {
+          if (this.companyName.length > 0) {
+            this.$refs.searchBox.style.display = 'block';
+            if (this.onoff) {
+              this.$refs.searchBox.style.width = this.$refs.searchBox.clientWidth - 20 + 'px';
+              this.onoff = !this.onoff
+            }
+//              console.log(this.$refs.searchBox.clientWidth)
+          } else {
+            this.$refs.searchBox.style.display = 'none';
+          }
+        }
+      }
     }
   }
 </script>
@@ -335,6 +433,34 @@
     }
     .el-col-3 {
       width: 17.5%;
+    }
+  }
+
+  .el-col-6 {
+    position: relative;
+  }
+
+  .company {
+    background: #fff;
+    border: 1px solid #aaa;
+    position: absolute;
+    width: 100%;
+    top: 38px;
+    border-top: 0;
+    font-size: 14px;
+    color: #666;
+    border-radius: 0 0 4px 4px;
+    margin-top: -4px;
+    padding-top: 4px;
+    z-index: 9999;
+    display: none;
+    li {
+      cursor: pointer;
+      line-height: 35px;
+      text-indent: 1em;
+    }
+    li:hover {
+      background: #bbbbbb;
     }
   }
 </style>
