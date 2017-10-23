@@ -10,6 +10,12 @@ export default{
   },
   saveSession: (state) => {
     return state.saveSession;
+  },
+  userData: (state) => {
+    return state.userData;
+  },
+  loginData: (state) => {
+    return state.loginData
   }
 }
 

@@ -30,37 +30,24 @@
       </el-row>
     </div>
     <div class="table-box">
-      <el-table :data="tableData" border style="width:100%" max-height="600">
+      <el-table :data="tableData" border style="width:100%" max-height="900">
         <el-table-column label="管理" width="120">
           <template scope='scope'>
             <el-button type="text">
-              <router-link to="/userdetails">用户详情</router-link>
+              <a href="javascript:" ref="clickIndex" @click="goUrl(scope.row)">用户详情</a>
+              <!--<router-link to="/userdetails">用户详情</router-link>-->
             </el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="ordinal" label="序号" width="120">
+        <el-table-column prop="ordinal" label="序号" width="100">
         </el-table-column>
-        <el-table-column prop="idCardName" label="姓名" width="120">
+        <el-table-column prop="idCardName" label="姓名">
         </el-table-column>
-        <el-table-column prop="idCardNo" label="身份证号" width="220">
+        <el-table-column prop="idCardNo" label="身份证号">
         </el-table-column>
-        <el-table-column label="是否绑定社保卡" width="180">
+        <el-table-column prop="bindSecurityCardFlag" label="是否绑定社保卡">
         </el-table-column>
-        <el-table-column label="社保卡号" width="180">
-        </el-table-column>
-        <el-table-column label="社保卡归属地区" width="180">
-        </el-table-column>
-        <el-table-column label="社保卡类型" width="180">
-        </el-table-column>
-        <el-table-column label="社保卡发行日期" width="180">
-        </el-table-column>
-        <el-table-column label="社保卡手机" width="180">
-        </el-table-column>
-        <el-table-column label="是否绑定银行卡" width="180">
-        </el-table-column>
-        <el-table-column label="银行卡号" width="180">
-        </el-table-column>
-        <el-table-column label="银行卡手机号" width="180">
+        <el-table-column prop="bindBankCardFlag" label="是否绑定银行卡">
         </el-table-column>
       </el-table>
       <el-pagination
@@ -75,6 +62,7 @@
   </div>
 </template>
 <script type="text/javascript">
+  import {mapGetters, mapActions} from 'vuex'
   export default{
     data(){
       return {
@@ -93,9 +81,9 @@
       }
     },
     methods: {
+      ...mapActions(['userData']),
       getUsers(){
         var vm = this;
-        console.log(this.setData);
         vm.setData.pageInfo.pageNum = vm.currentPage;
         var dataUp = new RemoteCall();
         dataUp.init({
@@ -103,23 +91,70 @@
           session: this.session,
           data: this.setData,
           callback: function (data) {
-            console.log(data.rows)
             if (data.pageInfo.total) {
               vm.total = data.pageInfo.total;
             }
             vm.tableData = data.rows;
             for (let i = 0; i < vm.tableData.length; i++) {
-              vm.tableData[i].ordinal = (i + 1) + vm.pageSize * (vm.currentPage - 1)
+              vm.tableData[i].ordinal = (i + 1) + vm.pageSize * (vm.currentPage - 1);
+              if (vm.tableData[i].bindSecurityCardFlag == 1) {
+                vm.tableData[i].bindSecurityCardFlag = '是'
+              } else {
+                vm.tableData[i].bindSecurityCardFlag = '否'
+              }
+              if (vm.tableData[i].bindBankCardFlag == 1) {
+                vm.tableData[i].bindBankCardFlag = '是'
+              } else {
+                vm.tableData[i].bindBankCardFlag = '否'
+              }
             }
+            console.log(vm.tableData);
           }
         })
       },
+//      getBind(i){//获取社保卡信息
+//          var vm = this;
+//          var getBind=new RemoteCall();
+//          getBind.init({
+//            router: '/user/card/bind/get',
+//            session: this.session,
+//            data:{
+////              id:vm.tableData[i].id,
+//              pageInfo: {
+//                pageSize: 100,
+//                pageNum:1
+//              }
+//            },
+//            callback:function(req){
+//                if(req.rows.length<=0){
+//                  vm.tableData[i].bind='否'
+//                  vm.tableData[i].bank='否'
+//                }else{
+//                  vm.tableData[i].bind='是';
+//                  vm.tableData[i].account=req.rows[0].account;
+//                  vm.tableData[i].securityTypeName=req.rows[0].securityTypeName;
+//                  vm.tableData[i].issueDate=req.rows[0].issueDate;
+//                  vm.tableData[i].mobile=req.rows[0].mobile;
+//                }
+//            }
+//          })
+//      },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
         this.currentPage = val;
         this.getUsers();
+      },
+      goUrl(data){//跳页面前使用vuex对选中内容进行数据报错
+//          console.log(data)
+        this.userData(data);
+        this.$router.push('/userdetails')
+      },
+    },
+    mounted: function () {
+      if (typeof(RemoteCall) == 'undefined') {
+        this.$router.go(0)
       }
     }
   }

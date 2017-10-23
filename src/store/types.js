@@ -1,3 +1,5 @@
 export const INCREMENT='INCREMENT'
 export const SAVEDATA='SAVEDATA'
 export const SESSION='SESSION'
+export const USER='USER'
+export const USERNAME='USERNAME'

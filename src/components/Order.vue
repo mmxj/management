@@ -6,14 +6,9 @@
           <label for="">订单类型：</label>
         </el-col>
         <el-col :span="21">
-          <span>社保在线支付</span>
-          <span>社保刷卡支付</span>
-          <span>社保扫码支付</span>
-          <span>银行卡在线支付</span>
-          <span>银行卡刷卡支付</span>
-          <span>社保查询订单</span>
-          <span>社保缴费订单</span>
-          <span>保险订单</span>
+          <span>缴费</span>
+          <span>挂号</span>
+          <span>门诊</span>
         </el-col>
       </el-row>
       <el-row :gutter="21">
@@ -49,37 +44,45 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :offset="20" :span="4"><span>下载数据</span>
-          <el-button class="search">搜索</el-button>
+          <el-button class="search" @click="search">搜索</el-button>
         </el-col>
       </el-row>
     </div>
     <div class="table-box">
       <el-table :data="tableData" border style="width:100%" max-height="600" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="orderNum" label="订单编号" width="120">
+        <el-table-column prop="no" label="订单编号" width="250">
         </el-table-column>
-        <el-table-column prop="orderType" label="订单类型" width="120"></el-table-column>
-        <el-table-column prop="orderStartTime" label="订单发起时间" width="180">
+        <el-table-column prop="businessType" label="订单类型" width="100"></el-table-column>
+        <el-table-column prop="clinicDate" label="订单发起时间" width="160">
         </el-table-column>
-        <el-table-column prop="orderTime" label="订单交易时间" width="180">
+        <el-table-column prop="clinicDate" label="订单交易时间" width="160">
         </el-table-column>
-        <el-table-column prop="orderCollaborate" label="交易行业客户" width="180">
+        <el-table-column prop="companyId" label="交易商户" width="150">
+          <!--医院名字没有返回-->
         </el-table-column>
-        <el-table-column prop="orderMerchant" label="交易商户" width="300">
+        <el-table-column label="商户地址" width="200">
+          <!--医院地址没有返回-->
         </el-table-column>
-        <el-table-column prop="MerchantArea" label="商户地址" width="180">
+        <el-table-column prop="user.idCardName" label="交易用户" width="160">
         </el-table-column>
-        <el-table-column prop="orderUser" label="交易用户" width="180">
+        <el-table-column prop="amount" label="交易金额" width="100">
         </el-table-column>
-        <el-table-column prop="orderMoney" label="交易金额" width="180">
+        <el-table-column label="交易产品" width="150">
+          <!--。。。 这个得做个弹窗-->
         </el-table-column>
-        <el-table-column prop="exchange " label="交易产品" width="180">
-        </el-table-column>
-        <el-table-column prop="exchangeArea" label="交易地点" width="180">
-        </el-table-column>
-        <el-table-column prop="township" label="乡银保交易" width="180">
+        <el-table-column label="乡银保交易" width="150">
+          <!--是否是乡银保支付-->
         </el-table-column>
       </el-table>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -87,6 +90,7 @@
   export default{
     data() {
       return {
+        session: sessionStorage.getItem('session'),
         pickerOptions0: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7;
@@ -116,9 +120,18 @@
         },
         value1: '',
         value2: '',
+
         tableData: [{//表格信息
           ordinal: "111"
-        }]
+        }],
+        inputData: {
+          pageInfo: {
+            pageSize: 20,
+          },
+        },
+        currentPage: 1,
+        pageSize: 20,
+        total: 1,
       };
     },
     methods: {
@@ -135,7 +148,45 @@
       handleSelectionChange(val) {
         this.multipleSelection = val;
         console.log(this.multipleSelection)
-      }
+      },
+      search(){
+        var vm = this;
+        var searchOrder = new RemoteCall();
+        vm.inputData.pageInfo.pageNum = vm.currentPage;
+        searchOrder.init({
+          router: '/order/prescription/get',
+          session: vm.session,
+          data: vm.inputData,
+          callback: function (data) {
+            console.log(data);
+            vm.tableData = data.rows;
+            if (data.pageInfo.total) {
+              vm.total = data.pageInfo.total;
+            }
+            for (var i = 0; i < vm.tableData.length; i++) {
+              switch (vm.tableData[i].businessType) {
+                case 1:
+                  vm.tableData[i].businessType = '缴费';
+                  break;
+                case 2:
+                  vm.tableData[i].businessType = '挂号';
+                  break;
+                case 3:
+                  vm.tableData[i].businessType = '门诊';
+                  break
+              }
+              vm.tableData[i].amount = vm.tableData[i].amount / 100
+            }
+          }
+        })
+      },
+      handleSizeChange(val) { //页面
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        this.currentPage = val;
+        this.search();
+      },
     }
   }
 </script>

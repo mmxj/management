@@ -182,27 +182,27 @@ export default new Router({
           component: UserInformation
         },
         {
-          path: '/userdetails/social',
+          path: '/userdetailssocial',
           name: 'Social',
           component: Social
         },
         {
-          path: '/userdetails/bank',
+          path: '/userdetailsbank',
           name: 'UserBank',
           component: UserBank
         },
         {
-          path: '/userdetails/family',
+          path: '/userdetailsfamily',
           name: 'UserFamily',
           component: UserFamily
         },
         {
-          path: '/userdetails/userrecord',
+          path: '/userdetailsuserrecord',
           name: 'UserRecord',
           component: UserRecord
         },
         {
-          path: '/userdetails/usertownship',
+          path: '/userdetailsusertownship',
           name: 'UserTownship',
           component: UserTownship
         }

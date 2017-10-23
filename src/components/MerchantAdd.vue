@@ -8,12 +8,10 @@
         </el-col>
         <el-col :span="6">
           <div class="girid-content girid-ipt">
-            <select>
+            <select ref="companyType" @change="setCompanyType">
               <option>请选择商户类型</option>
-              <option>镇卫生站</option>
-              <option>村卫生站</option>
+              <option>医院(卫生站)</option>
               <option>药店</option>
-              <option>其他</option>
             </select>
           </div>
         </el-col>
@@ -28,13 +26,11 @@
         </el-col>
         <el-col :span="6">
           <div class="girid-content girid-ipt">
-            <select>
+            <!--商户证书类型-->
+            <select ref="certificate" @change="certificateType">
               <option>请选择证件类型</option>
               <option>营业执照</option>
-              <option>个人身份证</option>
-              <option>无证件</option>
-              <option>行业准入资格证</option>
-              <option>其他证件</option>
+              <option>从业资格证</option>
             </select>
           </div>
         </el-col>
@@ -247,10 +243,10 @@
         districtData: [{'name': '区'}],
         session: sessionStorage.getItem('session'),
         inputData: {//输入框值
-          companyTypeId: 4,//商户类型
+          companyTypeId: null,//商户类型
           code: '1',
           name: null,//名称
-          certificateType: 1,//商户证件类型
+          certificateType: null,//商户证书类型
           certificateNo: null,//商户证件号
           addressPathId: {//行政区域id
             proviceId: null,
@@ -313,6 +309,32 @@
       VDistpicker
     },
     methods: {
+      //获取公司类型id companyTypeId
+      setCompanyType(){
+        var index = this.$refs.companyType.selectedIndex;
+        var vm = this;
+        switch (index) {
+          case 1:
+            vm.inputData.companyTypeId = 4;
+            break;
+          case 2:
+            vm.inputData.companyTypeId = 5;
+            break;
+        }
+      },
+      //获取选中的公司证书类型
+      certificateType(){
+        var index = this.$refs.certificate.selectedIndex;
+        var vm = this;
+        switch (index) {
+          case 1:
+            vm.inputData.certificateType = 1;
+            break;
+          case 2:
+            vm.inputData.certificateType = 2;
+            break;
+        }
+      },
       //地市联动方法 //找个时间封装
       getArea(){
         if (sessionStorage.getItem('session')) {

@@ -25,7 +25,7 @@
       </el-row>
     </div>
     <div class="content">
-      <el-row :guttter="20">
+      <el-row :gutter="40">
         <el-col :span="8">
           <span>国家人社部最新社保政策发布</span>
         </el-col>
@@ -36,7 +36,7 @@
           <span>社保局关于石头村村医非法套现社保卡的处罚公告</span>
         </el-col>
       </el-row>
-      <el-row :guttter="20">
+      <el-row :gutter="40">
         <el-col :span="8">
           <span>国家人社部最新社保政策发布</span>
         </el-col>
@@ -47,7 +47,7 @@
           <span>社保局关于石头村村医非法套现社保卡的处罚公告</span>
         </el-col>
       </el-row>
-      <el-row :guttter="20">
+      <el-row :gutter="40">
         <el-col :span="8">
           <span>国家人社部最新社保政策发布</span>
         </el-col>
@@ -58,7 +58,7 @@
           <span>社保局关于石头村村医非法套现社保卡的处罚公告</span>
         </el-col>
       </el-row>
-      <el-row :guttter="20">
+      <el-row :gutter="40">
         <el-col :span="8">
           <span>国家人社部最新社保政策发布</span>
         </el-col>
@@ -85,8 +85,8 @@
     methods: {
       ...mapActions(['saveData']),//设置数据传输
       start(){
-        console.log(this.getData)//获取设置的数据;
-        console.log(this.saveSession);
+//        console.log(this.getData)//获取设置的数据;
+//        console.log(this.saveSession);
       }
     },
     mounted: function () {
@@ -118,6 +118,7 @@
     padding: 20px;
     .el-col {
       text-align: center;
+      padding-top: 20px;
     }
   }
 </style>

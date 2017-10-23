@@ -94,7 +94,7 @@
           '云浮市'
         ],
         inputData: {
-
+          enableFlag: null
         },
         checkedNames: []
       }
@@ -107,14 +107,14 @@
           this.inputData.areaRange = '所有区域'
         }
         this.setPicture('#from');
-        console.log(this.inputData);
+        var data = this.inputData;
         var dataUp = new RemoteCall();
         dataUp.init({
           router: '/ips/product/update',
           session: this.session,
-          data: this.inputData,
-          callback: function (data) {
-            console.log(data);
+          data: data,
+          callback: function (res) {
+            console.log(res);
           }
         })
       },
@@ -126,8 +126,7 @@
           success: function (data) {
             if (data) {
               if (JSON.parse(data).data.length > 0) {
-                console.log(data);
-                vm.inputData.enableFlag = JSON.parse(data).data[0].saved_file
+                vm.inputData.enableFlag = JSON.parse(data).data[0].saved_file; //图片上传接口有问题
               }
             }
           }

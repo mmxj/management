@@ -17,5 +17,11 @@ export default {
     commit
   },saveSession)=>{
     commit(types.SESSION,saveSession)//用户session信息
+  },
+  userData: ({commit}, userData) => {
+    commit(types.USER, userData)
+  },
+  loginData: ({commit}, loginData) => {
+    commit(types.USERNAME, loginData)
   }
 }

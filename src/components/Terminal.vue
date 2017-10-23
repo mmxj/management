@@ -4,6 +4,7 @@
       <el-row :gutter="20">
         <el-col :span="2">
           <label for="">归属地</label>
+          <!--暂无接口接入位置-->
         </el-col>
         <el-col :span="6">
           <div class="distpicker">
@@ -20,6 +21,7 @@
         </el-col>
         <el-col :span="2">
           <label for="">安装地址</label>
+          <!--暂无接口接入位置-->
         </el-col>
         <el-col :span="12" class="area">
           <el-row>
@@ -48,7 +50,7 @@
           <input type="text" v-model="inputData.merchantNo">
         </el-col>
         <el-col :span="2">
-          <label for="">PSAM卡</label>
+          <label for="">PSIM卡</label>
         </el-col>
         <el-col :span="6">
           <input type="text" v-model="inputData.pSimNo">
@@ -59,7 +61,8 @@
         <el-col :span="6">
           <select>
             <option>请选择收单行</option>
-            <option>中国银行</option>
+            <!--收单机构id如何获得？-->
+            <option v-model="inputData.acquirerId">中国银行</option>
             <option>中国建设银行</option>
             <option>中国农业银行</option>
             <option>中国工商银行</option>
@@ -70,6 +73,7 @@
       <el-row :gutter="20">
         <el-col :span="2">
           <label for="">维护公司</label>
+          <!--暂无接口接入位置-->
         </el-col>
         <el-col :span="6">
           <input type="text">
@@ -78,7 +82,7 @@
           <label for="">接入IP地址</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.joinIp">
         </el-col>
         <el-col :span="2">
           <label for="">开通日期</label>
@@ -114,6 +118,7 @@
       <el-row :gutter="20">
         <el-col :span="2">
           <label for="">终端型号</label>
+          <!--暂无接口接入位置-->
         </el-col>
         <el-col :span="6">
           <input type="text">
@@ -135,16 +140,16 @@
     <div>
       <el-table :data="tableData" border>
         <el-table-column label="归属地" width="120"></el-table-column>
-        <el-table-column label="安装地址" width="180"></el-table-column>
-        <el-table-column label="商户号" width="180"></el-table-column>
-        <el-table-column label="PSAM卡" width="180"></el-table-column>
-        <el-table-column label="收单行" width="180"></el-table-column>
+        <el-table-column prop="address" label="安装地址" width="180"></el-table-column>
+        <el-table-column prop="merchantNo" label="商户号" width="180"></el-table-column>
+        <el-table-column prop="pSimNo" label="PSAM卡" width="180"></el-table-column>
+        <el-table-column prop="acquirerId" label="收单行" width="150"></el-table-column>
         <el-table-column label="维护公司" width="180"></el-table-column>
-        <el-table-column label="接入IP地址" width="180"></el-table-column>
-        <el-table-column label="开通地区" width="180"></el-table-column>
-        <el-table-column label="商户名称" width="180"></el-table-column>
-        <el-table-column label="商户主营业务" width="180"></el-table-column>
-        <el-table-column label="终端厂家" width="180"></el-table-column>
+        <el-table-column prop="joinIp" label="接入IP地址" width="180"></el-table-column>
+        <el-table-column prop="openDate" label="开通日期" width="150"></el-table-column>
+        <el-table-column prop="merchantName" label="商户名称" width="180"></el-table-column>
+        <el-table-column prop="summary" label="商户主营业务" width="180"></el-table-column>
+        <el-table-column prop="terminalCompany" label="终端厂家" width="180"></el-table-column>
         <el-table-column label="终端型号" width="180"></el-table-column>
       </el-table>
     </div>
@@ -191,6 +196,8 @@
         tableData: [],
         inputData: {
           isAppPay: 1,//是否用于移动端支付
+          departmentId: 0, //部门id
+          terminalType: 2,//1传统类型 2智能类型 3PDA
         },
         session: sessionStorage.getItem('session'),
         onoff: true,
@@ -291,7 +298,7 @@
           router: "/company/certificate/get",
           session: this.session,
           data: {
-            companyName: this.inputData.merchantName,
+            companyName: this.merchantName,
             pageInfo: {
               pageSize: 15,
               pageNum: 1
@@ -313,12 +320,13 @@
                   }
                 }
                 this.companyName.push(data.rows[i].companyName);
+
               }
           }
         }
 
       },
-      getText(name){//点击获取
+      getText(name){//点击获取提示框的文字替换到数据中
         this.placeholder = name;
         this.merchantName = null;
         this.inputData.merchantName = this.placeholder;
@@ -329,20 +337,63 @@
           }
         }
         this.$refs.searchBox.style.display = 'none';
+        this.getCompanyIp(this.inputData.merchantName);
       },
       holder(){
         if (!this.valChange) {
           this.placeholder = '请输入合作行业名称或编号搜索对应商户图片信息'
         }
-        console.log(111)
+      },
+      getCompanyIp(name){
+        var vm = this;
+        var getCompanyIp = new RemoteCall();
+        getCompanyIp.init({
+          router: "/company/get",
+          session: this.session,
+          data: {
+            companyName: name,
+            pageInfo: {
+              pageSize: 15,
+              pageNum: 1
+            }
+          },
+          callback: function (data) {
+            console.log(data);
+            for (let i = 0; i < data.rows.length; i++) {
+              if (data.rows[i].name == vm.inputData.merchantName) {
+                vm.inputData.companyId = data.rows[i].id;
+                vm.inputData.merchantNo = data.rows[i].no; //商户编码 没有返回merchantNo 暂时用no代替
+                break;
+              }
+            }
+          },
+        })
+      },
+      getTerminal(){//获取终端信息 终端信息表格
+        var vm = this;
+        var getCompanyIp = new RemoteCall();
+        getCompanyIp.init({
+          router: "/base/terminal/get",
+          session: this.session,
+          data: {
+            pageInfo: {
+              pageSize: 15,
+              pageNum: 1
+            }
+          },
+          callback: function (data) {
+            console.log(data);
+            vm.tableData = data.rows
+          }
+        })
       }
     },
     mounted: function () {
       this.getArea();
+      this.getTerminal();
     },
     watch: {
       merchantName: function () {
-        this.inputData.merchantName = this.merchantName
         this.getPicture();
         if (this.companyName != '[]') {
           if (this.companyName.length > 0) {

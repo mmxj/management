@@ -32,10 +32,10 @@
           <label for="">商户类型</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.businessType">
         </el-col>
         <el-col :span="2">
-          <label for="">金额交易</label>
+          <label for="">交易金额</label>
         </el-col>
         <el-col :span="2">
           <input type="text">
@@ -93,7 +93,7 @@
           <label for="">交易状态</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.status">
         </el-col>
         <el-col :span="2">
           <label for="">社保卡标志</label>
@@ -113,7 +113,7 @@
           <label for="">终端号</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.terminalNo">
         </el-col>
         <el-col :offset="2" :span="2">
           <el-button @click="getPayData">搜索</el-button>
@@ -137,7 +137,7 @@
         <el-table-column label="发卡机构" width="180"></el-table-column>
         <el-table-column label="收单机构" width="180"></el-table-column>
         <el-table-column prop="account" label="卡号" width="220"></el-table-column>
-        <el-table-column label="交易金额" width="180"></el-table-column>
+        <el-table-column prop="amount" label="交易金额" width="180"></el-table-column>
         <el-table-column label="商户类型" width="180"></el-table-column>
         <el-table-column label="参考号" width="180"></el-table-column>
         <el-table-column prop="payChannelDealNo" label="支付通道协议" width="220"></el-table-column>
@@ -145,7 +145,7 @@
         <el-table-column prop="terminalNo" label="终端号" width="180"></el-table-column>
         <el-table-column prop="departmentName" label="门店名称" width="180"></el-table-column>
         <el-table-column prop="merchantNo" label="商户编号" width="180"></el-table-column>
-        <el-table-column prop="companyName" label="商户名称" width="180"></el-table-column>
+        <el-table-column prop="departmentName" label="商户名称" width="180"></el-table-column>
         <el-table-column label="商户借记手续费" width="180"></el-table-column>
         <el-table-column label="商户贷记手续费" width="180"></el-table-column>
         <el-table-column label="收单借记手续费" width="180"></el-table-column>
@@ -234,6 +234,7 @@
             vm.tableData = data.rows;
             for (let i = 0; i < vm.tableData.length; i++) {
               vm.tableData[i].index = (i + 1) + (vm.inputData.pageInfo.pageSize * (vm.inputData.pageInfo.pageNum - 1));
+              vm.tableData[i].amount = vm.tableData[i].amount / 100
             }
           }
         })

@@ -35,13 +35,10 @@
           <label for="">卫生院证件类型</label>
         </el-col>
         <el-col :span="5">
-          <select>
+          <select ref="certificate" @change="certificateType">
             <option>请选择证件类型</option>
             <option>营业执照</option>
-            <option>个人身份证</option>
-            <option>无证件</option>
-            <option>行业准入资格证</option>
-            <option>其他证件</option>
+            <option>从业资格证</option>
           </select>
         </el-col>
         <el-col :span="3"><label for="">归属卫生院</label></el-col>
@@ -226,7 +223,7 @@
           companyTypeId: 4,//商户类型
           code: '1',
           name: null,//名称
-          certificateType: 4,//商户证件类型
+          certificateType: null,//商户证件类型
           certificateNo: null,//商户证件号
           addressPathId: {//行政区域id
             proviceId: null,
@@ -290,6 +287,21 @@
       VDistpicker
     },
     methods: {
+      //获取选中的公司证书类型
+      certificateType(){
+        var index = this.$refs.certificate.selectedIndex;
+        var vm = this;
+        switch (index) {
+          case 1:
+            vm.inputData.certificateType = 1;
+//            console.log(vm.inputData.certificateType)
+            break;
+          case 2:
+            vm.inputData.certificateType = 2;
+//            console.log(vm.inputData.certificateType)
+            break;
+        }
+      },
       //地市联动方法
       getArea(){
         if (sessionStorage.getItem('session')) {

@@ -54,7 +54,7 @@
       }
     },
     methods: {
-      ...mapActions(['saveSession']),
+      ...mapActions(['saveSession', 'loginData']),
       //设置body高度等于窗口
       setHeight(){
         document.body.scrollTop = 0;
@@ -106,6 +106,7 @@
         if (data.ret.errorCode === 0) {
           var session = data.session;
           this.saveSession(session);
+          this.loginData(data)
           sessionStorage.setItem('session', session);
           this.resSize()
           this.$router.push({path: '/Message'});

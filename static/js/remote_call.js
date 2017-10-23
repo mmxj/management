@@ -4,6 +4,9 @@
 *email webmxj@163.com
 *date 2017.09.02
 *需要先引入jquery和jquery.md5.js插件
+ * 传进来的值要为对象
+ * callback 成功的回调函数
+ * errorCallback 失败的回调函数
 */
 function RemoteCall(){
 	this.setting={//外部传进来的参数http://192.168.0.104
@@ -11,6 +14,8 @@ function RemoteCall(){
 		router:"/base/validatecode/picture/get", //设置请求的地址路径
     appid: 3,
     callback: function () {
+    },
+    errorCallback: function () {
     }
 	}
 	//
@@ -43,6 +48,7 @@ RemoteCall.prototype.init = function(opt){
     /*
     *contentType设置请求头
     */
+
     $.ajax({
     	type: 'POST',
     	async:false,
@@ -55,6 +61,7 @@ RemoteCall.prototype.init = function(opt){
           _this.setting.callback(resp)//成功的回调函数
         },
         error:function (resp) {
+          _this.setting.errorCallback(resp);
         }
     });
 }

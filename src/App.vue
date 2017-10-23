@@ -41,6 +41,28 @@ export default {
         }
       });
     },
+    getArea(){
+      var vm = this;
+      if (sessionStorage.getItem('session')) {
+        this.session = sessionStorage.getItem('session');//获取本地存储保存session状态
+      } else {
+        this.$router.push({path: '/login'})
+      }
+      var _this = this;
+      var getArea = new RemoteCall();
+      getArea.init({
+        router: "/base/area/idname/get",
+        session: _this.session,
+        data: {
+          parentAreaId: 0
+        },
+        errorCallback: function (data) {
+          if (data) {
+            vm.$router.push('/login')
+          }
+        }
+      });
+    }
   },
   mounted: function () {
 //      console.log(sessionStorage.getItem('session'));
@@ -48,7 +70,7 @@ export default {
       this.saveSession(sessionStorage.getItem('session'));
 //      console.log(sessionStorage.getItem('session'));
     }
-
+    this.getArea();
   },
   watch: {
     $route(){

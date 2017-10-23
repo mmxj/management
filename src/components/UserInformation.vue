@@ -11,25 +11,49 @@
   </div>
 </template>
 <script>
+  import {mapGetters} from 'vuex'
   export default{
     data(){
       return {
         tableData: {
-          '姓名': '刘佳佳',
-          '身份证号': '447363837373636464',
-          '手机号码1': '13927773737',
-          '手机号码2': '13087464464',
-          '手机号码3': '13927773737',
-          '手机号码4': '13087464464',
-          '家庭住址': '广东省惠州市惠来县水丰镇励志街道办89号',
-          '注册日期': '2018-09-20 19:08:01',
-          '注册地址': '广东省惠州市惠来县水丰镇赖家街道36号大参林药店',
-          '注册商户': '赖家街道36号大参林药店010107',
-          '已绑定社保卡': '是',
-          '已绑定银行卡': '否',
-          '已注册乡银保': '否'
+          '姓名': '',
+          '身份证号': '',
+          '手机号码': '',
+          '家庭住址': '',
+          '注册日期': '',
+          '注册地址': '',
+          '注册商户': '',
+          '已绑定社保卡': '',
+          '已绑定银行卡': '',
+          '已注册乡银保': ''
         }
       }
+    },
+    computed: mapGetters(['userData']),
+    methods: {
+      getUserData(){
+        console.log(this.userData)
+        if (!this.userData) {
+
+          this.$router.push('/user')
+        } else {
+          this.tableData.姓名 = this.userData.idCardName;
+          this.tableData.身份证号 = this.userData.idCardNo;
+          this.tableData.手机号码 = this.userData.moblie;
+          this.tableData.家庭住址 = this.userData.address;
+          this.tableData.注册日期 = this.userData.sfsCreate;
+          this.tableData.注册地址 = this.userData.addressPathCh ? this.userData.addressPathCh.proviceName : null;
+          this.tableData.注册商户 = this.userData.sfsCreater;
+          this.tableData.已绑定社保卡 = this.userData.bindSecurityCardFlag;
+          this.tableData.已绑定银行卡 = this.userData.bindBankCardFlag;
+        }
+
+      }
+    },
+    mounted: function () {
+      this.getUserData();
+    },
+    watch: {
     }
   }
 </script>
@@ -44,6 +68,10 @@
       border-top: 1px solid #747474;
       border-left: 1px solid #747474;
       padding: 10px;
+      text-align: center;
+    }
+    td:nth-last-child(1) {
+      min-width: 300px;
     }
   }
 </style>

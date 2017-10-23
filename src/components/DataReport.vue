@@ -30,11 +30,11 @@
               <el-row :gutter="20">
                 <el-col :span="6" class="el-timer">
                   <el-date-picker v-model="value1" align="right" type="date" placeholder="选择日期"
-                                  :picker-options="pickerOptions1"></el-date-picker>
+                                  :picker-options="pickerOptions1" @change="getStartTime"></el-date-picker>
                 </el-col>
                 <el-col :span="6" class="el-timer">
                   <el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期"
-                                  :picker-options="pickerOptions1"></el-date-picker>
+                                  :picker-options="pickerOptions1" @change="getEndTime"></el-date-picker>
                 </el-col>
               </el-row>
             </el-col>
@@ -60,13 +60,13 @@
               </el-row>
             </el-col>
             <el-col :span="3">
-              <el-button class="elButton">确定</el-button>
+              <el-button class="elButton" @click="getReport">确定</el-button>
             </el-col>
           </el-row>
         </el-col>
       </el-row>
       <el-table :data="tableData" border>
-        <el-table-column porp="index" label="行业客户"></el-table-column>
+        <el-table-column prop="companyName" label="行业客户"></el-table-column>
         <el-table-column label="支付类型"></el-table-column>
         <el-table-column label="支付总金额"></el-table-column>
         <el-table-column label="交易笔数"></el-table-column>
@@ -78,6 +78,9 @@
   export default{
     data() {
       return {
+        session: sessionStorage.getItem('session'),
+        startTime: null,
+        endTime: null,
         pickerOptions0: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7;
@@ -107,13 +110,40 @@
         },
         value1: '',
         value2: '',
-        tableData: [
-          {
-            index: 1
-          }
-        ],
+        tableData: [],
         inputData: {}
       }
+    },
+    methods: {
+      getReport(){
+        var getReport = new RemoteCall();
+        var vm = this;
+        getReport.init({
+          router: "/report/order/businesstype/list",
+          session: this.session,
+          data: {
+            beginCreate: vm.startTime,
+            endCreate: vm.endTime,
+            pageInfo: {
+              pageSize: 100,
+              pageNum: 1
+            }
+          },
+          callback: function (data) {//数据长度最长为100条 这是个问题 后面的要如何计算。。。留坑
+
+          }
+        })
+      },
+      getStartTime(data){
+        this.startTime = data;
+        console.log(data);
+      },
+      getEndTime(data){
+        this.endTime = data;
+        console.log(data);
+      }
+    },
+    mounted: function () {
     }
   }
 </script>

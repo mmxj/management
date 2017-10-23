@@ -4,7 +4,7 @@
       <h1>社保金融服务应用平台</h1>
       <div class="title-center">
         <div class="title">医疗管理后台</div>
-        <div>你好,<span>石头村卫生站的罗嘉伦医生</span></div>
+        <div>你好,<span>{{userName}}</span></div>
         <div>今天是<span class="today">2017年7月19日</span></div>
       </div>
       <div class="site">
@@ -15,7 +15,25 @@
   </div>
 </template>
 <script type="text/javascript">
-  export default{}
+  import {mapGetters} from 'vuex'
+  export default{
+    data(){
+      return {
+        userName: null
+      }
+    },
+    computed: mapGetters(['loginData']),
+    mounted: function () {
+
+    },
+    watch: {
+      loginData(){
+        console.log(this.loginData)
+        console.log(this.loginData.userName)
+        this.userName = this.loginData.userName
+      }
+    }
+  }
 </script>
 <style type="text/css" lang="scss" scoped="">
   #Gheader {
