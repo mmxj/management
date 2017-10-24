@@ -93,13 +93,24 @@
           <label for="">交易状态</label>
         </el-col>
         <el-col :span="6">
-          <input type="text" v-model="inputData.status">
+          <!--<input type="text" v-model="inputData.status">-->
+          <select name="" id="">
+            <option value="1">待支付</option>
+            <option value="2">已支付</option>
+            <option value="3">撤销</option>
+            <option value="4">冲正</option>
+            <option value="5">退货</option>
+            <option value="6">支付失败</option>
+          </select>
         </el-col>
         <el-col :span="2">
           <label for="">社保卡标志</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <select name="" id="">
+            <option value="">是</option>
+            <option value="">否</option>
+          </select>
         </el-col>
       </el-row>
       <el-row :gutter="20">

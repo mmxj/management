@@ -54,6 +54,14 @@
         <el-table-column prop="type" label="卫生站状态" width="220">
         </el-table-column>
       </el-table>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -62,6 +70,9 @@
     data(){
       return {
         session: sessionStorage.getItem('session'),
+        currentPage: 1,
+        total: 1,
+        pageSize: 20,
         tableData: [
 //            {
 //          name: null,
@@ -120,34 +131,53 @@
           router: "/company/get",
           session: this.session,
           data: {
-//            aredId:parseInt(this.inputData.areaId)
+//            aredId:parseInt(this.inputData.areaId);
+            pageInfo: {
+              pageSize: 20,
+              pageNum: this.currentPage
+            },
           },
           callback: this.parentCallback
         })
       },
+      handleSizeChange(val) { //页面
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        this.currentPage = val;
+      },
       parentCallback(data){
-//          console.log(data)//数据不全
-        for (var i = 0; i < data.rows.length; i++) {
-          if (data.rows[i].companyType == 4) {
-//              console.log(data.rows[i]);
-            if (data.rows[i].parentCompanyId) {
-              var getParents = new RemoteCall();
-              getParents.init({
-                router: "/company/get",
-                session: this.session,
-                data: {
-                  id: data.rows[i].parentCompanyId
-                },
-                callback: function (src) {
-                  console.log(src)
-                  data.rows[i].parentCompanyId = src.rows[0].name
-                }
-              })
-            }
-            this.tableData.push(data.rows[i]);
-            console.log(data.rows[i].telephone)
-          }
+        console.log(data)
+        var vm = this;
+        if (data.pageInfo.total) {
+          vm.total = data.pageInfo.total;
         }
+        this.tableData = data.rows;
+//        for (var i = 0; i < data.rows.length; i++) {
+//          if (data.rows[i].companyType == 4) {
+////              console.log(data.rows[i]);
+//            if (data.rows[i].parentCompanyId) {
+//              var getParents = new RemoteCall();
+//              getParents.init({
+//                router: "/company/get",
+//                session: this.session,
+//                data: {
+//                  id: data.rows[i].parentCompanyId,
+//                  pageInfo: {
+//                    pageSize: 20,
+//                    pageNum: 1
+//                  },
+//                },
+//                callback: function (src) {
+//                  console.log(src)
+//                  data.rows[i].parentCompanyId = src.rows[0].name
+//                }
+//              })
+//            }
+//            this.tableData.push(data.rows[i]);
+//            console.log(data.rows[i].telephone)
+//          }
+//        }
       }
     },
     mounted: function () {

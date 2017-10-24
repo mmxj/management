@@ -6,24 +6,20 @@
           <label for="">订单类型：</label>
         </el-col>
         <el-col :span="21">
-          <span>缴费</span>
-          <span>挂号</span>
-          <span>门诊</span>
+          <span v-for="(name,index) in businessType" :class="{active:index==isActive1}" @click="getBusiness(index)">{{name}}</span>
         </el-col>
       </el-row>
       <el-row :gutter="21">
         <el-col :span="2"><label for="">订单发起时间：</label></el-col>
         <el-col :span="20">
-          <span>本周</span>
-          <span>本月</span>
-          <span>本季度</span>
-          <span>本年度</span>
+          <span v-for="(name,index) in timeData" :class="{active:index==isActive2}"
+                @click="getTime(index)">{{name}}</span>
           <span>自定义时间</span>
           <el-date-picker v-model="value1" align="right" type="date" placeholder="选择日期"
-                          :picker-options="pickerOptions1"></el-date-picker>
+                          :picker-options="pickerOptions1" @change="startTime"></el-date-picker>
           <span class="add">至</span>
           <el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期"
-                          :picker-options="pickerOptions1"></el-date-picker>
+                          :picker-options="pickerOptions1" @change="endTime"></el-date-picker>
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -31,11 +27,8 @@
           <label for="">订单金额：</label>
         </el-col>
         <el-col :span="21">
-          <span>小于100元</span>
-          <span>100元-1000元</span>
-          <span>1000元-5000元</span>
-          <span>5000元-10000元</span>
-          <span>大于10000元</span>
+          <span v-for="(item,index) in money" :class="{active:index==isActive3}"
+                @click="setMoney(index)">{{item}}</span>
           <span>自定义范围：</span>
           <input class="money" type="text">
           <span class="add">至</span>
@@ -61,7 +54,7 @@
         <el-table-column prop="companyId" label="交易商户" width="150">
           <!--医院名字没有返回-->
         </el-table-column>
-        <el-table-column label="商户地址" width="200">
+        <el-table-column prop="address" label="商户地址" width="200">
           <!--医院地址没有返回-->
         </el-table-column>
         <el-table-column prop="user.idCardName" label="交易用户" width="160">
@@ -71,7 +64,7 @@
         <el-table-column label="交易产品" width="150">
           <!--。。。 这个得做个弹窗-->
         </el-table-column>
-        <el-table-column label="乡银保交易" width="150">
+        <el-table-column prop="isXybPay" label="乡银保交易" width="150">
           <!--是否是乡银保支付-->
         </el-table-column>
       </el-table>
@@ -87,10 +80,17 @@
   </div>
 </template>
 <script type="text/javascript">
+  import {DateHelp} from '@/assets/js/dateHelp.js'
   export default{
     data() {
       return {
+        isActive1: 0,
+        isActive2: 0,
+        isActive3: 0,
         session: sessionStorage.getItem('session'),
+        businessType: ['全选', '缴费', '挂号', '门诊'],
+        timeData: ['全选', '本周', '本月', '本季度', '本年度'],
+        money: ['全选', '小于100元', '100元-1000元', '1000元-5000元', '5000元-10000元', '大于10000元'],
         pickerOptions0: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7;
@@ -125,6 +125,11 @@
           ordinal: "111"
         }],
         inputData: {
+          businessType: null,
+          beginAmount: null,
+          endAmount: null,
+          beginCreate: null,
+          endCreate: null,
           pageInfo: {
             pageSize: 20,
           },
@@ -135,6 +140,16 @@
       };
     },
     methods: {
+      //获取订单类型
+      getBusiness(index){
+        this.isActive1 = index;
+        if (index) {
+          this.inputData.businessType = index;
+        } else {
+          this.inputData.businessType = null;
+        }
+
+      },
       //变化的时候出发 将数据放入multipleSelection中,表格信息
       toggleSelection(rows) {
         if (rows) {
@@ -175,7 +190,14 @@
                   vm.tableData[i].businessType = '门诊';
                   break
               }
-              vm.tableData[i].amount = vm.tableData[i].amount / 100
+              vm.tableData[i].amount = vm.tableData[i].amount / 100;
+              if (vm.tableData[i].isXybPay) {
+                if (vm.tableData[i].isXybPay === 0) {
+                  vm.tableData[i].isXybPay = '否'
+                } else if (vm.tableData[i].isXybPay == 1) {
+                  vm.tableData[i].isXybPay = '是'
+                }
+              }
             }
           }
         })
@@ -187,6 +209,62 @@
         this.currentPage = val;
         this.search();
       },
+      getTime(index){ //分别获取 当日 一周 一个月 等时间的数据
+        this.isActive2 = index;
+        var myDate = new DateHelp({
+          date: new Date(),//从此日期开始计算
+          format: 'yyyy-MM-dd'
+        });
+        switch (index) {
+          case 1:
+            this.inputData.beginCreate = myDate.getWeek().split('/')[0];
+            this.inputData.endCreate = myDate.getWeek().split('/')[1];
+            break;
+          case 2:
+            this.inputData.beginCreate = myDate.getThisMonth().split('/')[0];
+            this.inputData.endCreate = myDate.getThisMonth().split('/')[1];
+            break;
+          case 3:
+            this.inputData.beginCreate = myDate.quarter();
+            this.inputData.endCreate = myDate.getToday();
+            break;
+          case 4:
+            this.inputData.beginCreate = myDate.getThisYear().split('/')[0];
+            this.inputData.endCreate = myDate.getThisYear().split('/')[1];
+            break;
+        }
+      },
+      setMoney(index){
+        this.isActive3 = index;
+        switch (index) {
+          case 1:
+            this.inputData.beginAmount = 0;
+            this.inputData.endAmount = 100 * 100;
+            break;
+          case 2:
+            this.inputData.beginAmount = 100 * 100;
+            this.inputData.endAmount = 1000 * 100;
+            break;
+          case 3:
+            this.inputData.beginAmount = 1000 * 100;
+            this.inputData.endAmount = 5000 * 100;
+            break;
+          case 4:
+            this.inputData.beginAmount = 5000 * 100;
+            this.inputData.endAmount = 10000 * 100;
+            break;
+          case 5:
+            this.inputData.beginAmount = 10000 * 100;
+            this.inputData.endAmount = null;
+            break;
+        }
+      },
+      startTime(data){
+        this.startTime = data;
+      },
+      endTime(data){
+        this.endTime = data;
+      }
     }
   }
 </script>
@@ -196,6 +274,9 @@
     padding-top: 40px;
     margin: 15px;
     background: #fff;
+    .active {
+      color: #32BC6F;
+    }
     label {
       display: block;
       font-size: 14px;
@@ -213,6 +294,7 @@
       line-height: 36px;
       display: inline-block;
       margin-right: 15px;
+      cursor: pointer;
     }
     .money {
       border-radius: 4px;

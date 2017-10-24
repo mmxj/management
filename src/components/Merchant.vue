@@ -48,7 +48,7 @@
         </el-col>
         <el-col :span="3">
           <div class="downText">
-            <router-link to="collaborateadd">查阅商户证件</router-link>
+            <router-link to="merchantcheck">查阅商户证件</router-link>
           </div>
         </el-col>
       </el-row>
@@ -63,7 +63,7 @@
         </el-table-column>
         <el-table-column prop="name" label="商户名称" width="180">
         </el-table-column>
-        <el-table-column prop="merchantCardType" label="商户证件类型" width="180">
+        <el-table-column prop="certificateTypeName" label="商户证件类型" width="180">
         </el-table-column>
         <el-table-column prop="address" label="商户地址" width="300">
         </el-table-column>
@@ -80,7 +80,7 @@
         <el-table-column prop="accountName" label="商户银行账户名" width="180">
           <!--银行账号信息暂无-->
         </el-table-column>
-        <el-table-column prop="" label="银行卡手机号" width="220">
+        <el-table-column prop="account" label="商户银行卡号" width="220">
         </el-table-column>
       </el-table>
       <el-pagination

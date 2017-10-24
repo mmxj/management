@@ -6,18 +6,19 @@
         <el-col :span="6"><input type="text" v-model="inputData.name"></el-col>
         <el-col :span="2"><label for="">合作内容</label></el-col>
         <el-col :span="6">
-          <select>
-            <option>请选择合作内容</option>
-            <option>资源对接</option>
-            <option>通道对接</option>
-            <option>地区合作</option>
-            <option>业务代理</option>
-            <option>产品对接</option>
-            <option>推广渠道</option>
-            <option>其他合作</option>
-            <option>社保局</option>
-            <option>人民银行</option>
-            <option>其他政府单位</option>
+          <select ref="collaborate" @change="collaborateType()">
+            <option v-for="(item,index) in collaborateTypes" :value="index">{{item}}</option>
+            <!--<option>请选择合作内容</option>-->
+            <!--<option>资源对接</option>-->
+            <!--<option>通道对接</option>-->
+            <!--<option>地区合作</option>-->
+            <!--<option>业务代理</option>-->
+            <!--<option>产品对接</option>-->
+            <!--<option>推广渠道</option>-->
+            <!--<option>其他合作</option>-->
+            <!--<option>社保局</option>-->
+            <!--<option>人民银行</option>-->
+            <!--<option>其他政府单位</option>-->
           </select>
         </el-col>
         <el-col :span="2">
@@ -234,6 +235,7 @@
         cityData: [{'name': '市'}],
         districtData: [{'name': '区'}],
         session: sessionStorage.getItem('session'),
+        collaborateTypes: ['请选择合作内容', '资源对接', '通道对接', '地区合作', '业务代理', '产品对接', '推广渠道', '其他合作', '社保局', '人民银行', '其他政府单位'],
         inputData: {//输入框值
           companyTypeId: 4,//商户类型 平台=合作伙伴
           code: '1',
@@ -247,7 +249,7 @@
             townId: null,
           },
           address: null,//详细地址,
-          cooperationType: 1, //商户合作内容 ，还未做处理 后期处理
+          cooperationType: null, //商户合作内容,
           areaId: null,//最小区域id
           leaderName: null, //商户联系人，负责人
           corporation: null, //法人
@@ -313,6 +315,16 @@
 //            console.log(vm.inputData.certificateType)
             break;
         }
+      },
+      collaborateType(){ //合作关系
+        var index = this.$refs.collaborate.selectedIndex;
+        var vm = this;
+        if (index) {
+          vm.inputData.cooperationType = index;
+        } else {
+          vm.inputData.cooperationType = null;
+        }
+        console.log(vm.inputData.cooperationType)
       },
       //地市联动方法 //找个时间封装
       getArea(){
@@ -519,7 +531,7 @@
         if (addcompany) {
           addcompany();//判断所有图片上传成功后回调
         }
-      }
+      },
     },
     computed: mapGetters(['saveSession']),
     mounted: function () {
@@ -673,6 +685,7 @@
   }
 </style>
 <style type="text/css">
+
   .distpicker select {
     width: 32% !important;
     height: 36px;
@@ -681,7 +694,6 @@
     outline: none;
     border: 1px solid #aaa
   }
-
   @media screen and (max-width: 1450px) {
     .distpicker select {
       width: 31% !important;

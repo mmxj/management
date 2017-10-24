@@ -1,7 +1,7 @@
 <template>
   <div id="LeftList">
     <el-menu default-active="2" router class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
-             theme="dark">
+             theme="dark" :unique-opened="opened">
       <el-submenu index="1">
         <template slot="title">基础信息管理</template>
         <el-menu-item index="/user" class="menu-border-bottom el-lvtwo">用户信息</el-menu-item>
@@ -64,7 +64,9 @@
 <script type="text/javascript">
   export default {
     data(){
-      return {}
+      return {
+        opened: true,
+      }
     },
     methods: {
       handleOpen(key, keyPath) {

@@ -9,20 +9,8 @@
           <el-row :gutter="20">
             <el-col :span="12" class="el-timer">
               <el-row>
-                <el-col :span="4">
-                  <el-button>今天</el-button>
-                </el-col>
-                <el-col :span="4">
-                  <el-button>近三天</el-button>
-                </el-col>
-                <el-col :span="4">
-                  <el-button>近一周</el-button>
-                </el-col>
-                <el-col :span="4">
-                  <el-button>本月</el-button>
-                </el-col>
-                <el-col :span="4">
-                  <el-button>本季度</el-button>
+                <el-col :span="4" v-for="(item,index) in btnData">
+                  <el-button :class="{active:index==isActive}" @click="getTodays(index)">{{item.name}}</el-button>
                 </el-col>
               </el-row>
             </el-col>
@@ -42,20 +30,9 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-row>
-                <el-col :span="4">
-                  <el-button>行业客户报表</el-button>
-                </el-col>
-                <el-col :span="4">
-                  <el-button>商户报表</el-button>
-                </el-col>
-                <el-col :span="4">
-                  <el-button>地区报表</el-button>
-                </el-col>
-                <el-col :span="4">
-                  <el-button>支付类型报表</el-button>
-                </el-col>
-                <el-col :span="4">
-                  <el-button>业务类型报表</el-button>
+                <el-col :span="4" v-for="(item,index) in reportdata">
+                  <el-button :class="{'active':index==isActive2}" @click="getReportActive(index)">{{item.name}}
+                  </el-button>
                 </el-col>
               </el-row>
             </el-col>
@@ -65,20 +42,70 @@
           </el-row>
         </el-col>
       </el-row>
-      <el-table :data="tableData" border>
+      <router-view></router-view>
+      <el-table v-show="show[0]" :data="tableData" border>
         <el-table-column prop="companyName" label="行业客户"></el-table-column>
-        <el-table-column label="支付类型"></el-table-column>
-        <el-table-column label="支付总金额"></el-table-column>
-        <el-table-column label="交易笔数"></el-table-column>
+        <el-table-column prop="personPayType" label="支付类型"></el-table-column>
+        <el-table-column prop="payTotalMoney" label="支付总金额"></el-table-column>
+        <el-table-column prop="payTotalCount" label="交易笔数"></el-table-column>
+      </el-table>
+      <el-table v-show="show[1]" :data="tableData" border>
+        <el-table-column prop="companyName" label="商户名称"></el-table-column>
+        <el-table-column prop="personPayType" label="支付类型"></el-table-column>
+        <el-table-column prop="payTotalMoney" label="支付总金额"></el-table-column>
+        <el-table-column prop="payTotalCount" label="交易笔数"></el-table-column>
+      </el-table>
+      <el-table v-show="show[2]" :data="tableData" border>
+        <el-table-column prop="userAddress" label="地区名称"></el-table-column>
+        <el-table-column prop="personPayType" label="支付类型"></el-table-column>
+        <el-table-column prop="payTotalMoney" label="支付总金额"></el-table-column>
+        <el-table-column prop="payTotalCount" label="交易笔数"></el-table-column>
+        <el-table-column label="交易行业客户数"></el-table-column>
+        <!--这两个暂时没有返回-->
+        <el-table-column label="交易商户数"></el-table-column>
+      </el-table>
+      <el-table v-show="show[3]" :data="tableData" border>
+        <el-table-column prop="personalPayType" label="支付类型"></el-table-column>
+        <el-table-column prop="payTotalMoney" label="支付总金额"></el-table-column>
+        <el-table-column prop="payTotalCount" label="交易笔数"></el-table-column>
+        <el-table-column label="交易行业客户数"></el-table-column>
+        <el-table-column label="交易商户数"></el-table-column>
+      </el-table>
+      <el-table v-show="show[4]" :data="tableData" border>
+        <el-table-column prop="businessType" label="业务类型"></el-table-column>
+        <el-table-column prop="payTotalMoney" label="支付总金额"></el-table-column>
+        <el-table-column prop="payTotalCount" label="交易笔数"></el-table-column>
+        <el-table-column label="交易行业客户数"></el-table-column>
+        <el-table-column label="交易商户数"></el-table-column>
       </el-table>
     </div>
   </div>
 </template>
 <script>
+  import {DateHelp} from '@/assets/js/dateHelp.js'
   export default{
     data() {
       return {
         session: sessionStorage.getItem('session'),
+        btnData: [
+          {name: '今天'},
+          {name: '近三天'},
+          {name: '近一周'},
+          {name: '本月'},
+          {name: '本季度'},
+        ],
+        reportdata: [
+          {name: '行业客户报表'},
+          {name: '商户报表'},
+          {name: '地区报表'},
+          {name: '支付类型报表'},
+          {name: '业务类型报表'},
+        ],
+        isActive: 0,
+        isActive2: 0,
+        show: [
+          true, false, false, false, false
+        ],
         startTime: null,
         endTime: null,
         pickerOptions0: {
@@ -111,26 +138,56 @@
         value1: '',
         value2: '',
         tableData: [],
-        inputData: {}
+        inputData: {},
+        routerUrl: null
       }
     },
     methods: {
       getReport(){
+        var index;
+        for (var i = 0; i < this.show.length; i++) {
+          if (this.show[i]) {
+            index = i;
+            break
+          }
+        }
+        switch (index) {
+          case 0:
+            this.routerUrl = "/report/order/merchant/list";
+            break;
+          case 1:
+            this.routerUrl = "/report/order/merchant/list";
+            break;
+          case 2:
+            this.routerUrl = "/report/order/area/list";
+            break;
+          case 3:
+            this.routerUrl = "/report/order/paytype/list";
+            break;
+          case 4:
+            this.routerUrl = "/report/order/businesstype/list";
+            break;
+        }
         var getReport = new RemoteCall();
         var vm = this;
         getReport.init({
-          router: "/report/order/businesstype/list",
+          router: this.routerUrl,
           session: this.session,
           data: {
             beginCreate: vm.startTime,
             endCreate: vm.endTime,
+            companyType: 4,
             pageInfo: {
               pageSize: 100,
               pageNum: 1
             }
           },
-          callback: function (data) {//数据长度最长为100条 这是个问题 后面的要如何计算。。。留坑
-
+          callback: function (data) {
+            if (data.rows.length == 0) {
+              vm.openWindows()
+            }
+            vm.tableData = data.rows;
+            vm.tableData.payTotalMoney = vm.tableData.payTotalMoney / 100;
           }
         })
       },
@@ -141,9 +198,57 @@
       getEndTime(data){
         this.endTime = data;
         console.log(data);
+      },
+      getTodays(index){ //分别获取 当日 一周 一个月 等时间的数据
+        this.isActive = index;
+        var myDate = new DateHelp({
+          date: new Date(),//从此日期开始计算
+          format: 'yyyy-MM-dd'
+        });
+        switch (index) {
+          case 0:
+            this.startTime = myDate.getToday();
+            this.endTime = myDate.getToday();
+            break;
+          case 1:
+            this.startTime = myDate.getThreeDays();
+            this.endTime = myDate.getToday();
+            break;
+          case 2:
+            this.startTime = myDate.getWeek().split('/')[0];
+            this.endTime = myDate.getWeek().split('/')[1];
+            break;
+          case 3:
+            this.startTime = myDate.getMonth().split('/')[0];
+            this.endTime = myDate.getMonth().split('/')[1];
+            break;
+          case 4:
+            this.startTime = myDate.quarter();
+            this.endTime = myDate.getToday();
+        }
+
+      },
+      getReportActive(index){
+        this.isActive2 = index;
+        for (var i = 0; i < this.show.length; i++) {
+          this.show[i] = false;
+        }
+        this.show[index] = true;
+        this.getReport()
+      },
+      openWindows(){
+        this.$alert('查无数据', '温馨提示', {
+          confirmButtonText: '确定'
+        });
       }
     },
     mounted: function () {
+      var myDate = new DateHelp({
+        date: new Date(),//从此日期开始计算
+        format: 'yyyy-MM-dd'
+      });
+      this.startTime = myDate.getToday();
+      this.endTime = myDate.getToday();
     }
   }
 </script>
@@ -152,8 +257,14 @@
     margin: 15px;
     padding: 20px;
     background: #fff;
+    min-height: 300px;
   }
 
+  .active {
+    background: #32BC6F;
+    border: 0;
+    color: #fff;
+  }
   .el-col {
     margin-bottom: 20px;
     label {

@@ -18,7 +18,7 @@
           <div class="girid-content"><label>社保卡号</label></div>
         </el-col>
         <el-col :span="6">
-          <div class="girid-content girid-ipt"><input type="text" name=""></div>
+          <div class="girid-content girid-ipt"><input type="text" v-model="setData.account" name=""></div>
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -71,6 +71,7 @@
         setData: {
           nickName: null,//名称
           idCardNo: null,//证件号码,
+          account: null,//社保卡号
           pageInfo: {
             pageSize: 20,
           }

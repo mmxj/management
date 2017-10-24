@@ -38,7 +38,7 @@
                 </select>
               </div>
             </el-col>
-            <el-col :span="12"><input type="text"></el-col>
+            <el-col :span="12"><input type="text" v-model="inputData.address"></el-col>
           </el-row>
         </el-col>
       </el-row>
@@ -73,10 +73,9 @@
       <el-row :gutter="20">
         <el-col :span="2">
           <label for="">维护公司</label>
-          <!--暂无接口接入位置-->
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.maintainCompany">
         </el-col>
         <el-col :span="2">
           <label for="">接入IP地址</label>
@@ -121,7 +120,7 @@
           <!--暂无接口接入位置-->
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.model">
         </el-col>
         <el-col :span="2">
           <label for="">终端号</label>

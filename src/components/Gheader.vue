@@ -19,18 +19,33 @@
   export default{
     data(){
       return {
-        userName: null
+        userName: null,
+//        session: sessionStorage.getItem('session'),
       }
     },
     computed: mapGetters(['loginData']),
+    methods: {
+//        getUser(){
+//            this.loginData;
+//            var getuser=new RemoteCall();
+//            getuser.init({
+//              router:'/company/staff/get',
+//              session:this.loginData.session,
+//              data:{
+//                  name:this.loginData.userName
+//              },
+//              callback:function(data){
+//                  console.log(data);
+//              }
+//            })
+//        }
+    },
     mounted: function () {
-
     },
     watch: {
       loginData(){
-        console.log(this.loginData)
-        console.log(this.loginData.userName)
-        this.userName = this.loginData.userName
+        this.userName = this.loginData.userName;
+//        this.getUser()
       }
     }
   }

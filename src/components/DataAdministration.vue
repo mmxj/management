@@ -12,7 +12,20 @@
           <label for="">卡归属地</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <div class="distpicker">
+            <select name="" id="province" @change="setCity()">
+              <option value="">省</option>
+              <option v-for="data in provinceData" v-bind:value="data.id">{{data.name}}</option>
+            </select>
+            <select name="" id="city" @change="setDistrict()">
+              <option value="">市</option>
+              <option v-for="data in cityData" v-bind:value="data.id">{{data.name}}</option>
+            </select>
+            <select name="" id="district" @change="setAreaId()">
+              <option value="">区</option>
+              <option v-for="datas in districtData" v-bind:value="datas.id">{{datas.name}}</option>
+            </select>
+          </div>
         </el-col>
         <el-col :span="2">
           <label for="">绑卡商户号</label>
@@ -35,11 +48,11 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-date-picker v-model="value1" align="right" type="date" placeholder="选择日期"
-                              :picker-options="pickerOptions1"></el-date-picker>
+                              :picker-options="pickerOptions1" @change="beginTime"></el-date-picker>
             </el-col>
             <el-col :span="12">
               <el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期"
-                              :picker-options="pickerOptions1"></el-date-picker>
+                              :picker-options="pickerOptions1" @change="endTime"></el-date-picker>
             </el-col>
           </el-row>
         </el-col>
@@ -54,19 +67,27 @@
     <div>
       <el-table :data="tableData" border>
         <el-table-column prop="index" label="序号" width="120"></el-table-column>
-        <el-table-column prop="account" label="社保卡号" width="180"></el-table-column>
+        <el-table-column prop="userName" label="姓名" width="180"></el-table-column>
+        <el-table-column prop="account" label="社保卡号" width="220"></el-table-column>
         <el-table-column prop="cardTypeName" label="社保卡类型" width="180"></el-table-column>
-        <el-table-column label="卡归属地" width="180"></el-table-column>
+        <el-table-column prop="areaId" label="卡归属地" width="180"></el-table-column>
         <el-table-column prop="merchantNo" label="绑卡商户号" width="180"></el-table-column>
         <el-table-column prop="terminalNo" label="绑卡终端号" width="180"></el-table-column>
-        <el-table-column prop="idCardNo" label="身份证号" width="180"></el-table-column>
-        <el-table-column prop="userName" label="姓名" width="180"></el-table-column>
-        <el-table-column label="卡有效期" width="180"></el-table-column>
-        <el-table-column prop="userId" label="卡序列号" width="180"></el-table-column>
-        <el-table-column label="绑卡日期" width="180"></el-table-column>
-        <el-table-column prop="issueDate" label="卡发行日期" width="180"></el-table-column>
-        <el-table-column label="绑卡商户地址" width="180"></el-table-column>
+        <el-table-column prop="idCardNo" label="身份证号" width="220"></el-table-column>
+        <el-table-column prop="expiryDate" label="卡有效期" width="180"></el-table-column>
+        <el-table-column prop="serialNumber" label="卡序列号" width="180"></el-table-column>
+        <el-table-column prop="expiryDate" label="绑卡日期" width="180"></el-table-column>
+        <el-table-column prop="issueDate" label="卡发行日期" width="200"></el-table-column>
+        <el-table-column prop="address" label="绑卡商户地址" width="180"></el-table-column>
       </el-table>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -74,6 +95,12 @@
   export default{
     data() {
       return {
+        provinceData: [{'name': '省'}],
+        cityData: [{'name': '市'}],
+        districtData: [{'name': '区'}],
+        currentPage: 1,
+        pageSize: 20,
+        total: 1,
         pickerOptions0: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7;
@@ -103,32 +130,125 @@
         },
         value1: '',
         value2: '',
-        tableData: [
-          {
-            index: 1
-          }
-        ],
+        tableData: [],
         session: sessionStorage.getItem('session'),
         inputData: {
           pageInfo: {
             pageSize: 20,
-            pageNum: 1
           },
         }
       }
     },
     methods: {
-      dataUp(){
+      handleSizeChange(val) { //页面
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        this.currentPage = val;
+      },
+      //地区获取
+      getArea(){
+        if (sessionStorage.getItem('session')) {
+          this.session = sessionStorage.getItem('session');//获取本地存储保存session状态
+        } else {
+          this.$router.push({path: '/login'})
+        }
+        console.log(this.session);
+        var _this = this;
+        var getArea = new RemoteCall();
+        getArea.init({
+          router: "/base/area/idname/get",
+          session: _this.session,
+          data: {
+            parentAreaId: 0
+          },
+          callback: this.getAreaCallback
+        });
+      },
+      getAreaCallback(data){
+        var _this = this;
+        this.provinceData = data.rows
+        clearTimeout(timer)
+        var timer = setTimeout(function () {
+          _this.setCity();
+        }, 0)
+      },
+      setCity(){
+        var _this = this;
+        var mySelect = document.getElementById('province');
+        var index = mySelect.selectedIndex;
+        var parentId = mySelect.getElementsByTagName('option')[index].value;
+        var getCity = new RemoteCall();
+        getCity.init({
+          router: "/base/area/idname/get",
+          session: this.session,
+          data: {
+            parentAreaId: parentId
+          }
+        });
+        this.cityData = getCity.res.rows;
+        clearTimeout(timer);
+        var timer = setTimeout(function () {
+          _this.setDistrict();
+        }, 10)
+      },
+      setDistrict(){//县区获取
+        var myCity = document.getElementById('city');
+        var index = myCity.selectedIndex;
+        var _this = this;
+        var parentId = myCity.getElementsByTagName('option')[index].value;
+        var getDistrict = new RemoteCall();
+        getDistrict.init({
+          router: "/base/area/idname/get",
+          session: this.session,
+          data: {
+            parentAreaId: parentId
+          }
+        });
+        this.districtData = getDistrict.res.rows;
+        clearTimeout(timer);
+        var timer = setTimeout(function () {
+          _this.setAreaId();
+        }, 10)
+      },
+      setAreaId(){//获取areaid 给inputData赋值
+        var myCity = document.getElementById('district');
+        var index = myCity.selectedIndex;
+        var parentId = myCity.getElementsByTagName('option')[index].value;
+        this.inputData.areaId = parentId;
+      },
+      //地市联动结束
+      dataUp(){ //提交查找
+        if (this.inputData.areaId == "") {
+          this.inputData.areaId = null;
+        }
+        this.inputData.pageInfo.pageNum = this.currentPage;
+        var vm = this;
         var dataUp = new RemoteCall();
         dataUp.init({
           router: '/user/card/bind/get',
           session: this.session,
           data: this.inputData,
           callback: function (data) {
-            console.log(data);
+            if (data.pageInfo) {
+              vm.total = data.pageInfo.total;
+            }
+            vm.tableData = data.rows;
+            for (var i = 0; i < vm.tableData.length; i++) {
+              vm.tableData[i].index = i + 1;
+            }
           }
         })
+      },
+      beginTime(data){
+        this.inputData.beginExpiryDate = data;
+      },
+      endTime(data){
+        this.inputData.endExpiryDate = data;
       }
+    },
+    mounted: function () {
+      this.getArea();
     }
   }
 </script>
@@ -186,6 +306,20 @@
   }
 </style>
 <style type="text/css">
+  .distpicker select {
+    width: 32% !important;
+    height: 36px;
+    line-height: 36px;
+    padding: 0.25rem;
+    outline: none;
+    border: 1px solid #aaa
+  }
+
+  @media screen and (max-width: 1450px) {
+    .distpicker select {
+      width: 31% !important;
+    }
+  }
   .el-table th {
     text-align: center !important;
   }
