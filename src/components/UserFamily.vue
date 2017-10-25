@@ -22,9 +22,7 @@
       return {
         session: sessionStorage.getItem('session'),
         tableData: [
-          {
 
-          },
         ]
       }
     },
@@ -56,7 +54,7 @@
           },
           callback: function (data) {
             console.log(data);
-            if (data.length) {
+            if (data.rows.length) {
               vm.tableData = data.rows
               for (let i = 0; i < vm.tableData.length; i++) {
                 switch (vm.tableData[i].relationType) {
@@ -127,11 +125,6 @@
         .cell {
           text-align: center;
         }
-      }
-    }
-    td:last-child {
-      .cell {
-        display: none;
       }
     }
   }

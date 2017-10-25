@@ -8,7 +8,7 @@
       <el-table-column prop="branchName" label="支行信息"></el-table-column>
       <el-table-column prop="mobile" label="手机号码"></el-table-column>
       <el-table-column prop="issueDate" label="绑定日期"></el-table-column>
-      <el-table-column>
+      <el-table-column width="100">
         <template scope="scope">
           X
         </template>
@@ -96,11 +96,6 @@
         .cell {
           text-align: center;
         }
-      }
-    }
-    td:last-child {
-      .cell {
-        display: none;
       }
     }
   }

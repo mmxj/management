@@ -18,18 +18,16 @@
         session: sessionStorage.getItem('session'),
         tableData: [
           {
-            "提示": "暂无绑卡信息"
-////            '社保名称': '惠州市农村医疗保险',
-//            '姓名':'userName',//卡主
-//            '关系':'relationTypeName',//成员关系
-//            '社保类型': 'securityTypeName', //社保类型名称
-//            '社保卡号': 'account', //卡号
-//            '社保归属地': '广东省惠州市',//暂无 //通过归属商户查找归属地
-//            '社保卡发行日期': 'issueDate', //发行时间
-//            '绑卡时间': '',//绑卡时间无
-//            '绑卡商户': 'merchantName', //绑卡终端商户
-//            '社保卡缴费记录': '', //这些接口没有
-//            '社保卡个账余额': '', //这些接口没有
+//            '社保名称': '惠州市农村医疗保险',
+            '姓名': 'userName',//卡主
+            '关系': 'relationTypeName',//成员关系
+            '社保类型': 'securityTypeName', //社保类型名称
+            '社保卡号': 'account', //卡号
+            '社保归属地': '广东省惠州市',//暂无 //通过归属商户查找归属地
+            '社保卡发行日期': 'issueDate', //发行时间
+            '绑卡时间': '',//绑卡时间无
+            '绑卡商户': 'merchantName', //绑卡终端商户
+            '社保卡个账余额': '', //这些接口没有
           }
         ]
       }
@@ -37,6 +35,10 @@
     computed: mapGetters(['userData']),
     methods: {
       getSocial(){
+        console.log(this.userData)
+        if (!this.userData) {
+          this.$router.push('/user')
+        }
         var vm = this;
         var getSocial = new RemoteCall();
         getSocial.init({
@@ -50,18 +52,16 @@
             },
           },
           callback: function (data) {
-            console.log(data);
             if (data.rows.length > 0) {
               for (var i = 0; i < data.rows.length; i++) {
                 vm.tableData[i].姓名 = data.rows[i].userName;
                 vm.tableData[i].关系 = data.rows[i].relationTypeName;
                 vm.tableData[i].社保类型 = data.rows[i].securityTypeName;
                 vm.tableData[i].社保卡号 = data.rows[i].account;
-                vm.tableData[i].社保归属地 = null;
+                vm.tableData[i].社保归属地 = data.rows[i].areaId;
                 vm.tableData[i].社保卡发行日期 = data.rows[i].issueDate;
-                vm.tableData[i].绑卡时间 = null;
+                vm.tableData[i].绑卡时间 = data.rows[i].sfsCreate;
                 vm.tableData[i].绑卡商户 = data.rows[i].merchantName;
-                vm.tableData[i].社保卡缴费记录 = null;
                 vm.tableData[i].社保卡个账余额 = null;
               }
             }

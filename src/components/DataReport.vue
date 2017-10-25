@@ -9,8 +9,8 @@
           <el-row :gutter="20">
             <el-col :span="12" class="el-timer">
               <el-row>
-                <el-col :span="4" v-for="(item,index) in btnData">
-                  <el-button :class="{active:index==isActive}" @click="getTodays(index)">{{item.name}}</el-button>
+                <el-col :span="4" v-for="(data,index) in btnData">
+                  <el-button :class="{active:index==isActive}" @click="getTodays(index)">{{data.name}}</el-button>
                 </el-col>
               </el-row>
             </el-col>

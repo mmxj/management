@@ -44,10 +44,5 @@
         }
       }
     }
-    td:last-child {
-      .cell {
-        display: none;
-      }
-    }
   }
 </style>

@@ -9,32 +9,37 @@
         <el-col :span="6">
           <div class="distpicker">
             <select name="" id="province" @change="setCity()">
+              <option value="">省</option>
               <option v-for="data in provinceData" v-bind:value="data.id">{{data.name}}</option>
             </select>
             <select name="" id="city" @change="setDistrict()">
+              <option value="">市</option>
               <option v-for="data in cityData" v-bind:value="data.id">{{data.name}}</option>
             </select>
             <select name="" id="district" @change="setAreaId()">
+              <option value="">区</option>
               <option v-for="datas in districtData" v-bind:value="datas.id">{{datas.name}}</option>
             </select>
           </div>
         </el-col>
         <el-col :span="2">
           <label for="">安装地址</label>
-          <!--暂无接口接入位置-->
         </el-col>
         <el-col :span="12" class="area">
           <el-row>
             <el-col :span="12">
               <div class="distpicker">
-                <select name="" id="province2" @change="setCity()">
-                  <option v-for="data in provinceData" v-bind:value="data.id">{{data.name}}</option>
+                <select name="" id="province2" @change="setCity2()">
+                  <option value="">省</option>
+                  <option v-for="data in provinceData2" v-bind:value="data.id">{{data.name}}</option>
                 </select>
-                <select name="" id="city2" @change="setDistrict()">
-                  <option v-for="data in cityData" v-bind:value="data.id">{{data.name}}</option>
+                <select name="" id="city2" @change="setDistrict2()">
+                  <option value="">市</option>
+                  <option v-for="data in cityData2" v-bind:value="data.id">{{data.name}}</option>
                 </select>
-                <select name="" id="district2" @change="setAreaId()">
-                  <option v-for="datas in districtData" v-bind:value="datas.id">{{datas.name}}</option>
+                <select name="" id="district2" @change="setAreaId2()">
+                  <option value="">区</option>
+                  <option v-for="datas in districtData2" v-bind:value="datas.id">{{datas.name}}</option>
                 </select>
               </div>
             </el-col>
@@ -56,18 +61,10 @@
           <input type="text" v-model="inputData.pSimNo">
         </el-col>
         <el-col :span="2">
-          <label for="">收单行</label>
+          <label for="">收单机构</label>
         </el-col>
         <el-col :span="6">
-          <select>
-            <option>请选择收单行</option>
-            <!--收单机构id如何获得？-->
-            <option v-model="inputData.acquirerId">中国银行</option>
-            <option>中国建设银行</option>
-            <option>中国农业银行</option>
-            <option>中国工商银行</option>
-            <option>中国平安银行</option>
-          </select>
+          <input type="text">
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -138,18 +135,18 @@
     </div>
     <div>
       <el-table :data="tableData" border>
-        <el-table-column label="归属地" width="120"></el-table-column>
+        <el-table-column prop="areaId" label="归属地" width="120"></el-table-column>
         <el-table-column prop="address" label="安装地址" width="180"></el-table-column>
         <el-table-column prop="merchantNo" label="商户号" width="180"></el-table-column>
         <el-table-column prop="pSimNo" label="PSAM卡" width="180"></el-table-column>
-        <el-table-column prop="acquirerId" label="收单行" width="150"></el-table-column>
-        <el-table-column label="维护公司" width="180"></el-table-column>
+        <el-table-column prop="acquirerId" label="收单机构" width="150"></el-table-column>
+        <el-table-column prop="maintainCompany" label="维护公司" width="180"></el-table-column>
         <el-table-column prop="joinIp" label="接入IP地址" width="180"></el-table-column>
         <el-table-column prop="openDate" label="开通日期" width="150"></el-table-column>
         <el-table-column prop="merchantName" label="商户名称" width="180"></el-table-column>
         <el-table-column prop="summary" label="商户主营业务" width="180"></el-table-column>
         <el-table-column prop="terminalCompany" label="终端厂家" width="180"></el-table-column>
-        <el-table-column label="终端型号" width="180"></el-table-column>
+        <el-table-column prop="model" label="终端型号" width="180"></el-table-column>
       </el-table>
     </div>
   </div>
@@ -161,6 +158,9 @@
         provinceData: [{}],
         cityData: [{}],
         districtData: [{}],
+        provinceData2: [{}],
+        cityData2: [{}],
+        districtData2: [{}],
         companyName: [],
         merchantName: null,
         pickerOptions0: {
@@ -211,7 +211,6 @@
         } else {
           this.$router.push({path: '/login'})
         }
-        console.log(this.session);
         var _this = this;
         var getArea = new RemoteCall();
         getArea.init({
@@ -271,6 +270,77 @@
       },
       setAreaId(){//获取areaid 给inputData赋值
         var myCity = document.getElementById('district');
+        var index = myCity.selectedIndex;
+        var parentId = myCity.getElementsByTagName('option')[index].value;
+        this.inputData.areaId = parentId;
+      },
+      //地市联动结束
+      //地市联动方法 //找个时间封装
+      getArea2(){
+        if (sessionStorage.getItem('session')) {
+          this.session = sessionStorage.getItem('session');//获取本地存储保存session状态
+        } else {
+          this.$router.push({path: '/login'})
+        }
+        var _this = this;
+        var getArea = new RemoteCall();
+        getArea.init({
+          router: "/base/area/idname/get",
+          session: _this.session,
+          data: {
+            parentAreaId: 0
+          },
+          callback: this.getAreaCallback2
+        });
+      },
+      getAreaCallback2(data){
+        var _this = this;
+        this.provinceData2 = data.rows
+        clearTimeout(timer)
+        var timer = setTimeout(function () {
+          _this.setCity2();
+        }, 0)
+      },
+      setCity2(){
+        var _this = this;
+        var mySelect = document.getElementById('province2');
+        var index = mySelect.selectedIndex;
+        var parentId = mySelect.getElementsByTagName('option')[index].value;
+        var getCity = new RemoteCall();
+        getCity.init({
+          router: "/base/area/idname/get",
+          session: this.session,
+          data: {
+            parentAreaId: parentId
+          }
+        });
+        this.cityData2 = getCity.res.rows;
+        clearTimeout(timer);
+        var timer = setTimeout(function () {
+          _this.setDistrict2();
+        }, 10)
+      },
+      setDistrict2(){//县区获取
+        var myCity = document.getElementById('city2');
+        var index = myCity.selectedIndex;
+        var _this = this;
+        var parentId = myCity.getElementsByTagName('option')[index].value;
+        var getDistrict = new RemoteCall();
+        getDistrict.init({
+          router: "/base/area/idname/get",
+          session: this.session,
+          data: {
+            parentAreaId: parentId
+          }
+        });
+        this.districtData2 = getDistrict.res.rows;
+        clearTimeout(timer);
+        var timer = setTimeout(function () {
+          _this.setAreaId2();
+        }, 10)
+      },
+      setAreaId2(){//获取areaid 给inputData赋值
+        var myCity = document.getElementById('district2');
         var index = myCity.selectedIndex;
         var parentId = myCity.getElementsByTagName('option')[index].value;
       },
@@ -389,6 +459,7 @@
     },
     mounted: function () {
       this.getArea();
+      this.getArea2();
       this.getTerminal();
     },
     watch: {

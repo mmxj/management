@@ -15,6 +15,7 @@
   export default{
     data(){
       return {
+        session: sessionStorage.getItem('session'),
         tableData: {
           '姓名': '',
           '身份证号': '',
@@ -57,7 +58,8 @@
             id: areaId
           },
           callback: function (data) {
-            return data.rows[0].name
+            console.log(data)
+//            return data.rows[0].name
           }
         });
       }

@@ -3,30 +3,10 @@
     <div>
       <el-row :gutter="20">
         <el-col :span="2">
-          <label for="">受理机构</label>
-        </el-col>
-        <el-col :span="6">
-          <input type="text">
-        </el-col>
-        <el-col :span="2">
-          <label for="">转发机构</label>
-        </el-col>
-        <el-col :span="6">
-          <input type="text">
-        </el-col>
-        <el-col :span="2">
-          <label for="">发卡机构</label>
-        </el-col>
-        <el-col :span="6">
-          <input type="text">
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="2">
           <label for="">收单机构</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.acquirerId">
         </el-col>
         <el-col :span="2">
           <label for="">商户类型</label>
@@ -38,10 +18,10 @@
           <label for="">交易金额</label>
         </el-col>
         <el-col :span="2">
-          <input type="text">
+          <input type="text" v-model="inputData.lowAmount">
         </el-col>
         <el-col :span="2">
-          <input type="text">
+          <input type="text" v-model="inputData.highAmount">
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -104,12 +84,13 @@
           </select>
         </el-col>
         <el-col :span="2">
-          <label for="">社保卡标志</label>
+          <label for="">社保支付类型</label>
         </el-col>
         <el-col :span="6">
           <select name="" id="">
-            <option value="">是</option>
-            <option value="">否</option>
+            <option value="1">社保局统筹报销</option>
+            <option value="2">微信统筹报销</option>
+            <option value="3">支付宝统筹报销</option>
           </select>
         </el-col>
       </el-row>
@@ -118,7 +99,7 @@
           <label for="">卡号</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="inputData.account">
         </el-col>
         <el-col :span="2">
           <label for="">终端号</label>
@@ -137,37 +118,22 @@
     <div>
       <el-table :data="tableData" border>
         <el-table-column prop="index" label="序号" width="70"></el-table-column>
-        <el-table-column label="清算日期" width="180"></el-table-column>
+        <el-table-column prop="settlmentData" label="清算日期" width="180"></el-table-column>
         <el-table-column prop="orderNo" label="订单号" width="250"></el-table-column>
-        <el-table-column label="交易代码" width="180"></el-table-column>
-        <el-table-column label="跟踪号" width="180"></el-table-column>
+        <el-table-column prop="dealingJournalNo" label="交易流水号" width="180"></el-table-column>
         <el-table-column prop="payTime" label="交易日期" width="200"></el-table-column>
         <el-table-column prop="sfsCreate" label="提交支付时间" width="200"></el-table-column>
-        <el-table-column prop="payChannelName" label="受理机构" width="180"></el-table-column>
-        <el-table-column label="转发机构" width="180"></el-table-column>
-        <el-table-column label="发卡机构" width="180"></el-table-column>
-        <el-table-column label="收单机构" width="180"></el-table-column>
+        <el-table-column prop="acquirerId" label="收单机构" width="180"></el-table-column>
         <el-table-column prop="account" label="卡号" width="220"></el-table-column>
         <el-table-column prop="amount" label="交易金额" width="180"></el-table-column>
-        <el-table-column label="商户类型" width="180"></el-table-column>
-        <el-table-column label="参考号" width="180"></el-table-column>
+        <el-table-column prop="companyType" label="商户类型" width="180"></el-table-column>
         <el-table-column prop="payChannelDealNo" label="支付通道协议" width="220"></el-table-column>
-        <el-table-column label="授权码" width="180"></el-table-column>
         <el-table-column prop="terminalNo" label="终端号" width="180"></el-table-column>
         <el-table-column prop="departmentName" label="门店名称" width="180"></el-table-column>
         <el-table-column prop="merchantNo" label="商户编号" width="180"></el-table-column>
         <el-table-column prop="departmentName" label="商户名称" width="180"></el-table-column>
-        <el-table-column label="商户借记手续费" width="180"></el-table-column>
-        <el-table-column label="商户贷记手续费" width="180"></el-table-column>
-        <el-table-column label="收单借记手续费" width="180"></el-table-column>
-        <el-table-column label="收单贷记手续费" width="180"></el-table-column>
         <el-table-column prop="status" label="交易状态" width="180"></el-table-column>
-        <el-table-column label="原始交易跟踪号" width="180"></el-table-column>
-        <el-table-column label="原始交易日期" width="180"></el-table-column>
         <el-table-column prop="cardType" label="支付卡类型" width="180"></el-table-column>
-        <el-table-column label="社保卡标志" width="180"></el-table-column>
-        <el-table-column label="银联转接清算费" width="180"></el-table-column>
-        <el-table-column label="收单服务机构分润" width="180"></el-table-column>
         <el-table-column prop="extraParams" label="备注" width="180"></el-table-column>
       </el-table>
     </div>
