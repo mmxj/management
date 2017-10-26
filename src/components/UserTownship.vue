@@ -15,15 +15,6 @@
     data(){
       return {
         tableData: [
-          {
-            withUser: '父亲'
-          },
-          {
-            withUser: '母亲'
-          },
-          {
-            withUser: '妻子'
-          },
         ]
       }
     },

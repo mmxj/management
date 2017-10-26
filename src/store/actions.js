@@ -23,5 +23,8 @@ export default {
   },
   loginData: ({commit}, loginData) => {
     commit(types.USERNAME, loginData)
+  },
+  saveHealthData: ({commit}, saveHealthData) => {
+    commit(types.HEALTH, saveHealthData)
   }
 }

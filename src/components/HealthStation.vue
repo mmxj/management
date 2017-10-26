@@ -4,7 +4,8 @@
       <el-row>
         <el-col :span="3">
           <label for="">
-            <router-link to="/healthstationupdata">编辑卫生站</router-link>
+            <!--<router-link to="/healthstationupdata">编辑卫生站</router-link>-->
+            <a @click="goUpdata" href="javascript:">编辑卫生站</a>
           </label>
         </el-col>
         <el-col :span="3">
@@ -25,10 +26,15 @@
     <div class="el-tables">
       <el-table :data="tableData" border style="width: 100%;" max-height="600"
                 @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column width="70" label="选择">
+          <template scope="scope">
+            <el-radio :label="scope.$index" v-model="radio" @change.native="getIndex(scope.$index)">&nbsp;</el-radio>
+          </template>
+        </el-table-column>
         <el-table-column prop="name" label="卫生站名称" width="200">
         </el-table-column>
-        <el-table-column prop="parentCompanyId" label="归属卫生院" width="200"></el-table-column>
+        <el-table-column prop="parentCompanyId" label="归属卫生院" width="200">
+        </el-table-column>
         <el-table-column prop="certificateType" label="证件类型" width="120">
         </el-table-column>
         <el-table-column prop="certificateNo" label="证件号" width="250">
@@ -66,13 +72,16 @@
   </div>
 </template>
 <script type="text/javascript">
+  import {mapActions, mapGetters} from 'vuex'
   export default{
     data(){
       return {
         session: sessionStorage.getItem('session'),
         currentPage: 1,
         total: 1,
+        radio: null,
         pageSize: 20,
+        dataIndex: null,
         tableData: [
 //            {
 //          name: null,
@@ -89,10 +98,18 @@
 //          account:null,
 //          auditTime:null
 //        }
-        ]
+
+        ],
+        saveHealth: null,
+        choose: null,
       }
     },
     methods: {
+      ...mapActions(['saveHealthData']),
+      getIndex(index){
+        this.dataIndex = index;
+        this.choose = this.tableData[index];
+      },
       //变化的时候出发 将数据放入multipleSelection中
       toggleSelection(rows) {
         if (rows) {
@@ -102,28 +119,81 @@
         } else {
           this.$refs.multipleTable.clearSelection();
         }
+        this.saveHealth = rows;
       },
       handleSelectionChange(val) {
         this.multipleSelection = val;
         console.log(this.multipleSelection)
       },
       open(){ //弹窗模块
-        this.$confirm('由于该村医已开出处方，不允许删除，如该村医信息变更可屏蔽该村医', '提示',
-          {
-            cancelButtonText: '取消',
-            confirmButtonText: '屏蔽',
-            type: 'warning',
-          }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          }).catch(() => {
+        if (this.choose) {
+          var vm = this;
+          var checkhealth = new RemoteCall();//检查下面有没有处方
+          checkhealth.init({
+            router: '/company/get',
+            session: this.session,
+            data: {
+              parentCompanyId: this.choose.id
+            },
+            callback: function (data) {
+              if (data.rows.length > 0) {
+                vm.choose.children = 1;
+              } else {
+                vm.choose.children = 0;
+              }
+              vm.deleteHealth();
+            }
+          })
+        } else {
+          this.$alert('请选择要删除的卫生站', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+
+            }
+          })
+        }
+      },
+      deleteHealth(){
+        if (this.choose.children == 1) {
+          this.$confirm('由于该卫生站已有村医出诊，不允许删除，如该卫生站信息变更可屏蔽该卫生站', '提示',
+            {
+              cancelButtonText: '取消',
+              confirmButtonText: '屏蔽',
+              type: 'warning',
+            }).then(() => {
             this.$message({
-              type: 'info',
-              message: '已取消删除'
+              type: 'success',
+              message: '屏蔽成功!'
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '取消成功'
+              });
             });
-          });
-        })
+          })
+        } else if (this.choose.children === 0) {
+          this.$confirm('选择了删除该卫生站信息，请确定是否继续删除', '提示',
+            {
+              cancelButtonText: '取消',
+              confirmButtonText: '删除',
+              type: 'warning',
+              beforeClose: (action, instance, done) => {
+                console.log(action);
+                console.log(instance);
+                console.log(done);
+              }
+            }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '取消成功'
+              });
+            });
+          })
+        }
       },
       initData(){
         var getParent = new RemoteCall();
@@ -153,34 +223,15 @@
           vm.total = data.pageInfo.total;
         }
         this.tableData = data.rows;
-//        for (var i = 0; i < data.rows.length; i++) {
-//          if (data.rows[i].companyType == 4) {
-////              console.log(data.rows[i]);
-//            if (data.rows[i].parentCompanyId) {
-//              var getParents = new RemoteCall();
-//              getParents.init({
-//                router: "/company/get",
-//                session: this.session,
-//                data: {
-//                  id: data.rows[i].parentCompanyId,
-//                  pageInfo: {
-//                    pageSize: 20,
-//                    pageNum: 1
-//                  },
-//                },
-//                callback: function (src) {
-//                  console.log(src)
-//                  data.rows[i].parentCompanyId = src.rows[0].name
-//                }
-//              })
-//            }
-//            this.tableData.push(data.rows[i]);
-//            console.log(data.rows[i].telephone)
-//          }
-//        }
+      },
+      goUpdata(){
+        console.log(this.choose);
+        this.saveHealthData(this.choose);
+        this.$router.push('/healthstationupdata')
       }
     },
     mounted: function () {
+//      this.$router.go(0)
       this.initData();
     }
   }

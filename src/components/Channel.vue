@@ -3,52 +3,65 @@
     <el-table :data="tableData" border style="width:100%" @cell-click="cellActive">
       <el-table-column prop="no" label="通道编号" width="150">
         <template scope="scope">
-          <input type="text" @focus="inputFocus(scope.row.channelName,'channelName')"
-                 @blur="inputBlur(scope.row.channelName)" :placeholder="scope.row.channelName"
-                 v-model="scope.row.channelName">
+          <input type="text" @change="inputChange(scope.$index)" v-model="scope.row.no">
         </template>
       </el-table-column>
       <el-table-column prop="name" label="通道名称">
         <template scope="scope">
-          <input type="text" @focus="inputFocus(scope.row.channelName,'channelName')"
-                 @blur="inputBlur(scope.row.channelName)" :placeholder="scope.row.channelName"
-                 v-model="scope.row.channelName">
+          <input type="text" @change="inputChange(scope.$index)" v-model="scope.row.name">
         </template>
       </el-table-column>
-      <el-table-column prop="companyId" label="合作对象">
+      <el-table-column prop="callerName" label="调用者名称">
         <template scope="scope">
-          <input type="text" @focus="inputFocus(scope.row.collaborator,'collaborator')"
-                 @blur="inputBlur(scope.row.collaborator)" :placeholder="scope.row.collaborator"
-                 v-model="scope.row.collaborator">
+          <input type="text" @change="inputChange(scope.$index)" v-model="scope.row.callerName">
+        </template>
+      </el-table-column>
+      <el-table-column prop="callerUrl" label="调用者回调地址">
+        <template scope="scope">
+          <input type="text" @change="inputChange(scope.$index)" v-model="scope.row.callerUrl">
+        </template>
+      </el-table-column>
+      <el-table-column prop="companyName" label="合作对象">
+        <template scope="scope">
+          <input type="text" @change="inputChange(scope.$index)" v-model="scope.row.companyName">
         </template>
       </el-table-column>
       <el-table-column prop="summary" label="通道用途">
         <template scope="scope">
-          <input type="text" @focus="inputFocus(scope.row.purpose,'purpose')" @blur="inputBlur(scope.row.purpose)"
-                 :placeholder="scope.row.purpose" v-model="scope.row.purpose">
+          <input type="text" @change="inputChange(scope.$index)" v-model="scope.row.summary">
         </template>
       </el-table-column>
       <el-table-column prop="rate" label="通道费率">
         <template scope="scope">
-          <input type="text" @focus="inputFocus(scope.row.expense,'expense')" @blur="inputBlur(scope.row.expense)"
-                 :placeholder="scope.row.expense" v-model="scope.row.expense">
+          <input type="text" @change="inputChange(scope.$index)" v-model="scope.row.rate">
         </template>
       </el-table-column>
       <el-table-column prop="enableFlag" label="通道状态">
         <!--有效标志 0为无效 1为有效-->
         <template scope="scope">
-          <input type="text" @focus="inputFocus(scope.row.state,'state')" @blur="inputBlur(scope.row.state)"
-                 :placeholder="scope.row.state" v-model="scope.row.state">
+          <input type="text" @change="inputChange(scope.$index)" v-model="scope.row.enableFlag">
         </template>
       </el-table-column>
       <el-table-column prop="businessType" label="对应订单类型">
         <template scope="scope">
-          <input type="text" @focus="inputFocus(scope.row.orderType,'orderType')" @blur="inputBlur(scope.row.orderType)"
-                 :placeholder="scope.row.orderType" v-model="scope.row.orderType">
+          <input type="text" @change="inputChange(scope.$index)" v-model="scope.row.businessType">
+        </template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template scope="scope">
+          <el-button
+            size="small"
+            @click="handleEdit(scope.$index, scope.row , scope)"><span ref="btn">{{btnArr[scope.$index]}}</span>
+          </el-button>
+          <el-button
+            size="small"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)">删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
-    <div class="add" @click="addChannel">+</div>
+    <div class="add" @click="addNewChannel">+</div>
   </div>
 </template>
 <script type="text/javascript">
@@ -58,22 +71,21 @@
         session: sessionStorage.getItem('session'),
         tableData: [],
         inputValue: [],
-        tableCheck: [],
+        btnArr: [],
+        tdData: null
       }
     },
     methods: {
-      addChannel(){
-        this.tableData.push({channelId: (this.tableData.length + 1)});
+      addNewChannel(){
+        this.tableData.push({channelId: (this.tableData.length + 1), newData: 1});
+        this.btnArr.push('编辑')
       },
-      inputBlur(data){
-        if (data != null || data != '') {
-          var name = this.tdName;
-          this.tableData[this.tdIndex - 1][this.tdName] = data;
-          this.addChannel(data);//调用添加接口
-        }
-      },
-      inputFocus(data, name){
-        this.tdName = name;
+      inputChange(index){
+//          this.tableData[index].btn='保存';
+        this.$set(this.btnArr, index, '保存')
+        this.$nextTick(function () {
+          console.log(this.tableData);
+        })
       },
       cellActive(row){
         if (row.channelId > 20) { //20代表请求回来的条数
@@ -81,27 +93,13 @@
         } else {
           this.tdIndex = row.channelId
         }
-        console.log(this.tdIndex);
-      },
-      addChannel(str){
-////          添加前先检查是否存在
-//          this.checkChannel();
-        if (this.tdIndex - 1 > this.tableCheck.length) {//点击栏的下标大于查询回来的接口的数量 那就进行添加
-          this.addChannelData(str);
-        } else {//否的话继续修改
-          this.changeChannelData(str);
-        }
       },
       addChannelData(str){//添加
-        var vm = this;
-        var tdName = vm.tdName
         var addChannel = new RemoteCall();
         addChannel.init({
           router: '/base/RouteApi/add',
           session: this.session,
-          data: {
-            tdName: str
-          },
+          data: str,
           callback: function (data) {
             console.log(data);
             vm.checkChannel();
@@ -109,14 +107,27 @@
         })
       },
       changeChannelData(str){//修改
+        console.log(str);
         var vm = this;
         var tdName = vm.tdName
         var addChannel = new RemoteCall();
         addChannel.init({
           router: '/base/RouteApi/update',
           session: this.session,
+          data: str,
+          callback: function (data) {
+            console.log(data);
+            vm.checkChannel();
+          }
+        })
+      },
+      deleteChannel(str){
+        var addChannel = new RemoteCall();
+        addChannel.init({
+          router: '/base/RouteApi/delete',
+          session: this.session,
           data: {
-            tdName: str
+            id: str
           },
           callback: function (data) {
             console.log(data);
@@ -139,11 +150,93 @@
           callback: function (data) {
             if (data.rows) {
               vm.tableData = data.rows;
-              vm.tableCheck = data.rows;
+              for (var i = 0; i < vm.tableData.length; i++) {
+                vm.btnArr[i] = '编辑'
+                vm.tableData[i].rate = vm.tableData[i].rate * 100 + '%';
+                if (vm.tableData[i].enableFlag == 1) {
+                  vm.tableData[i].enableFlag = '可用'
+                } else {
+                  vm.tableData[i].enableFlag = '不可用'
+                }
+                switch (vm.tableData[i].businessType) {
+                  case 1:
+                    vm.tableData[i].businessType = '缴费';
+                    break;
+                  case 2:
+                    vm.tableData[i].businessType = '挂号';
+                    break;
+                  case 3:
+                    vm.tableData[i].businessType = '门诊';
+                    break;
+
+                }
+              }
             }
           }
         })
+      },
+      companyId(str){//公司id获取检查
+        var thisId = null;
+        var companyId = new RemoteCall();
+        companyId.init({
+          router: '/company/get',
+          session: this.session,
+          data: {
+            name: str
+          },
+          callback: function (data) {
+            if (data.rows.length > 0) {
+              thisId = data.rows[0].id;
+            }
+          }
+        });
+        return thisId;
+      },
+      handleEdit(index, row, data){
+        row.companyId = this.companyId(row.companyName);
+        if (row.rate) {
+          row.rate = parseInt(row.rate) / 100;
+        }
+        if (row.enableFlag == '可用') {
+          row.enableFlag = 1;
+        } else if (row.enableFlag == '不可用') {
+          row.enableFlag = 0;
+        } else {
+          alert('通道状态只能填写“可用”或“不可用”')
+        }
+
+        switch (row.businessType) {
+          case '缴费':
+            row.businessType = 1;
+            break;
+          case '挂号':
+            row.businessType = 2;
+            break;
+          case '门诊':
+            row.businessType = 3;
+            break;
+          default :
+            alert('对应订单类型只能填写 “缴费” ，“挂号” ，“门诊”')
+        }
+        if (row.companyId == null) {
+          alert('合作公司不存在，请添加');
+          return
+        }
+        if (row.newData == 1) {//如果数据有newData标志调用添加接口
+          //要对数据进行判断和分类
+          this.addChannelData(row);//调用添加接口
+        }
+        else {
+          this.changeChannelData(row)//调用修改接口
+        }
+      },
+      handleDelete(index, row) {
+//        console.log(row.id);
+        this.deleteChannel(row.id);
       }
+    },
+    mounted: function () {
+      this.checkChannel()
     }
   }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div id="HealthStationUpdata">
+  <div id="HeadlthStationAdd">
     <div>
       <el-row :gutter="20">
         <el-col :span="3"><label for="">卫生站名称</label></el-col>
@@ -12,12 +12,15 @@
           <!--<v-distpicker province="省" city="市" area="区"></v-distpicker>-->
           <div class="distpicker">
             <select name="" id="province" @change="setCity()">
+              <option value="">省</option>
               <option v-for="data in provinceData" v-bind:value="data.id">{{data.name}}</option>
             </select>
             <select name="" id="city" @change="setDistrict()">
+              <option value="">市</option>
               <option v-for="data in cityData" v-bind:value="data.id">{{data.name}}</option>
             </select>
             <select name="" id="district" @change="setAreaId()">
+              <option value="">区</option>
               <option v-for="datas in districtData" v-bind:value="datas.id">{{datas.name}}</option>
             </select>
           </div>
@@ -35,13 +38,10 @@
           <label for="">卫生院证件类型</label>
         </el-col>
         <el-col :span="5">
-          <select>
+          <select ref="certificate" @change="certificateType">
             <option>请选择证件类型</option>
             <option>营业执照</option>
-            <option>个人身份证</option>
-            <option>无证件</option>
-            <option>行业准入资格证</option>
-            <option>其他证件</option>
+            <option>从业资格证</option>
           </select>
         </el-col>
         <el-col :span="3"><label for="">归属卫生院</label></el-col>
@@ -214,19 +214,20 @@
 </template>
 <script>
   import VDistpicker from 'v-distpicker'
+  import {mapGetters} from 'vuex'
   export default{
     data(){
       return {
-        provinceData: [{'name': '省'}],
-        cityData: [{'name': '市'}],
-        districtData: [{'name': '区'}],
+        provinceData: [],
+        cityData: [],
+        districtData: [],
         session: sessionStorage.getItem('session'),
         parentId: [],
         inputData: {//输入框值
           companyTypeId: 4,//商户类型
           code: '1',
           name: null,//名称
-          certificateType: 4,//商户证件类型
+          certificateType: null,//商户证件类型
           certificateNo: null,//商户证件号
           addressPathId: {//行政区域id
             proviceId: null,
@@ -289,7 +290,23 @@
     compontents: {
       VDistpicker
     },
+    computed: mapGetters(['saveHealthData']),
     methods: {
+      //获取选中的公司证书类型
+      certificateType(){
+        var index = this.$refs.certificate.selectedIndex;
+        var vm = this;
+        switch (index) {
+          case 1:
+            vm.inputData.certificateType = 1;
+//            console.log(vm.inputData.certificateType)
+            break;
+          case 2:
+            vm.inputData.certificateType = 2;
+//            console.log(vm.inputData.certificateType)
+            break;
+        }
+      },
       //地市联动方法
       getArea(){
         if (sessionStorage.getItem('session')) {
@@ -321,7 +338,6 @@
         var mySelect = document.getElementById('province');
         var index = mySelect.selectedIndex;
         var parentId = mySelect.getElementsByTagName('option')[index].value;
-        this.inputData.addressPathId.proviceId = parentId;
         var getCity = new RemoteCall();
         getCity.init({
           router: "/base/area/idname/get",
@@ -341,7 +357,6 @@
         var index = myCity.selectedIndex;
         var _this = this;
         var parentId = myCity.getElementsByTagName('option')[index].value;
-        this.inputData.addressPathId.cityId = parentId;
         var getDistrict = new RemoteCall();
         getDistrict.init({
           router: "/base/area/idname/get",
@@ -360,7 +375,6 @@
         var myCity = document.getElementById('district');
         var index = myCity.selectedIndex;
         var parentId = myCity.getElementsByTagName('option')[index].value;
-        this.inputData.addressPathId.areaId = parentId;
         this.inputData.areaId = parentId;
         this.getParentId();//获取父级地区医院id
       },
@@ -413,35 +427,36 @@
       addMerchant(){//点击进行添加
         console.log(this.inputData.certificateList[this.imgIndex].imgVal);
         var vm = this;
-        this.setPicture("#form1", 0, this.addCompany);
-        this.setPicture("#form2", 1, this.addCompany);
-        this.setPicture("#form3", 2, this.addCompany);
-        this.setPicture("#form4", 3, this.addCompany);
-//        var addMerchant = new RemoteCall();
-//        addMerchant.init({
-//          router: "/company/add",
-//          session: this.session,
-//          data: {
-//            parentAreaId: this.inputData
-//          }
-//        })
-      },
-      addCompany(){//检测图片是否全部成功的函数
-        if (this.checkPictureUrl()) {
-          for (var i = 0; i < this.inputData.certificateList.length; i++) {
-            this.inputData.certificateList[i].imgUrls = null;
-            this.inputData.certificateList[i].imgVal = null;
-            this.inputData.certificateList[i].certificateName = null;
+        this.setPicture("#form1", 0);
+        this.setPicture("#form2", 1);
+        this.setPicture("#form3", 2);
+        this.setPicture("#form4", 3);
+        var addMerchant = new RemoteCall();
+        addMerchant.init({
+          router: "/company/update",
+          session: this.session,
+          data: this.inputData,
+          callback: function (data) {
+            console.log(data);
           }
-          var addMerchant = new RemoteCall(); //添加到数据库
-          addMerchant.init({
-            router: "/company/update",
-            session: this.session,
-            data: this.inputData,
-            callback: this.routerGo
-          })
-        }
+        })
       },
+//      addCompany(){//检测图片是否全部成功的函数
+//        if (this.checkPictureUrl()) {
+//          for (var i = 0; i < this.inputData.certificateList.length; i++) {
+//            this.inputData.certificateList[i].imgUrls = null;
+//            this.inputData.certificateList[i].imgVal = null;
+//            this.inputData.certificateList[i].certificateName = null;
+//          }
+//          var addMerchant = new RemoteCall(); //添加到数据库
+//          addMerchant.init({
+//            router: "/company/update,
+//            session: this.session,
+//            data: this.inputData,
+//            callback: this.routerGo
+//          })
+//        }
+//      },
       routerGo(data){
         if (data.ret.errorMessage == 'success') {
           window.location.reload()
@@ -526,17 +541,20 @@
       }
     },
     mounted: function () {
+      console.log(this.saveHealthData);
+      for (var i in this.saveHealthData) {
+        this.inputData[i] = this.saveHealthData[i];
+      }
       this.getArea();
     }
   }
 </script>
 <style lang="scss" scoped="">
-  #HealthStationUpdata {
+  #HeadlthStationAdd {
     margin: 15px;
     padding: 20px;
     background: #fff;
   }
-
   .el-col {
     margin-bottom: 20px;
     label {
@@ -558,11 +576,9 @@
       border: 1px solid #aaa;
     }
   }
-
   .girid-ipt {
     text-align: left;
   }
-
   .upload {
     margin-top: 75px;
   }
@@ -624,7 +640,6 @@
   .el-col-5 {
     width: 21.333%;
   }
-
   /*媒体查询做兼容*/
   @media screen and (max-width: 1790px) {
     label {

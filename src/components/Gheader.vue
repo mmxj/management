@@ -5,10 +5,10 @@
       <div class="title-center">
         <div class="title">医疗管理后台</div>
         <div>你好,<span>{{userName}}</span></div>
-        <div>今天是<span class="today">2017年7月19日</span></div>
+        <div>今天是<span class="today">{{time}}</span></div>
       </div>
       <div class="site">
-        惠州市惠来县水丰镇
+        {{companyName}}
       </div>
     </header>
     <router-link to="/message" class="page1 left-title">运营管理后台首页</router-link>
@@ -19,8 +19,10 @@
   export default{
     data(){
       return {
-        userName: null,
+        userName: sessionStorage.getItem('userName'),
+        companyName: sessionStorage.getItem('companyName'),
 //        session: sessionStorage.getItem('session'),
+        time: null
       }
     },
     computed: mapGetters(['loginData']),
@@ -38,13 +40,20 @@
 //                  console.log(data);
 //              }
 //            })
-//        }
+//        },
+      setTime(){
+        var time = new Date();
+        console.log(time);
+        this.time = time.getFullYear() + '年' + (time.getMonth() + 1) + '月' + time.getDate() + '日'
+      }
     },
     mounted: function () {
+      this.setTime();
     },
     watch: {
       loginData(){
-        this.userName = this.loginData.userName;
+        this.userName = this.loginData.staffName;
+        this.companyName = this.loginData.companyName;
 //        this.getUser()
       }
     }

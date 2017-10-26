@@ -211,6 +211,7 @@
 </template>
 <script>
   import VDistpicker from 'v-distpicker'
+  import {mapGetters} from 'vuex'
   export default{
     data(){
       return {
@@ -286,6 +287,7 @@
     compontents: {
       VDistpicker
     },
+    computed: mapGetters(['saveHealthData']),
     methods: {
       //获取选中的公司证书类型
       certificateType(){
@@ -539,6 +541,10 @@
     },
     mounted: function () {
       this.getArea();
+      console.log(this.saveHealthData);
+      for (var i in this.saveHealthData) {
+        this.inputData[i] = this.saveHealthData[i];
+      }
     }
   }
 </script>

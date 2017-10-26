@@ -5,11 +5,20 @@
       <el-table-column prop="no" label="消费订单号" width="250"></el-table-column>
       <el-table-column prop="insurancePayType" label="消费类型"></el-table-column>
       <el-table-column label="使用卡类型"></el-table-column>
+      <!--卡类型和卡账号无法返回 一个订单对应了几个流水账号-->
       <el-table-column label="使用卡账号"></el-table-column>
       <el-table-column prop="companyId" label="消费商户"></el-table-column>
       <el-table-column prop="amount" label="订单金额"></el-table-column>
       <el-table-column prop="clinicDate" label="支付日期"></el-table-column>
     </el-table>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage"
+      :page-size="pageSize"
+      layout="total, prev, pager, next, jumper"
+      :total="total">
+    </el-pagination>
   </div>
 </template>
 <script>
@@ -17,6 +26,9 @@
   export default{
     data(){
       return {
+        currentPage: 1,
+        pageSize: 20,
+        total: 1,
         tableData: [],
         session: sessionStorage.getItem('session'),
       }
@@ -29,17 +41,21 @@
           this.$router.push('/user')
         } else {
           var getRecord = new RemoteCall();
+          var setData = {
+            pageInfo: {
+              pageSize: 20,
+            },
+            userId: vm.userData.id
+          }
+          setData.pageInfo.pageNum = this.currentPage;
           getRecord.init({
             router: '/order/prescription/get',
             session: vm.session,
-            data: {
-              pageInfo: {
-                pageSize: 20,
-                pageNum: 1
-              },
-              userId: vm.userData.id
-            },
+            data: setData,
             callback: function (data) {
+              if (data.pageInfo.total) {
+                vm.total = data.pageInfo.total;
+              }
               if (data.rows) {
                 vm.tableData = data.rows;
                 console.log(data.rows);
@@ -71,7 +87,14 @@
           })
         }
 
-      }
+      },
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        this.currentPage = val;
+        this.getUser();
+      },
     },
     mounted: function () {
       this.getUser();
@@ -81,6 +104,9 @@
 </script>
 <style lang="scss">
   #UserRecord {
+    position: relative;
+    min-height: 850px;
+    padding-bottom: 40px;
     margin-top: 20px;
     .el-table {
       th, td {
@@ -88,6 +114,12 @@
           text-align: center;
         }
       }
+    }
+    .el-pagination {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translate(-50%, 0);
     }
   }
 </style>

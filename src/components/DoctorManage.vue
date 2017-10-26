@@ -62,6 +62,7 @@
         } else {
           this.$refs.multipleTable.clearSelection();
         }
+        console.log(row)
       },
       handleSelectionChange(val) {
         this.multipleSelection = val;

@@ -108,10 +108,13 @@
           this.saveSession(session);
           this.loginData(data)
           sessionStorage.setItem('session', session);
+          sessionStorage.setItem('userName', data.staffName)
+          sessionStorage.setItem('companyName', data.companyName)
           this.resSize()
           this.$router.push({path: '/Message'});
         }
       },
+
       resetVal(){
         this.getPicture();
       }

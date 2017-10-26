@@ -1,14 +1,15 @@
 /**
  * Created by 银信数据科技 on 2017/9/27.
  */
-import {INCREMENT, SAVEDATA, SESSION, USER, USERNAME} from './types'
+import {INCREMENT, SAVEDATA, SESSION, USER, USERNAME, HEALTH} from './types'
 import getters from './getters'
 const state={
   show:false,
   getData:null,
   saveSession: null,
   userData: null,
-  loginData: null
+  loginData: null,
+  saveHealthData: null
 }
 const mutations = {
   [INCREMENT](state){
@@ -25,6 +26,9 @@ const mutations = {
   },
   [USERNAME](state, loginData){
     state.loginData = loginData
+  },
+  [HEALTH](state, saveHealthData){
+    state.saveHealthData = saveHealthData
   }
 }
 export default{

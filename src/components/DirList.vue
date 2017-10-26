@@ -58,7 +58,12 @@
               pageNum: this.currentPage
             }
           },
-          callback: this.getCatalogCallback
+          callback: this.getCatalogCallback,
+          errorCallback: function (data) {
+            if (data) {
+              vm.$router.push('/login')
+            }
+          }
         })
       },
       getCatalogCallback(data){

@@ -16,6 +16,9 @@ export default{
   },
   loginData: (state) => {
     return state.loginData
+  },
+  saveHealthData: (state) => {
+    return state.saveHealthData
   }
 }
 
