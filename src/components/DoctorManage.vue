@@ -3,7 +3,8 @@
     <div>
       <el-row :gutter="20">
         <el-col :span="2"><label for="">
-          <router-link to="/doctoradd">编辑村医</router-link>
+          <!--<router-link to="/doctoradd">编辑村医</router-link>-->
+          <a href="javascript:" @click="goUpdata">编辑村医</a>
         </label></el-col>
         <el-col :span="2"><label for="" @click="open">删除村医</label></el-col>
       </el-row>
@@ -11,28 +12,34 @@
     <div class="tables">
       <el-table :data="tableData" border align="center" style="width:100%" max-height="600"
                 @selection-change="handleSelectionChange">
-        <el-table-column type="selection" label="选择" width="55"></el-table-column>
+        <el-table-column label="选择" width="70">
+          <template scope="scope">
+            <el-radio :label="scope.$index" v-model="radio" @change.native="getIndex(scope.$index)">&nbsp;</el-radio>
+          </template>
+        </el-table-column>
         <el-table-column prop="name" label="村医姓名" width="150"></el-table-column>
-        <el-table-column prop="company" label="归属卫生院" width="180"></el-table-column>
-        <el-table-column prop="parentCompanyId" label="归属卫生站" width="200"></el-table-column>
+        <el-table-column prop="parent2CompanyName" label="归属卫生院" width="180"></el-table-column>
+        <el-table-column prop="parentCompanyName" label="归属卫生站" width="200"></el-table-column>
         <el-table-column prop="no" label="村医编号" width="200"></el-table-column>
         <el-table-column prop="certificateNo" label="身份证号" width="200"></el-table-column>
         <el-table-column prop="email" label="村医邮箱" width="200"></el-table-column>
-        <el-table-column prop="leaderName" label="卫生站联系人" width="200"></el-table-column>
+        <el-table-column prop="leader" label="卫生站联系人" width="200"></el-table-column>
         <el-table-column prop="telephone" label="联系电话" width="200"></el-table-column>
         <el-table-column prop="accountName" label="银行账户名" width="200"></el-table-column>
         <el-table-column prop="account" label="银行账号" width="200"></el-table-column>
         <el-table-column prop="auditTime" label="添加日期" width="200"></el-table-column>
-        <el-table-column label="医生状态" width="200"></el-table-column><!--屏蔽的效果还没做-->
+        <el-table-column prop="auditFlag" label="医生状态" width="200"></el-table-column><!--屏蔽的效果还没做-->
       </el-table>
     </div>
   </div>
 </template>
 <script type="text/javascript">
+  import {mapActions} from 'vuex'
   export default{
     data(){
       return {
         session: sessionStorage.getItem('session'),
+        radio: null,
         tableData: [
 //            {
 //          name: null,
@@ -53,6 +60,11 @@
       }
     },
     methods: {
+      ...mapActions(['saveHealthData']),
+      getIndex(index){
+        this.dataIndex = index;
+        this.choose = this.tableData[index];
+      },
       //变化的时候出发 将数据放入multipleSelection中
       toggleSelection(rows) {
         if (rows) {
@@ -69,22 +81,84 @@
         console.log(this.multipleSelection)
       },
       open(){ //弹窗模块
-        this.$confirm('由于该村医已开出处方，不允许删除，如该村医信息变更可屏蔽该村医', '提示',
-          {
-            cancelButtonText: '取消',
-            confirmButtonText: '屏蔽',
-            type: 'warning',
-          }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            });
-          });
+        if (this.choose) {
+          var vm = this;
+          var checkhealth = new RemoteCall();//检查下面有没有处方
+          checkhealth.init({
+            router: '/order/prescription/get',
+            session: this.session,
+            data: {
+              doctorId: this.choose.id
+            },
+            callback: function (data) {
+              if (data.rows.length > 0) {
+                vm.choose.children = 1;
+              } else {
+                vm.choose.children = 0;
+              }
+              vm.deleteHealth();
+            }
+          })
+        } else {
+          this.$alert('请选择要删除的村医', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+
+            }
+          })
+        }
+      },
+      deleteHealth(){
+        var vm = this;
+        if (this.choose.children == 1) {
+          this.$confirm('由于该村医已开出处方，不允许删除，如该村医信息变更可屏蔽该村医', '提示',
+            {
+              cancelButtonText: '取消',
+              confirmButtonText: '屏蔽',
+              type: 'warning',
+            }).then(() => {
+            vm.shield();
+          })
+        } else if (this.choose.children === 0) {
+          this.$confirm('选择了删除该村医信息，请确定是否继续删除', '提示',
+            {
+              cancelButtonText: '取消',
+              confirmButtonText: '删除',
+              type: 'warning',
+            }).then(() => {
+            vm.deletDoctor()
+          })
+        }
+      },
+      shield(){//屏蔽卫生站
+        var vm = this;
+        var shieldHealth = new RemoteCall();
+        shieldHealth.init({
+          router: '/company/update',
+          session: vm.session,
+          data: {
+            id: vm.choose.id,
+            enableFlag: 0
+          },
+          callback: function (data) {
+            console.log(data);
+          }
         })
+      },
+      deletDoctor(){//删除村医
+        var vm = this;
+        var shieldHealth = new RemoteCall();
+        shieldHealth.init({
+          router: '/company/delete',
+          session: vm.session,
+          data: {
+            id: vm.choose.id,
+          },
+          callback: function (data) {
+            console.log(data);
+          }
+        })
+
       },
       initData(){
         var getParent = new RemoteCall();
@@ -100,36 +174,25 @@
       parentCallback(data){
 //          console.log(data)//数据不全
         for (var i = 0; i < data.rows.length; i++) {
+//              console.log(data.rows[i]);
           if (data.rows[i].companyType == 5) {
 //              console.log(data.rows[i]);
-            if (data.rows[i].parentCompanyId) {
-              var getParents = new RemoteCall();
-              getParents.init({
-                router: "/company/get",
-                session: this.session,
-                data: {
-                  id: data.rows[i].parentCompanyId
-                },
-                callback: function (src) {
-//                  console.log(src)
-                  var getParents = new RemoteCall();
-                  getParents.init({
-                    router: "/company/get",
-                    session: this.session,
-                    data: {
-                      id: src.rows[0].parentCompanyId
-                    },
-                    callback: function (res) {
-                      data.rows[i].company = res.rows[0].name
-                    }
-                  });
-                  data.rows[i].parentCompanyId = src.rows[0].name
-                }
-              })
-            }
             this.tableData.push(data.rows[i]);
+//            console.log(this.tableData)
+//            for(var i=0;i<this.tableData.length;i++){
+//              if(this.tableData[i].auditFlag===0){
+//                this.tableData[i].auditFlag='屏蔽'
+//              }else if(this.tableData[i].auditFlag==1){
+//                this.tableData[i].auditFlag='正常'
+//              }
+//            }
           }
         }
+      },
+      goUpdata(){
+        console.log(this.choose);
+        this.saveHealthData(this.choose);
+        this.$router.push('/doctorupdata')
       }
     },
     mounted: function () {

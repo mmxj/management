@@ -80,6 +80,7 @@ export default {
       }
       if (this.$route.path != '/login') {
         document.body.scrollTop = 0;
+        this.getArea();
         document.getElementsByTagName('body')[0].style.height = "";
         document.getElementsByTagName('body')[0].style.overflow = "";
       }

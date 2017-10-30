@@ -22,24 +22,44 @@
           <input type="text">
         </el-col>
         <el-col :span="2">
-          <el-button class="find">搜索</el-button>
+          <el-button class="find" @click="getCatalog">搜索</el-button>
         </el-col>
       </el-row>
     </div>
     <div class="dirTable">
+      <!--<el-table :data="tableData" border width="100%" align="center">-->
+      <!--<el-table-column prop="number" label="序号" width="80"></el-table-column>-->
+      <!--<el-table-column prop="filename" label="文件标识名称" width="300"></el-table-column>-->
+      <!--<el-table-column prop="city" label="使用地市" min-width="100"></el-table-column>-->
+      <!--<el-table-column prop="county" label="使用县区" min-width="100"></el-table-column>-->
+      <!--<el-table-column prop="district" label="使用镇区或街道办" min-width="200"></el-table-column>-->
+      <!--<el-table-column prop="file" label="三大目录文件" min-width="250"></el-table-column>-->
+      <!--<el-table-column label="操作">-->
+      <!--<template scope="scope">-->
+      <!--<el-button type="text" size="small">删除</el-button>-->
+      <!--</template>-->
+      <!--</el-table-column>-->
+      <!--</el-table>-->
       <el-table :data="tableData" border width="100%" align="center">
-        <el-table-column prop="number" label="序号" width="80"></el-table-column>
-        <el-table-column prop="filename" label="文件标识名称" width="300"></el-table-column>
-        <el-table-column prop="city" label="使用地市" min-width="100"></el-table-column>
-        <el-table-column prop="county" label="使用县区" min-width="100"></el-table-column>
-        <el-table-column prop="district" label="使用镇区或街道办" min-width="200"></el-table-column>
-        <el-table-column prop="file" label="三大目录文件" min-width="250"></el-table-column>
+        <el-table-column prop="itemNo" label="项目编码" width="120"></el-table-column>
+        <el-table-column prop="itemNameCh" label="药品名称" width="300"></el-table-column>
+        <el-table-column prop="companyName" label="归属医院" min-width="100"></el-table-column>
+        <el-table-column prop="companyId" label="归属医院" min-width="100"></el-table-column>
+        <el-table-column prop="areaName" label="归属地区" min-width="100"></el-table-column>
         <el-table-column label="操作">
           <template scope="scope">
-            <el-button type="text" size="small">删除</el-button>
+            <el-button type="text" size="small" @click="deleteCharging(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -47,31 +67,27 @@
   export default{
     data(){
       return {
+        currentPage: 1,
+        pageSize: 20,
+        total: 0,
         provinceData: [{'name': '省'}],
         cityData: [{'name': '市'}],
         districtData: [{'name': '区'}],
         session: sessionStorage.getItem('session'),
-        tableData: [
-          {
-            number: 1,
-            filename: "惠州市惠来县水丰镇三大目录列表",
-            city: "惠州市",
-            county: "惠来县",
-            district: "水丰镇",
-            file: "水丰镇卫生院报销目录"
-          },
-          {
-            number: 2,
-            filename: "阳江市阳春市河西街道办",
-            city: "阳江市",
-            county: "阳春市",
-            district: "河西街道办",
-            file: "河西医院报销列表"
-          }
-        ]
+        tableData: [],
+        sendData: {},
+        pageInfo: {}
       }
     },
     methods: {
+      handleSizeChange(val) {
+
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        this.currentPage = val;
+        this.getCatalog();
+      },
       //地市联动方法
       getArea(){
         if (sessionStorage.getItem('session')) {
@@ -140,9 +156,54 @@
         var myCity = document.getElementById('district');
         var index = myCity.selectedIndex;
         var parentId = myCity.getElementsByTagName('option')[index].value;
-
+        this.sendData.areaId = parentId;
       },
       //地市联动结束
+      getCatalog(){//获取目录数据
+        var vm = this
+        this.pageInfo.pageSize = this.pageSize;
+        this.pageInfo.pageNum = this.currentPage;
+        this.sendData.pageInfo = this.pageInfo;
+        console.log(this.sendData);
+        var getCatalog = new RemoteCall();
+        getCatalog.init({
+          router: "/base/hospital_charging_item_detail/get",
+          session: this.session,
+          data: vm.sendData,
+          callback: this.getCallback,
+          errorCallback: function (data) {
+            if (data) {
+              vm.$router.push('/login')
+            }
+          }
+        })
+      },
+      getCallback(data){
+        if (data.pageInfo.total) {
+          this.total = data.pageInfo.total;
+        }
+        console.log(data);
+        this.tableData = data.rows;
+      },
+      deleteCharging(data){//删除目标
+        console.log(data.$index);
+        var vm = this;
+        var listId = this.tableData[data.$index].id;
+//          console.log(listId);
+        var del = new RemoteCall();
+        del.init({
+            router: '/base/hospital_charging_item/delete',
+            session: this.session,
+            data: {
+              id: listId
+            },
+            callback: function (data) {
+              console.log(data);
+              vm.getCatalog();
+            }
+          }
+        )
+      }
     },
     mounted: function () {
       this.getArea();

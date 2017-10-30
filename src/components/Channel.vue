@@ -95,6 +95,7 @@
         }
       },
       addChannelData(str){//添加
+        var vm = this;
         var addChannel = new RemoteCall();
         addChannel.init({
           router: '/base/RouteApi/add',
@@ -107,6 +108,7 @@
         })
       },
       changeChannelData(str){//修改
+        var vm = this;
         console.log(str);
         var vm = this;
         var tdName = vm.tdName
@@ -122,6 +124,7 @@
         })
       },
       deleteChannel(str){
+        var vm = this;
         var addChannel = new RemoteCall();
         addChannel.init({
           router: '/base/RouteApi/delete',
@@ -152,7 +155,6 @@
               vm.tableData = data.rows;
               for (var i = 0; i < vm.tableData.length; i++) {
                 vm.btnArr[i] = '编辑'
-                vm.tableData[i].rate = vm.tableData[i].rate * 100 + '%';
                 if (vm.tableData[i].enableFlag == 1) {
                   vm.tableData[i].enableFlag = '可用'
                 } else {
@@ -168,8 +170,8 @@
                   case 3:
                     vm.tableData[i].businessType = '门诊';
                     break;
-
                 }
+                vm.tableData[i].rate = vm.tableData[i].rate * 100 + '%';
               }
             }
           }

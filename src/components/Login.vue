@@ -86,7 +86,7 @@
         var password = $.md5(document.getElementById("password").value).toUpperCase();
         var loginName = document.getElementById("loginName").value;
         var validateCode = document.getElementById("validateCode").value;
-        this.$router.push({path: '/Message'});//点击跳转测试用记得删除这个事件
+//        this.$router.push({path: '/Message'});//点击跳转测试用记得删除这个事件
         var login = new RemoteCall();
         login.init({
           router: "/company/staff/login",
@@ -97,7 +97,8 @@
             "validateCode": validateCode,
             "validateCodeId": this.validateCodeId
           },
-          callback: this.loginCallback
+          callback: this.loginCallback,
+          errorCallback: this.loginError
         });
 
       },
@@ -111,10 +112,36 @@
           sessionStorage.setItem('userName', data.staffName)
           sessionStorage.setItem('companyName', data.companyName)
           this.resSize()
-          this.$router.push({path: '/Message'});
+          this.$router.push({path: '/message'});
+        } else if (data.ret.errorCode === -1) {
+          switch (data.ret.errorMessage) {
+            case 'password error':
+              this.$alert('密码错误', '提示', {
+                confirmButtonText: '确定'
+              });
+              break;
+            case 'user login not exist':
+              this.$alert('账号不存在', '提示', {
+                confirmButtonText: '确定'
+              });
+              break;
+            case 'Exception: 字段：validateCode为空字符串，请检查!':
+              this.$alert('验证码不能为空', '提示', {
+                confirmButtonText: '确定'
+              });
+              break;
+            case  'ValidateCode error':
+              this.$alert('验证码错误', '提示', {
+                confirmButtonText: '确定'
+              });
+              break;
+
+          }
         }
       },
-
+      loginError(data){
+        console.log('错误' + data)
+      },
       resetVal(){
         this.getPicture();
       }

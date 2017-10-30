@@ -25,26 +25,33 @@
         <el-col :span="2">
           <label for="">安装地址</label>
         </el-col>
-        <el-col :span="12" class="area">
-          <el-row>
-            <el-col :span="12">
-              <div class="distpicker">
-                <select name="" id="province2" @change="setCity2()">
-                  <option value="">省</option>
-                  <option v-for="data in provinceData2" v-bind:value="data.id">{{data.name}}</option>
-                </select>
-                <select name="" id="city2" @change="setDistrict2()">
-                  <option value="">市</option>
-                  <option v-for="data in cityData2" v-bind:value="data.id">{{data.name}}</option>
-                </select>
-                <select name="" id="district2" @change="setAreaId2()">
-                  <option value="">区</option>
-                  <option v-for="datas in districtData2" v-bind:value="datas.id">{{datas.name}}</option>
-                </select>
-              </div>
-            </el-col>
-            <el-col :span="12"><input type="text" v-model="inputData.address"></el-col>
-          </el-row>
+        <el-col :span="6" class="area">
+          <!--<el-row>-->
+          <!--<el-col :span="12">-->
+          <!--<div class="distpicker">-->
+          <!--<select name="" id="province2" @change="setCity2()">-->
+          <!--<option value="">省</option>-->
+          <!--<option v-for="data in provinceData2" v-bind:value="data.id">{{data.name}}</option>-->
+          <!--</select>-->
+          <!--<select name="" id="city2" @change="setDistrict2()">-->
+          <!--<option value="">市</option>-->
+          <!--<option v-for="data in cityData2" v-bind:value="data.id">{{data.name}}</option>-->
+          <!--</select>-->
+          <!--<select name="" id="district2" @change="setAreaId2()">-->
+          <!--<option value="">区</option>-->
+          <!--<option v-for="datas in districtData2" v-bind:value="datas.id">{{datas.name}}</option>-->
+          <!--</select>-->
+          <!--</div>-->
+          <!--</el-col>-->
+          <!--<el-col :span="12"><input type="text" v-model="inputData.address"></el-col>-->
+          <!--</el-row>-->
+          <input type="text" v-model="inputData.address">
+        </el-col>
+        <el-col :span="2">
+          <label for="">商户MCC码</label>
+        </el-col>
+        <el-col :span="6">
+          <input type="text" v-model="inputData.mccNo">
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -64,7 +71,10 @@
           <label for="">收单机构</label>
         </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="merchantName2" :placeholder="placeholder2" @blur="getText2(merchantName2)">
+          <ul class="company" ref="searchBox2">
+            <li v-for="name in companyName" v-on:click="getText2(name)">{{name}}</li>
+          </ul>
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -93,7 +103,7 @@
           <label for="">商户名称</label>
         </el-col>
         <el-col :span="6">
-          <input type="text" v-model="merchantName" :placeholder="placeholder">
+          <input type="text" v-model="merchantName" :placeholder="placeholder" @blur="getText(merchantName)">
           <ul class="company" ref="searchBox">
             <li v-for="name in companyName" v-on:click="getText(name)">{{name}}</li>
           </ul>
@@ -163,6 +173,7 @@
         districtData2: [{}],
         companyName: [],
         merchantName: null,
+        merchantName2: null,
         pickerOptions0: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7;
@@ -200,7 +211,8 @@
         },
         session: sessionStorage.getItem('session'),
         onoff: true,
-        placeholder: null
+        placeholder: null,
+        placeholder2: null
       }
     },
     methods: {
@@ -233,21 +245,23 @@
       setCity(){
         var _this = this;
         var mySelect = document.getElementById('province');
-        var index = mySelect.selectedIndex;
-        var parentId = mySelect.getElementsByTagName('option')[index].value;
-        var getCity = new RemoteCall();
-        getCity.init({
-          router: "/base/area/idname/get",
-          session: this.session,
-          data: {
-            parentAreaId: parentId
-          }
-        });
-        this.cityData = getCity.res.rows;
-        clearTimeout(timer);
-        var timer = setTimeout(function () {
-          _this.setDistrict();
-        }, 10)
+        if (mySelect.selectedIndex) {
+          var index = mySelect.selectedIndex;
+          var parentId = mySelect.getElementsByTagName('option')[index].value;
+          var getCity = new RemoteCall();
+          getCity.init({
+            router: "/base/area/idname/get",
+            session: this.session,
+            data: {
+              parentAreaId: parentId
+            }
+          });
+          this.cityData = getCity.res.rows;
+          clearTimeout(timer);
+          var timer = setTimeout(function () {
+            _this.setDistrict();
+          }, 10)
+        }
       },
       setDistrict(){//县区获取
         var myCity = document.getElementById('city');
@@ -269,10 +283,10 @@
         }, 10)
       },
       setAreaId(){//获取areaid 给inputData赋值
-        var myCity = document.getElementById('district');
-        var index = myCity.selectedIndex;
-        var parentId = myCity.getElementsByTagName('option')[index].value;
-        this.inputData.areaId = parentId;
+//        var myCity = document.getElementById('district');
+//        var index = myCity.selectedIndex;
+//        var parentId = myCity.getElementsByTagName('option')[index].value;
+//        this.inputData.areaId = parentId;
       },
       //地市联动结束
       //地市联动方法 //找个时间封装
@@ -361,13 +375,13 @@
           }
         })
       },
-      getPicture(){//通过公司名字获取id
+      getPicture(name){//通过公司名字获取id
         var pictureMessage = new RemoteCall();
         pictureMessage.init({
           router: "/company/certificate/get",
           session: this.session,
           data: {
-            companyName: this.merchantName,
+            companyName: name,
             pageInfo: {
               pageSize: 15,
               pageNum: 1
@@ -413,6 +427,24 @@
           this.placeholder = '请输入合作行业名称或编号搜索对应商户图片信息'
         }
       },
+      getText2(name){//点击获取提示框的文字替换到数据中
+        this.placeholder2 = name;
+        this.merchantName2 = null;
+        this.inputData.acquirerName = this.placeholder2;
+        this.saveData = [];
+        for (var i = 0; i < this.dataList.length; i++) {
+          if (name == this.dataList[i].companyName) {
+            this.saveData.push(this.dataList[i])//将匹配的信息保存的到数组中
+          }
+        }
+        this.$refs.searchBox2.style.display = 'none';
+        this.getCompanyIp2(this.inputData.acquirerName);
+      },
+      holder(){
+        if (!this.valChange) {
+          this.placeholder = '请输入合作行业名称或编号搜索对应商户图片信息'
+        }
+      },
       getCompanyIp(name){
         var vm = this;
         var getCompanyIp = new RemoteCall();
@@ -432,9 +464,35 @@
               if (data.rows[i].name == vm.inputData.merchantName) {
                 vm.inputData.companyId = data.rows[i].id;
                 vm.inputData.merchantNo = data.rows[i].no; //商户编码 没有返回merchantNo 暂时用no代替
-                break;
+                return;
               }
             }
+            alert('找不到该商户，请新建')
+          },
+        })
+      },
+      getCompanyIp2(name){
+        var vm = this;
+        var getCompanyIp = new RemoteCall();
+        getCompanyIp.init({
+          router: "/company/get",
+          session: this.session,
+          data: {
+            companyName: name,
+            pageInfo: {
+              pageSize: 15,
+              pageNum: 1
+            }
+          },
+          callback: function (data) {
+            console.log(data);
+            for (let i = 0; i < data.rows.length; i++) {
+              if (data.rows[i].name == vm.inputData.acquirerName) {
+                vm.inputData.acquirerId = data.rows[i].id;
+                return
+              }
+            }
+            alert('找不到该收单机构，请新建')
           },
         })
       },
@@ -459,12 +517,11 @@
     },
     mounted: function () {
       this.getArea();
-      this.getArea2();
       this.getTerminal();
     },
     watch: {
       merchantName: function () {
-        this.getPicture();
+        this.getPicture(this.merchantName);
         if (this.companyName != '[]') {
           if (this.companyName.length > 0) {
             this.$refs.searchBox.style.display = 'block';
@@ -475,6 +532,21 @@
 //              console.log(this.$refs.searchBox.clientWidth)
           } else {
             this.$refs.searchBox.style.display = 'none';
+          }
+        }
+      },
+      merchantName2: function () {
+        this.getPicture(this.merchantName2);
+        if (this.companyName != '[]') {
+          if (this.companyName.length > 0) {
+            this.$refs.searchBox2.style.display = 'block';
+            if (this.onoff) {
+              this.$refs.searchBox2.style.width = this.$refs.searchBox2.clientWidth - 20 + 'px';
+              this.onoff = !this.onoff
+            }
+//              console.log(this.$refs.searchBox.clientWidth)
+          } else {
+            this.$refs.searchBox2.style.display = 'none';
           }
         }
       }

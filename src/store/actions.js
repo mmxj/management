@@ -26,5 +26,11 @@ export default {
   },
   saveHealthData: ({commit}, saveHealthData) => {
     commit(types.HEALTH, saveHealthData)
+  },
+  addList: ({commit}, addList) => {
+    commit(types.LIST, addList)
+  },
+  urlArr: ({commit}, urlArr) => {
+    commit(types.URL, urlArr)
   }
 }

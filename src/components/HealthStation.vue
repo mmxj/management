@@ -33,7 +33,7 @@
         </el-table-column>
         <el-table-column prop="name" label="卫生站名称" width="200">
         </el-table-column>
-        <el-table-column prop="parentCompanyId" label="归属卫生院" width="200">
+        <el-table-column prop="parentCompanyName" label="归属卫生院" width="200">
         </el-table-column>
         <el-table-column prop="certificateType" label="证件类型" width="120">
         </el-table-column>
@@ -57,7 +57,7 @@
         </el-table-column>
         <el-table-column prop="auditTime" label="添加日期" width="220">
         </el-table-column>
-        <el-table-column prop="type" label="卫生站状态" width="220">
+        <el-table-column prop="auditFlag" label="卫生站状态" width="220">
         </el-table-column>
       </el-table>
       <el-pagination
@@ -154,6 +154,7 @@
         }
       },
       deleteHealth(){
+        var vm = this;
         if (this.choose.children == 1) {
           this.$confirm('由于该卫生站已有村医出诊，不允许删除，如该卫生站信息变更可屏蔽该卫生站', '提示',
             {
@@ -161,15 +162,7 @@
               confirmButtonText: '屏蔽',
               type: 'warning',
             }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '屏蔽成功!'
-            }).catch(() => {
-              this.$message({
-                type: 'info',
-                message: '取消成功'
-              });
-            });
+            vm.shield();
           })
         } else if (this.choose.children === 0) {
           this.$confirm('选择了删除该卫生站信息，请确定是否继续删除', '提示',
@@ -177,23 +170,40 @@
               cancelButtonText: '取消',
               confirmButtonText: '删除',
               type: 'warning',
-              beforeClose: (action, instance, done) => {
-                console.log(action);
-                console.log(instance);
-                console.log(done);
-              }
             }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            }).catch(() => {
-              this.$message({
-                type: 'info',
-                message: '取消成功'
-              });
-            });
+            vm.deletDoctor()
           })
         }
+      },
+      shield(){//屏蔽卫生站
+        var vm = this;
+        var shieldHealth = new RemoteCall();
+        shieldHealth.init({
+          router: '/company/update',
+          session: vm.session,
+          data: {
+            id: vm.choose.id,
+            auditFlag: 0
+          },
+          callback: function (data) {
+            console.log(data);
+          }
+        })
+      },
+      deletDoctor(){//删除村医
+        var vm = this;
+        var shieldHealth = new RemoteCall();
+        shieldHealth.init({
+          router: '/company/delete',
+          session: vm.session,
+          data: {
+            id: vm.choose.id,
+          },
+          callback: function (data) {
+            console.log(data);
+          }
+        })
+
       },
       initData(){
         var getParent = new RemoteCall();
@@ -223,6 +233,13 @@
           vm.total = data.pageInfo.total;
         }
         this.tableData = data.rows;
+        for (var i = 0; i < this.tableData.length; i++) {
+          if (this.tableData[i].auditFlag === 0) {
+            this.tableData[i].auditFlag = '屏蔽'
+          } else if (this.tableData[i].auditFlag == 1) {
+            this.tableData[i].auditFlag = '正常'
+          }
+        }
       },
       goUpdata(){
         console.log(this.choose);

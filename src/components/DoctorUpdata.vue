@@ -2,32 +2,64 @@
   <div id="HeadlthStationAdd">
     <div>
       <el-row :gutter="20">
-        <el-col :span="3"><label for="">卫生站名称</label></el-col>
-        <el-col :span="5"><input type="text" v-model="inputData.name"></el-col>
+        <el-col :span="3"><label for="">村医名称</label></el-col>
+        <el-col :span="5">
+          <input type="text" v-model="inputData.name">
+        </el-col>
+        <el-col :span="3"><label for="">归属卫生院</label></el-col>
+        <el-col :span="5">
+          <select @change="getparentChange" ref="mySelect">
+            <option ref="options">
+              请选择归属卫生院
+            </option>
+            <option v-for="data in parentId" v-bind:value="data.id" ref="options">
+              {{data.name}}
+            </option>
+          </select>
+        </el-col>
+        <el-col :span="7">
+          <a href="javascript:" class="addHealth">找不到对应的卫生院？请点击添加</a>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
         <el-col :span="3">
-          <label for="">卫生站地址</label>
+          <label for="">村医身份证号</label>
         </el-col>
         <el-col :span="5">
-          <!--<div class="distpicker">-->
-          <!--<v-distpicker province="省" city="市" area="区"></v-distpicker>-->
-          <div class="distpicker">
-            <select name="" id="province" @change="setCity()">
-              <option value="">省</option>
-              <option v-for="data in provinceData" v-bind:value="data.id">{{data.name}}</option>
-            </select>
-            <select name="" id="city" @change="setDistrict()">
-              <option value="">市</option>
-              <option v-for="data in cityData" v-bind:value="data.id">{{data.name}}</option>
-            </select>
-            <select name="" id="district" @change="setAreaId()">
-              <option value="">区</option>
-              <option v-for="datas in districtData" v-bind:value="datas.id">{{datas.name}}</option>
-            </select>
-          </div>
-          <!--</div>-->
+          <input type="text" v-model="inputData.certificateNo">
         </el-col>
         <el-col :span="3">
-          <label for="">卫生站操作员号</label>
+          <label for="">归属卫生站</label>
+        </el-col>
+        <el-col :span="5">
+          <select ref="mySelect2" @change="hospitalChange">
+            <option ref="options2">
+              请选择归属卫生站
+            </option>
+            <option v-for="data in hospital" v-bind:value="data.id" ref="options2">
+              {{data.name}}
+            </option>
+          </select>
+        </el-col>
+        <el-col :span="7">
+          <router-link to="/healthstationadd" class="addHealth">找不到对应的卫生站？请点击添加</router-link>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="3">
+          <label for="">村医邮箱</label>
+        </el-col>
+        <el-col :span="5">
+          <input type="text" v-model="inputData.email">
+        </el-col>
+        <el-col :span="3">
+          <label for="">联系电话</label>
+        </el-col>
+        <el-col :span="5">
+          <input type="text" v-model="inputData.telephone">
+        </el-col>
+        <el-col :span="2">
+          <label for="">村医编码</label>
         </el-col>
         <el-col :span="5">
           <input type="text" v-model="inputData.no">
@@ -35,63 +67,11 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="3">
-          <label for="">卫生院证件类型</label>
-        </el-col>
-        <el-col :span="5">
-          <select ref="certificate" @change="certificateType">
-            <option>请选择证件类型</option>
-            <option>营业执照</option>
-            <option>从业资格证</option>
-          </select>
-        </el-col>
-        <el-col :span="3"><label for="">归属卫生院</label></el-col>
-        <el-col :span="5">
-          <select ref="mySelect" @change="getparentChange">
-            <option>
-              请选择归属卫生院
-            </option>
-            <option v-for="data in parentId" v-bind:value="data.id" ref="options">{{data.name}}</option>
-          </select>
-        </el-col>
-        <el-col :span="7">
-          <router-link class="addHealth" to="/merchantadd">找不到对应的卫生院？请点击添加</router-link>
-        </el-col>
-
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="3">
-          <label for="">卫生站证件号</label>
-        </el-col>
-        <el-col :span="5">
-          <input type="text" v-model="inputData.certificateNo">
-        </el-col>
-
-        <el-col :span="3">
-          <label for="">卫生站联系人</label>
-        </el-col>
-        <el-col :span="5">
-          <input type="text" v-model="inputData.leaderName">
-        </el-col>
-        <el-col :span="3">
-          <label for="">卫生站法人</label>
-        </el-col>
-        <el-col :span="5">
-          <input type="text" v-model="inputData.corporation">
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="3">
-          <label for="">卫生站邮箱</label>
-        </el-col>
-        <el-col :span="5"><input type="text" v-model="inputData.email"></el-col>
-        <el-col :span="3">
           <label for="">银行账号</label>
         </el-col>
         <el-col :span="5">
           <input type="text" v-model="inputData.account">
         </el-col>
-
-
         <el-col :span="3">
           <label for="">银行账号名</label>
         </el-col>
@@ -103,7 +83,7 @@
     <div class="upload">
       <el-row :gutter="20">
         <el-col :span="4">
-          <div class="girid-content"><label>营业执照上传</label></div>
+          <div class="girid-content"><label>村医身份证上传</label></div>
         </el-col>
         <el-col :span="8">
           <div class="girid-content girid-ipt">
@@ -178,31 +158,8 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="4">
-          <div class="girid-content"><label>法人身份证照片上传</label></div>
-        </el-col>
-        <el-col :span="8">
-          <div class="girid-content girid-ipt"><input type="text" name=""
-                                                      v-model="inputData.certificateList[3].certificateName"></div>
-        </el-col>
-        <el-col :span="3">
-          <div class="upload-btn" @click="changeIndex(3)">浏览选择附件
-            <iframe name="frame4" frameborder="0" height="40"></iframe>
-            <form action="http://192.168.0.137:18081/yxsj-openapi-web/openapi/upload/upload.do" method="post"
-                  enctype="multipart/form-data" name="From4" id="form4" target="frame2">
-              <input type="file" name="file" v-on:change="imgUrl"
-                     accept="image/gif,image/jpeg,image/jpg,image/png,image/svg">
-              <input type="text" name="upload_type" value="4" style="display:none">;
-            </form>
-          </div>
-        </el-col>
-        <el-col :span="3">
-          <div class="checkImg" @click="showImg(3)">点击查看大图</div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
         <el-col :span="2" :offset="20">
-          <button type="button" class="grid-content upload-btn" @click.prevent="addMerchant">添加商户</button>
+          <button type="button" class="grid-content upload-btn" @click="addMerchant">添加村医</button>
         </el-col>
       </el-row>
     </div>
@@ -218,16 +175,17 @@
   export default{
     data(){
       return {
-        provinceData: [],
-        cityData: [],
-        districtData: [],
+        provinceData: [{'name': '省'}],
+        cityData: [{'name': '市'}],
+        districtData: [{'name': '区'}],
         session: sessionStorage.getItem('session'),
         parentId: [],
+        hospital: [],
         inputData: {//输入框值
-          companyTypeId: 4,//商户类型
+          companyTypeId: 5,//商户类型
           code: '1',
           name: null,//名称
-          certificateType: null,//商户证件类型
+          certificateType: 1,//商户证件类型还未修改
           certificateNo: null,//商户证件号
           addressPathId: {//行政区域id
             proviceId: null,
@@ -250,14 +208,14 @@
             {
               isPersonal: 0,
               certificateType: 1,
-              certificateTypeName: "营业执照",
+              certificateTypeName: "村医身份证",
               certificateName: null,
               picSavePath: null,//保存路径
               imgUrls: null
             },
             {
               isPersonal: 0,
-              certificateType: 1,
+              certificateType: 2,
               certificateTypeName: "从业资格证",
               certificateName: null,
               picSavePath: null,
@@ -267,14 +225,6 @@
               isPersonal: 0,
               certificateType: 1,
               certificateTypeName: "银行卡资料",
-              certificateName: null,
-              picSavePath: null,
-              imgUrls: null
-            },
-            {
-              isPersonal: 0,
-              certificateType: 1,
-              certificateTypeName: "法人身份证",
               certificateName: null,
               picSavePath: null,
               imgUrls: null
@@ -292,95 +242,7 @@
     },
     computed: mapGetters(['saveHealthData']),
     methods: {
-      //获取选中的公司证书类型
-      certificateType(){
-        var index = this.$refs.certificate.selectedIndex;
-        var vm = this;
-        switch (index) {
-          case 1:
-            vm.inputData.certificateType = 1;
-//            console.log(vm.inputData.certificateType)
-            break;
-          case 2:
-            vm.inputData.certificateType = 2;
-//            console.log(vm.inputData.certificateType)
-            break;
-        }
-      },
-      //地市联动方法
-      getArea(){
-        if (sessionStorage.getItem('session')) {
-          this.session = sessionStorage.getItem('session');//获取本地存储保存session状态
-        } else {
-          this.$router.push({path: '/login'})
-        }
-        var _this = this;
-        var getArea = new RemoteCall();
-        getArea.init({
-          router: "/base/area/idname/get",
-          session: _this.session,
-          data: {
-            parentAreaId: 0
-          },
-          callback: this.getAreaCallback
-        });
-      },
-      getAreaCallback(data){
-        var _this = this;
-        this.provinceData = data.rows
-        clearTimeout(timer)
-        var timer = setTimeout(function () {
-          _this.setCity();
-        }, 0)
-      },
-      setCity(){
-        var _this = this;
-        var mySelect = document.getElementById('province');
-        var index = mySelect.selectedIndex;
-        var parentId = mySelect.getElementsByTagName('option')[index].value;
-        var getCity = new RemoteCall();
-        getCity.init({
-          router: "/base/area/idname/get",
-          session: this.session,
-          data: {
-            parentAreaId: parentId
-          }
-        });
-        this.cityData = getCity.res.rows;
-        clearTimeout(timer);
-        var timer = setTimeout(function () {
-          _this.setDistrict();
-        }, 10)
-      },
-      setDistrict(){//县区获取
-        var myCity = document.getElementById('city');
-        var index = myCity.selectedIndex;
-        var _this = this;
-        var parentId = myCity.getElementsByTagName('option')[index].value;
-        var getDistrict = new RemoteCall();
-        getDistrict.init({
-          router: "/base/area/idname/get",
-          session: this.session,
-          data: {
-            parentAreaId: parentId
-          }
-        });
-        this.districtData = getDistrict.res.rows;
-        clearTimeout(timer);
-        var timer = setTimeout(function () {
-          _this.setAreaId();
-        }, 10)
-      },
-      setAreaId(){//获取areaid 给inputData赋值
-        var myCity = document.getElementById('district');
-        var index = myCity.selectedIndex;
-        var parentId = myCity.getElementsByTagName('option')[index].value;
-        this.inputData.areaId = parentId;
-        this.getParentId();//获取父级地区医院id
-      },
-      //地市联动结束
-
-
+//
       //获取上传文件的路径
       imgUrl(e){
         var files = e.target.files || e.dataTransfer.files;
@@ -427,45 +289,44 @@
       addMerchant(){//点击进行添加
         console.log(this.inputData.certificateList[this.imgIndex].imgVal);
         var vm = this;
-        this.setPicture("#form1", 0);
-        this.setPicture("#form2", 1);
-        this.setPicture("#form3", 2);
-        this.setPicture("#form4", 3);
-        var addMerchant = new RemoteCall();
-        addMerchant.init({
-          router: "/company/update",
-          session: this.session,
-          data: this.inputData,
-          callback: function (data) {
-            console.log(data);
-          }
-        })
+        this.setPicture("#form1", 0, this.addCompany);
+        this.setPicture("#form2", 1, this.addCompany);
+        this.setPicture("#form3", 2, this.addCompany);
+        this.setPicture("#form4", 3, this.addCompany);
+//        var addMerchant = new RemoteCall();
+//        addMerchant.init({
+//          router: "/company/add",
+//          session: this.session,
+//          data: {
+//            parentAreaId: this.inputData
+//          }
+//        })
       },
-//      addCompany(){//检测图片是否全部成功的函数
-//        if (this.checkPictureUrl()) {
-//          for (var i = 0; i < this.inputData.certificateList.length; i++) {
-//            this.inputData.certificateList[i].imgUrls = null;
+      addCompany(){//检测图片是否全部成功的函数
+        if (this.checkPictureUrl()) {
+          for (var i = 0; i < this.inputData.certificateList.length; i++) {
+            this.inputData.certificateList[i].imgUrls = null;
 //            this.inputData.certificateList[i].imgVal = null;
 //            this.inputData.certificateList[i].certificateName = null;
-//          }
-//          var addMerchant = new RemoteCall(); //添加到数据库
-//          addMerchant.init({
-//            router: "/company/update,
-//            session: this.session,
-//            data: this.inputData,
-//            callback: this.routerGo
-//          })
-//        }
-//      },
+          }
+          var addMerchant = new RemoteCall();
+          addMerchant.init({
+            router: "/company/add",
+            session: this.session,
+            data: this.inputData,
+            callback: this.routerGo
+          })
+        }
+      },
       routerGo(data){
         if (data.ret.errorMessage == 'success') {
           window.location.reload()
         }
       },
       checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
-        for (var i = 0; i < 4; i++) {
+        for (var i = 0; i < 3; i++) {
           if (!this.inputData.certificateList[i].picSavePath) {
-//            console.log(this.inputData.certificateList[i].picSavePath);
+            console.log(this.inputData.certificateList[i].picSavePath);
             return false
           }
         }
@@ -486,13 +347,10 @@
                     alert("营业执照上传失败")
                     break;
                   case 1:
-                    alert("从业资格证上传")
+                    alert("从业资格证上传失败")
                     break;
                   case 2:
-                    alert("银行卡资料上传")
-                    break;
-                  case 3:
-                    alert("法人身份证照片上传")
+                    alert("银行卡资料上传失败")
                     break;
                   default:
                     alert("照片上传错误请重新上传")
@@ -510,7 +368,6 @@
         if (addcompany) {
           addcompany();//判断所有图片上传成功后回调
         }
-
 //        console.log(JSON.parse(data).data[0].saved_file)
       },
       getParentId(){//获取父级卫生院数据 插入到节点中
@@ -519,7 +376,7 @@
           router: "/company/get",
           session: this.session,
           data: {
-            aredId: parseInt(this.inputData.areaId)
+//            aredId:parseInt(this.inputData.areaId)
           },
           callback: this.parentCallback
         })
@@ -534,21 +391,40 @@
       },
       getparentChange(){
         var index = this.$refs.mySelect.selectedIndex - 1;
-        if (index >= 0) {
-          console.log(this.$refs.options[index].value)
-          this.inputData.parentCompanyId = this.$refs.options[index].value;
+        this.parentCompanyId = this.$refs.options[index].value;
+        this.gethospital();
+      },
+      gethospital(){
+        var gethospital = new RemoteCall();
+        gethospital.init({
+          router: "/company/get",
+          session: this.session,
+          data: {
+            parentCompanyId: this.parentCompanyId
+          },
+          callback: this.hospitalCallback
+        })
+      },
+      hospitalCallback(data){
+        this.hospital = data.rows;
+      },
+      hospitalChange(){
+        var index = this.$refs.mySelect2.selectedIndex - 1;
+        console.log(this.$refs.options2[index].value)
+        if (this.$refs.options2[index].value) {
+          this.inputData.parentCompanyId = this.$refs.options2[index].value;
         }
+
       }
     },
     mounted: function () {
-      console.log(this.saveHealthData);
+      this.getParentId()
       if (!this.saveHealthData) {
-        this.$router.push('/healthstation')
+        this.$router.push('/doctormanage')
       }
       for (var i in this.saveHealthData) {
         this.inputData[i] = this.saveHealthData[i];
       }
-      this.getArea();
     }
   }
 </script>
@@ -558,6 +434,7 @@
     padding: 20px;
     background: #fff;
   }
+
   .el-col {
     margin-bottom: 20px;
     label {
@@ -579,9 +456,11 @@
       border: 1px solid #aaa;
     }
   }
+
   .girid-ipt {
     text-align: left;
   }
+
   .upload {
     margin-top: 75px;
   }
@@ -628,8 +507,7 @@
   .addHealth {
     display: block;
     line-height: 36px;
-    text-indent: 3em;
-    color: royalblue;
+    text-indent: 2em;
   }
 
   .checkImg {
@@ -637,12 +515,13 @@
   }
 
   .el-col-3 {
-    width: 12%;
+    width: 11%;
   }
 
   .el-col-5 {
-    width: 21.333%;
+    width: 22.333%;
   }
+
   /*媒体查询做兼容*/
   @media screen and (max-width: 1790px) {
     label {
@@ -652,22 +531,17 @@
   }
 
   @media screen and (max-width: 1700px) {
-    .el-col-3 {
-      width: 12%;
+    .el-col-2 {
+      width: 10%;
     }
-
-    .el-col-5 {
-      width: 21.333%;
+    .el-col-6 {
+      width: 23.333333%;
     }
-  }
-
-  @media screen and (max-width: 1366px) {
     .el-col-3 {
       width: 14%;
     }
-
     .el-col-5 {
-      width: 19.333%;
+      width: 17.8333%;
     }
     .addHealth {
       text-indent: 1em;
@@ -702,6 +576,7 @@
 
     }
   }
+
 </style>
 <style type="text/css">
   .distpicker select {
@@ -713,7 +588,7 @@
     border: 1px solid #aaa
   }
 
-  @media screen and (max-width: 1500px) {
+  @media screen and (max-width: 1700px) {
     .distpicker select {
       width: 31% !important;
     }

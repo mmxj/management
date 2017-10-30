@@ -19,6 +19,12 @@ export default{
   },
   saveHealthData: (state) => {
     return state.saveHealthData
+  },
+  readList: (state) => {
+    return state.addList
+  },
+  getUrlArr: (state) => {
+    return state.urlArr
   }
 }
 

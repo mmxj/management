@@ -9,7 +9,7 @@
           <el-row :gutter="20">
             <el-col :span="12" class="el-timer">
               <el-row>
-                <el-col :span="4" v-for="(data,index) in btnData">
+                <el-col :span="4" v-for="(data,index) in btnData" :key="data.id">
                   <el-button :class="{active:index==isActive}" @click="getTodays(index)">{{data.name}}</el-button>
                 </el-col>
               </el-row>
@@ -30,7 +30,7 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-row>
-                <el-col :span="4" v-for="(item,index) in reportdata">
+                <el-col :span="4" v-for="(item,index) in reportdata" :key="item.id">
                   <el-button :class="{'active':index==isActive2}" @click="getReportActive(index)">{{item.name}}
                   </el-button>
                 </el-col>
@@ -88,18 +88,18 @@
       return {
         session: sessionStorage.getItem('session'),
         btnData: [
-          {name: '今天'},
-          {name: '近三天'},
-          {name: '近一周'},
-          {name: '本月'},
-          {name: '本季度'},
+          {name: '今天', id: 1},
+          {name: '近三天', id: 2},
+          {name: '近一周', id: 3},
+          {name: '本月', id: 4},
+          {name: '本季度', id: 5},
         ],
         reportdata: [
-          {name: '行业客户报表'},
-          {name: '商户报表'},
-          {name: '地区报表'},
-          {name: '支付类型报表'},
-          {name: '业务类型报表'},
+          {name: '行业客户报表', id: 1},
+          {name: '商户报表', id: 2},
+          {name: '地区报表', id: 3},
+          {name: '支付类型报表', id: 4},
+          {name: '业务类型报表', id: 5},
         ],
         isActive: 0,
         isActive2: 0,

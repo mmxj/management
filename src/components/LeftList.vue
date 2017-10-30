@@ -4,76 +4,116 @@
              theme="dark" :unique-opened="opened">
       <el-submenu index="1">
         <template slot="title">基础信息管理</template>
-        <el-menu-item index="/user" class="menu-border-bottom el-lvtwo">用户信息</el-menu-item>
+        <el-menu-item index="/user" class="menu-border-bottom el-lvtwo" @click="getIndex(0)">{{listArr[0]}}
+        </el-menu-item>
         <el-submenu index="1-2">
           <template slot="title">
-            <router-link class="el-lvtwo" to="/merchant">商户信息</router-link>
+            <router-link class="el-lvtwo" to="/merchant" @click="getIndex(1)">{{listArr[1]}}</router-link>
           </template>
-          <el-menu-item index="/merchantadd" class="menu-border-bottom el-lvthree">添加新商户</el-menu-item>
-          <el-menu-item index="/merchantcheck" class="menu-border-bottom el-lvthree">查阅商户证件</el-menu-item>
-          <el-menu-item index="/merchantchannel" class="menu-border-bottom el-lvthree">导入商户信息</el-menu-item>
+          <el-menu-item index="/merchantadd" class="menu-border-bottom el-lvthree" @click="getIndex(2)">{{listArr[2]}}
+          </el-menu-item>
+          <el-menu-item index="/merchantcheck" class="menu-border-bottom el-lvthree" @click="getIndex(3)">
+            {{listArr[3]}}
+          </el-menu-item>
+          <el-menu-item index="/merchantchannel" class="menu-border-bottom el-lvthree" @click="getIndex(4)">{{listArr[4]}}</el-menu-item>
         </el-submenu>
         <el-submenu index="1-3">
           <template slot="title">
-            <router-link class="el-lvtwo" to="/collaborate">合作行业</router-link>
+            <router-link class="el-lvtwo" to="/collaborate" @click="getIndex(5)">{{listArr[5]}}</router-link>
           </template>
-          <el-menu-item index="/collaborateadd" class="menu-border-bottom el-lvthree">新增合作行业客户</el-menu-item>
-          <el-menu-item index="/collaboratecheck" class="menu-border-bottom el-lvthree">查阅行业客户证件</el-menu-item>
+          <el-menu-item index="/collaborateadd" class="menu-border-bottom el-lvthree" @click="getIndex(6)">{{listArr[6]}}</el-menu-item>
+          <el-menu-item index="/collaboratecheck" class="menu-border-bottom el-lvthree" @click="getIndex(7)">
+            {{listArr[7]}}
+          </el-menu-item>
         </el-submenu>
       </el-submenu>
-      <el-menu-item index="/order" class="menu-border-bottom">订单管理</el-menu-item>
+      <el-menu-item index="/order" class="menu-border-bottom" @click="getIndex(8)">{{listArr[8]}}</el-menu-item>
       <el-submenu index="3">
         <template slot="title">产品管理</template>
-        <el-menu-item index="channel" class="menu-border-bottom el-lvtwo">产品通道基础管理</el-menu-item>
+        <el-menu-item index="/channel" class="menu-border-bottom el-lvtwo" @click="getIndex(9)">{{listArr[9]}}
+        </el-menu-item>
       </el-submenu>
       <el-submenu index="4">
         <template slot="title">医疗后台管理</template>
-        <el-menu-item index="/uploaddir" class="menu-border-bottom el-lvtwo">三大目录上传</el-menu-item>
-        <el-menu-item index="/dirlist" class="menu-border-bottom el-lvtwo">三大目录列表</el-menu-item>
-        <el-menu-item index="/dirmanage" class="menu-border-bottom el-lvtwo">三大目录管理</el-menu-item>
+        <el-menu-item index="/uploaddir" class="menu-border-bottom el-lvtwo" @click="getIndex(10)">{{listArr[10]}}
+        </el-menu-item>
+        <el-menu-item index="/dirlist" class="menu-border-bottom el-lvtwo" @click="getIndex(11)">{{listArr[11]}}
+        </el-menu-item>
+        <el-menu-item index="/dirmanage" class="menu-border-bottom el-lvtwo" @click="getIndex(12)">{{listArr[12]}}
+        </el-menu-item>
         <el-submenu index="4-4">
           <template slot="title">
             卫生站管理
           </template>
-          <el-menu-item index="/healthstationadd" class="menu-border-bottom el-lvthree">添加卫生站</el-menu-item>
-          <el-menu-item index="/healthstation" class="menu-border-bottom el-lvthree">管理卫生站</el-menu-item>
-          <el-menu-item index="/doctoradd" class="menu-border-bottom el-lvthree">添加村医</el-menu-item>
-          <el-menu-item index="/doctormanage" class="menu-border-bottom el-lvthree">管理村医</el-menu-item>
+          <el-menu-item index="/healthstationadd" class="menu-border-bottom el-lvthree" @click="getIndex(13)">
+            {{listArr[13]}}
+          </el-menu-item>
+          <el-menu-item index="/healthstation" class="menu-border-bottom el-lvthree" @click="getIndex(14)">{{listArr[14]}}</el-menu-item>
+          <el-menu-item index="/doctoradd" class="menu-border-bottom el-lvthree" @click="getIndex(15)">{{listArr[15]}}
+          </el-menu-item>
+          <el-menu-item index="/doctormanage" class="menu-border-bottom el-lvthree" @click="getIndex(16)">{{listArr[16]}}</el-menu-item>
         </el-submenu>
         <el-submenu index="4-5">
           <template slot="title">医疗后台信息发布</template>
-          <el-menu-item index="/businessissue" class="menu-border-bottom el-lvthree">业务专区发布</el-menu-item>
-          <el-menu-item index="/informationup" class="menu-border-bottom el-lvthree">信息专区发布</el-menu-item>
+          <el-menu-item index="/businessissue" class="menu-border-bottom el-lvthree" @click="getIndex(17)">{{listArr[17]}}</el-menu-item>
+          <el-menu-item index="/informationup" class="menu-border-bottom el-lvthree" @click="getIndex(18)">{{listArr[18]}}</el-menu-item>
         </el-submenu>
         <el-submenu index="4-6">
           <template slot="title">数据管理系统</template>
-          <el-menu-item index="/paydata" class="menu-border-bottom el-lvthree">支付流水数据</el-menu-item>
-          <el-menu-item index="/dataadministration" class="menu-border-bottom el-lvthree">绑卡数据管理</el-menu-item>
-          <el-menu-item index="/datareport" class="menu-border-bottom el-lvthree">数据报表</el-menu-item>
+          <el-menu-item index="/paydata" class="menu-border-bottom el-lvthree" @click="getIndex(19)">{{listArr[19]}}
+          </el-menu-item>
+          <el-menu-item index="/dataadministration" class="menu-border-bottom el-lvthree" @click="getIndex(20)">
+            {{listArr[20]}}
+          </el-menu-item>
+          <el-menu-item index="/datareport" class="menu-border-bottom el-lvthree" @click="getIndex(21)">
+            {{listArr[21]}}
+          </el-menu-item>
         </el-submenu>
       </el-submenu>
-      <el-menu-item index="/terminal" class="menu-border-bottom">社保受理终端管理平台</el-menu-item>
+      <el-menu-item index="/terminal" class="menu-border-bottom" @click="getIndex(22)">{{listArr[22]}}</el-menu-item>
       <el-submenu index="6">
         <template slot="title">系统管理</template>
-        <el-menu-item index="/6-1" class="menu-border-bottom el-lvtwo">系统用户管理</el-menu-item>
-        <el-menu-item index="/6-2" class="menu-border-bottom el-lvtwo">系统权限管理</el-menu-item>
+        <el-menu-item index="6-1" class="menu-border-bottom el-lvtwo" @click="getIndex(23)">{{listArr[23]}}
+        </el-menu-item>
+        <el-menu-item index="6-2" class="menu-border-bottom el-lvtwo" @click="getIndex(24)">{{listArr[24]}}
+        </el-menu-item>
       </el-submenu>
     </el-menu>
   </div>
 </template>
 <script type="text/javascript">
+  import {mapActions} from 'vuex'
   export default {
     data(){
       return {
         opened: true,
+        listArr: ['用户信息', '商户信息', '添加新商户', '查阅商户证件', '导入商户信息', '合作行业', '新增合作行业客户', '查阅行业客户证件',
+          '订单管理', '产品通道基础管理', '三大目录上传', '三大目录列表', '三大目录管理', '添加卫生站', '管理卫生站', '添加村医',
+          '管理村医', '业务专区发布', '信息专区发布', '支付流水数据', '绑卡数据管理', '数据报表', '社保受理终端管理平台', '系统用户管理', '系统权限管理'],
+        listUrl: ['/user', '/merchant', '/merchantadd', '/merchantcheck', '/merchantchannel', '/collaborate', '/collaborateadd', '/collaboratecheck',
+          '/order', '/channel', '/uploaddir', '/dirlist', '/dirmanage', '/healthstationadd', '/healthstation', '/doctoradd', '/doctormanage',
+          '/businessissue', '/informationup', '/paydata', '/dataadministration', '/datareport', '/terminal', '/other', '/other'],
+        saveList: [],
+        saveUrl: []
       }
     },
     methods: {
+      ...mapActions(['addList', 'urlArr']),
       handleOpen(key, keyPath) {
-        console.log(key, keyPath);
       },
       handleClose(key, keyPath) {
-        console.log(key, keyPath);
+      },
+      getIndex(index){
+//          console.log(this.listArr[index]) //将这个用数组储存起来用vuex传递
+        for (var i = 0; i < this.saveList.length; i++) {
+          if (this.saveList[i] == this.listArr[index]) {
+            return;
+          }
+        }
+        this.saveList.push(this.listArr[index]);
+        this.saveUrl.push(this.listUrl[index])
+        this.addList(this.saveList);
+        this.urlArr(this.saveUrl);
       }
     },
     mounted: function () {
