@@ -151,7 +151,7 @@
         var vm = this;
         $('#form').ajaxSubmit({
           type: 'POST',
-          url: 'http://192.168.0.137:18081/yxsj-openapi-web/openapi/upload/upload.do',
+          url: 'http://www.yxunionpay.com:8087/yxsj-openapi-web/openapi/upload/upload.do',
           success: function (data) {
             console.log(data)
           }

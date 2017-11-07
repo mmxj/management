@@ -112,7 +112,7 @@
         var vm = this;
         $(id).ajaxSubmit({//上传图片地址 有回调可以使用
           type: "POST",
-          url: "http://192.168.0.137:18081/yxsj-openapi-web/openapi/upload/upload.do",
+          url: "http://www.yxunionpay.com:8087/yxsj-openapi-web/openapi/upload/upload.do",
           success: function (data) {
             if (data) {
               if (JSON.parse(data).data.length > 0) {

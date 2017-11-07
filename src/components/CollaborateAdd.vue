@@ -527,7 +527,7 @@
         var vm = this;
         $(id).ajaxSubmit({//为了获取跨域的iframe的内容 没办法动用了jq插件
           type: "POST",
-          url: "http://192.168.0.137:18081/yxsj-openapi-web/openapi/upload/upload.do",
+          url: "http://www.yxunionpay.com:8087/yxsj-openapi-web/openapi/upload/upload.do",
           async: false,
           success: function (data) {
             if (data) {

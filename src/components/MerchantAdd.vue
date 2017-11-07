@@ -139,7 +139,7 @@
         <el-col :span="3">
           <div class="upload-btn" @click="changeIndex(0)">浏览选择附件
             <iframe name="frame1" id="frame1" frameborder="0" height="40"></iframe>
-            <form action="http://192.168.0.137:18081/yxsj-openapi-web/openapi/upload/upload.do" method="post"
+            <form action="http://www.yxunionpay.com:8087/yxsj-openapi-web/openapi/upload/upload.do" method="post"
                   enctype="multipart/form-data" name="Form1" id="form1" target="frame1">
               <input type="file" name="file" id="img1" v-on:change="imgUrl"
                      accept="image/gif,image/jpeg,image/jpg,image/png,image/svg">
@@ -166,7 +166,7 @@
         <el-col :span="3">
           <div class="upload-btn" @click="changeIndex(1)">浏览选择附件
             <iframe name="frame2" frameborder="0" height="40"></iframe>
-            <form action="http://192.168.0.137:18081/yxsj-openapi-web/openapi/upload/upload.do" method="post"
+            <form action="http://www.yxunionpay.com:8087/yxsj-openapi-web/openapi/upload/upload.do" method="post"
                   enctype="multipart/form-data" name="From2" id="form2" target="frame2">
               <input type="file" name="file" v-on:change="imgUrl"
                      accept="image/gif,image/jpeg,image/jpg,image/png,image/svg">
@@ -189,7 +189,7 @@
         <el-col :span="3">
           <div class="upload-btn" @click="changeIndex(2)">浏览选择附件
             <iframe name="frame3" frameborder="0" height="40"></iframe>
-            <form action="http://192.168.0.137:18081/yxsj-openapi-web/openapi/upload/upload.do" method="post"
+            <form action="http://www.yxunionpay.com:8087/yxsj-openapi-web/openapi/upload/upload.do" method="post"
                   enctype="multipart/form-data" name="From3" id="form3" target="frame3">
               <input type="file" name="file" v-on:change="imgUrl"
                      accept="image/gif,image/jpeg,image/jpg,image/png,image/svg">
@@ -212,7 +212,7 @@
         <el-col :span="3">
           <div class="upload-btn" @click="changeIndex(3)">浏览选择附件
             <iframe name="frame4" frameborder="0" height="40"></iframe>
-            <form action="http://192.168.0.137:18081/yxsj-openapi-web/openapi/upload/upload.do" method="post"
+            <form action="http://www.yxunionpay.com:8087/yxsj-openapi-web/openapi/upload/upload.do" method="post"
                   enctype="multipart/form-data" name="From4" id="form4" target="frame2">
               <input type="file" name="file" v-on:change="imgUrl"
                      accept="image/gif,image/jpeg,image/jpg,image/png,image/svg">
@@ -549,7 +549,7 @@
         var vm = this;
         $(id).ajaxSubmit({//为了获取跨域的iframe的内容 没办法动用了jq插件
           type: "POST",
-          url: "http://192.168.0.137:18081/yxsj-openapi-web/openapi/upload/upload.do",
+          url: "http://www.yxunionpay.com:8087/yxsj-openapi-web/openapi/upload/upload.do",
           async: false,
           success: function (data) {
             if (data) {

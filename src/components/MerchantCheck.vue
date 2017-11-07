@@ -121,7 +121,7 @@
       getPic(name){//根据名字查找图片
         var vm = this;
         $.ajax({
-          url: "http://192.168.0.137:18081/yxsj-openapi-web/openapi/download/download_base64.do",
+          url: "http://www.yxunionpay.com:8087/yxsj-openapi-web/openapi/download/download_base64.do",
           type: 'post',
           data: {
             'download_type': '4',
