@@ -6,7 +6,7 @@
           <div class="girid-content"><label>姓名</label></div>
         </el-col>
         <el-col :span="6">
-          <div class="girid-content girid-ipt"><input type="text" name="" v-model="setData.nickName"></div>
+          <div class="girid-content girid-ipt"><input type="text" name="" v-model="setData.idCardName"></div>
         </el-col>
         <el-col :span="2">
           <div class="girid-content"><label>身份证</label></div>
@@ -32,7 +32,7 @@
     <div class="table-box">
       <el-table :data="tableData" border style="width:100%" max-height="900">
         <el-table-column label="管理" width="120">
-          <template scope='scope'>
+          <template slot-scope='scope'>
             <el-button type="text">
               <a href="javascript:" ref="clickIndex" @click="goUrl(scope.row)">用户详情</a>
               <!--<router-link to="/userdetails">用户详情</router-link>-->
@@ -69,7 +69,7 @@
         tableData: [],
         session: sessionStorage.getItem('session'),
         setData: {
-          nickName: null,//名称
+          name: null,//名称
           idCardNo: null,//证件号码,
           account: null,//社保卡号
           pageInfo: {
@@ -86,6 +86,17 @@
       getUsers(){
         var vm = this;
         vm.setData.pageInfo.pageNum = vm.currentPage;
+        if (vm.setData.account == '') {
+          vm.setData.account = null;
+        }
+        ;
+        if (vm.setData.idCardName == '') {
+          vm.setData.idCardName = null;
+        }
+        ;
+        if (vm.setData.idCardNo == '') {
+          vm.setData.idCardNo = null;
+        }
         var dataUp = new RemoteCall();
         dataUp.init({
           router: '/user/multi/get',
@@ -110,6 +121,11 @@
               }
             }
             console.log(vm.tableData);
+          },
+          errorCallback: function (data) {
+            if (data) {
+              vm.$router.push('/login')
+            }
           }
         })
       },

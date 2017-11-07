@@ -9,7 +9,7 @@
       <el-table-column prop="mobile" label="手机号码"></el-table-column>
       <el-table-column prop="issueDate" label="绑定日期"></el-table-column>
       <el-table-column width="100">
-        <template scope="scope">
+        <template slot-scope="scope">
           X
         </template>
       </el-table-column>

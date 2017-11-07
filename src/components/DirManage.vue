@@ -18,8 +18,11 @@
             </select>
           </div>
         </el-col>
+        <el-col :span="2">
+          <label for="">药品名称：</label>
+        </el-col>
         <el-col :span="6">
-          <input type="text">
+          <input type="text" v-model="sendData.itemNameCh">
         </el-col>
         <el-col :span="2">
           <el-button class="find" @click="getCatalog">搜索</el-button>
@@ -40,18 +43,20 @@
       <!--</template>-->
       <!--</el-table-column>-->
       <!--</el-table>-->
-      <el-table :data="tableData" border width="100%" align="center">
-        <el-table-column prop="itemNo" label="项目编码" width="120"></el-table-column>
-        <el-table-column prop="itemNameCh" label="药品名称" width="300"></el-table-column>
-        <el-table-column prop="companyName" label="归属医院" min-width="100"></el-table-column>
-        <el-table-column prop="companyId" label="归属医院" min-width="100"></el-table-column>
-        <el-table-column prop="areaName" label="归属地区" min-width="100"></el-table-column>
-        <el-table-column label="操作">
-          <template scope="scope">
-            <el-button type="text" size="small" @click="deleteCharging(scope)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="dirTable">
+        <el-table :data="tableData" border width="100%" align="center">
+          <el-table-column prop="itemNo" label="项目编码" width="120"></el-table-column>
+          <el-table-column prop="itemNameCh" label="药品名称" width="300"></el-table-column>
+          <el-table-column prop="companyName" label="归属医院" min-width="100"></el-table-column>
+          <el-table-column prop="companyId" label="归属医院" min-width="100"></el-table-column>
+          <el-table-column prop="areaName" label="归属地区" min-width="100"></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="deleteCharging(scope)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -249,6 +254,10 @@
       width: 12%;
     }
   }
+
+  .dirTable {
+    min-height: 860px;
+  }
 </style>
 <style type="text/css">
   .distpicker select {
@@ -258,5 +267,11 @@
     padding: 0.25rem;
     outline: none;
     border: 1px solid #aaa
+  }
+
+  @media screen and (max-width: 1450px) {
+    .distpicker select {
+      width: 31% !important;
+    }
   }
 </style>

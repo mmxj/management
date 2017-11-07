@@ -136,6 +136,7 @@
         }
       },
       importData(){
+        var vm = this;
 //        var _this=this;//接口改变 这一段废弃
 //        console.log(_this.tableData.length)
 //        导入数据
@@ -167,6 +168,16 @@
           session: this.saveSession,
           data: {
             rows: this.tableData
+          },
+          callback: function (data) {
+            if (data.ret.errorCode === 0) {
+              vm.$alert('上传成功', '提示', {
+                confirmButtonText: '确定',
+                callback: function () {
+                  document.getElementsByClassName("el-table")[0].style.display = 'none';
+                }
+              });
+            }
           }
         })
       }

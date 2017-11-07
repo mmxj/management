@@ -25,6 +25,9 @@ export default{
   },
   getUrlArr: (state) => {
     return state.urlArr
+  },
+  saveCollaborate: (state) => {
+    return state.saveCollaborate
   }
 }
 

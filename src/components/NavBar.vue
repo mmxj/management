@@ -19,6 +19,12 @@
       close(index){
         this.readList.splice(index, 1);
         this.getUrlArr.splice(index, 1);
+        if (this.getUrlArr.length > 0) {
+          this.$router.push(this.getUrlArr[this.getUrlArr.length - 1])
+        } else {
+          this.$router.push('/message')
+        }
+
       },
       goURl(){//在这里写路由跳转的原因是 操作数组比较方便 如果将传递的数据换成json来传递url的话
 
@@ -40,6 +46,8 @@
   #NavBar {
     background: #fff;
     ul {
+      overflow: hidden;
+      height: 100%;
       li {
         float: left;
         background: #49df8b;

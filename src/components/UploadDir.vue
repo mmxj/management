@@ -363,7 +363,6 @@
       background: #32BC6F;
     }
   }
-
   label {
     display: block;
     text-align: right;
@@ -371,6 +370,9 @@
     line-height: 36px;
   }
 
+  .el-col-3 {
+    min-width: 11em;
+  }
   @media screen and (max-width: 1450px) {
     .el-col-3 {
       width: 17.5%;

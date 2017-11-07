@@ -2,24 +2,30 @@
   <div id="HealthStation">
     <div>
       <el-row>
-        <el-col :span="3">
+        <el-col :span="2">
           <label for="">
             <!--<router-link to="/healthstationupdata">编辑卫生站</router-link>-->
             <a @click="goUpdata" href="javascript:">编辑卫生站</a>
           </label>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="2">
           <label for="" @click="open">删除卫生站</label>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="2">
           <label for="">
             <router-link to="/doctormanage">管理卫生站村医</router-link>
           </label>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="2">
           <label for="">
             <router-link to="/doctoradd">添加村医</router-link>
           </label>
+        </el-col>
+        <el-col :span="4">
+          <input type="text" v-model="health">
+        </el-col>
+        <el-col :span="2">
+          <el-button @click="checkHealth">搜索卫生站</el-button>
         </el-col>
       </el-row>
     </div>
@@ -27,7 +33,7 @@
       <el-table :data="tableData" border style="width: 100%;" max-height="600"
                 @selection-change="handleSelectionChange">
         <el-table-column width="70" label="选择">
-          <template scope="scope">
+          <template slot-scope="scope">
             <el-radio :label="scope.$index" v-model="radio" @change.native="getIndex(scope.$index)">&nbsp;</el-radio>
           </template>
         </el-table-column>
@@ -43,11 +49,11 @@
         </el-table-column>
         <el-table-column prop="corporation" label="卫生站法人" width="120">
         </el-table-column>
-        <el-table-column prop="leaderName" label="卫生站联系人" width="150">
+        <el-table-column prop="leader" label="卫生站联系人" width="150">
         </el-table-column>
         <el-table-column prop="telephone" label="联系电话" width="200">
         </el-table-column>
-        <el-table-column prop="linkmanPhone" label="联系邮箱" width="200">
+        <el-table-column prop="email" label="联系邮箱" width="200">
         </el-table-column>
         <el-table-column prop="address" label="联系地址" width="300">
         </el-table-column>
@@ -55,7 +61,7 @@
         </el-table-column>
         <el-table-column prop="account" label="银行账号" width="220">
         </el-table-column>
-        <el-table-column prop="auditTime" label="添加日期" width="220">
+        <el-table-column prop="sfsCreate" label="添加日期" width="220">
         </el-table-column>
         <el-table-column prop="auditFlag" label="卫生站状态" width="220">
         </el-table-column>
@@ -102,6 +108,7 @@
         ],
         saveHealth: null,
         choose: null,
+        health: null
       }
     },
     methods: {
@@ -186,7 +193,12 @@
             auditFlag: 0
           },
           callback: function (data) {
-            console.log(data);
+            vm.$alert('屏蔽成功', '提示', {
+              confirmButtonText: '确定',
+              callback: function () {
+                window.location.reload();
+              }
+            })
           }
         })
       },
@@ -200,18 +212,31 @@
             id: vm.choose.id,
           },
           callback: function (data) {
-            console.log(data);
+            vm.$alert('删除成功', '提示', {
+              confirmButtonText: '确定',
+              callback: function () {
+                window.location.reload();
+              }
+            })
           }
         })
 
       },
-      initData(){
+      initData(name){
+        var companyName;
+        if (name) {
+          companyName = name;
+        } else {
+          companyName = null
+        }
         var getParent = new RemoteCall();
         getParent.init({
           router: "/company/get",
           session: this.session,
           data: {
 //            aredId:parseInt(this.inputData.areaId);
+            name: companyName,
+            companyType: 4,
             pageInfo: {
               pageSize: 20,
               pageNum: this.currentPage
@@ -225,9 +250,9 @@
       },
       handleCurrentChange(val) {
         this.currentPage = val;
+        this.initData();
       },
       parentCallback(data){
-        console.log(data)
         var vm = this;
         if (data.pageInfo.total) {
           vm.total = data.pageInfo.total;
@@ -239,12 +264,21 @@
           } else if (this.tableData[i].auditFlag == 1) {
             this.tableData[i].auditFlag = '正常'
           }
+          if (vm.tableData[i].certificateType == 1) {
+            vm.tableData[i].certificateType = '营业执照'
+          } else if (vm.tableData[i].certificateType == 2) {
+            vm.tableData[i].certificateType = '从业资格证'
+          }
+          vm.tableData[i].sfsCreate = vm.tableData[i].sfsCreate.split(' ')[0];
+          console.log(vm.tableData[i].sfsCreate);
         }
       },
       goUpdata(){
-        console.log(this.choose);
         this.saveHealthData(this.choose);
         this.$router.push('/healthstationupdata')
+      },
+      checkHealth(){
+        this.initData(this.health)
       }
     },
     mounted: function () {
@@ -274,6 +308,29 @@
 
   .el-tables {
     margin-top: 20px;
+  }
+
+  .el-col-2 {
+    min-width: 7em;
+  }
+
+  .el-row input {
+    width: 100%;
+    height: 32px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    text-indent: 1em;
+  }
+
+  .el-row label {
+    line-height: 36px;
+  }
+
+  .el-button {
+    margin-left: 20px;
+    border: 0;
+    color: #fff;
+    background: #32BC6F;
   }
 </style>
 <style type="text/css">

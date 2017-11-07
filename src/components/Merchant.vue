@@ -1,16 +1,20 @@
 <template>
   <div id="Merchant">
-    <div>
+    <div class="inputVal">
       <el-row :gutter="20">
         <el-col :span="2"><label for="">商户类型</label></el-col>
         <el-col :span="6">
-          <select name="" id="">
-            <option>请选择商户类型</option>
-            <option value="">镇卫生院</option>
-            <option value="">村卫生站</option>
-            <option value="">药店</option>
-            <option value="">其他</option>
-          </select>
+          <!--<select name="" id="">-->
+          <!--<option>请选择商户类型</option>-->
+          <!--<option value="">镇卫生院</option>-->
+          <!--<option value="">村卫生站</option>-->
+          <!--<option value="">药店</option>-->
+          <!--<option value="">其他</option>-->
+          <!--</select>-->
+          <el-select v-model="company" filterable placeholder="商户类型" @change="companyChange">
+            <el-option v-for="item in companyName" :key="item.value" :label="item.label"
+                       :value="item.value"></el-option>
+          </el-select>
         </el-col>
         <el-col :span="2">
           <label for="">商户名称</label>
@@ -22,14 +26,18 @@
           <label for="">商户证件类型</label>
         </el-col>
         <el-col :span="6">
-          <select>
-            <option>请选择证件类型</option>
-            <option>营业执照</option>
-            <option>个人身份证</option>
-            <option>无证件</option>
-            <option>行业准入资格证</option>
-            <option>其他证件</option>
-          </select>
+          <!--<select>-->
+          <!--<option>请选择证件类型</option>-->
+          <!--<option>营业执照</option>-->
+          <!--<option>个人身份证</option>-->
+          <!--<option>无证件</option>-->
+          <!--<option>行业准入资格证</option>-->
+          <!--<option>其他证件</option>-->
+          <!--</select>-->
+          <el-select v-model="companyTypeName" filterable placeholder="请选择证件类型" @change="companyTypeChange">
+            <el-option v-for="item in companyType" :key="item.value" :label="item.label"
+                       :value="item.value"></el-option>
+          </el-select>
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -39,8 +47,8 @@
           <el-button class="search" @click="search">搜索</el-button>
         </el-col>
         <el-col :span="3">
-          <el-button class="search">
-            <router-link to="collaborateadd">添加新商户</router-link>
+          <el-button class="search addColl">
+            <router-link to="/merchantadd">添加新商户</router-link>
           </el-button>
         </el-col>
         <el-col :span="3">
@@ -55,7 +63,11 @@
     </div>
     <div class="table-box">
       <el-table :data="tableData" border style="width:100%" max-height="600" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column width="55">
+          <template slot-scope="scope">
+            <el-radio :label="scope.$index" v-model="radio" @change.native="getIndex(scope.$index)">&nbsp;</el-radio>
+          </template>
+        </el-table-column>
         <el-table-column prop="index" label="序号" width="120">
         </el-table-column>
         <el-table-column prop="no" label="商户编码" width="120"></el-table-column>
@@ -63,7 +75,7 @@
         </el-table-column>
         <el-table-column prop="name" label="商户名称" width="180">
         </el-table-column>
-        <el-table-column prop="certificateTypeName" label="商户证件类型" width="180">
+        <el-table-column prop="certificateType" label="商户证件类型" width="180">
         </el-table-column>
         <el-table-column prop="address" label="商户地址" width="300">
         </el-table-column>
@@ -95,22 +107,71 @@
   </div>
 </template>
 <script type="text/javascript">
+  import {mapActions} from 'vuex'
   export default{
     data(){
       return {
         session: sessionStorage.getItem('session'),
         tableData: [{
-          index: "111"
+//          index: "111"
         }],
         currentPage: 1,
         pageSize: 20,
         total: 1,
         name: null,
-        certificateNo: null
+        radio: null,
+        certificateNo: null,
+        companyTypeName: null,
+        companyType: [{
+          value: null,
+          label: '请选择证件类型'
+        }, {
+          value: 1,
+          label: '营业执照'
+        }, {
+          value: 2,
+          label: '从业资格证'
+        }],
+        company: null,
+        companyName: [
+          {
+            value: null,
+            label: '请选择商户类型'
+          },
+          {
+            value: 1,
+            label: '收单机构'
+          }, {
+            value: 2,
+            label: '支付通道机构'
+          }, {
+            value: 3,
+            label: '社保局'
+          }, {
+            value: 4,
+            label: '医院(卫生站)'
+          }, {
+            value: 5,
+            label: '药店'
+          }, {
+            value: 6,
+            label: '平台'
+          }, {
+            value: 7,
+            label: '卫计局'
+          }],
+        inputData: {
+          companyType: null,
+          pageInfo: {
+            pageSize: 20,
+            pageNum: 1
+          }
+        }
       }
     },
     methods: {
-      //变化的时候出发 将数据放入multipleSelection中
+      //变化的时候出发 将数据放入multipleSelection中,
+      ...mapActions(['saveCollaborate']),
       toggleSelection(rows) {
         if (rows) {
           rows.forEach(row => {
@@ -133,19 +194,15 @@
       },
       getCollaborate(){
         var vm = this;
+        vm.inputData.name = vm.name;
+        vm.inputData.certificateNo = vm.certificateNo;
+//        vm.inputData.pageInfo.pageSize=20;
+        vm.inputData.pageInfo.pageNum = vm.currentPage;
         var getCollaborate = new RemoteCall();
         getCollaborate.init({
           router: '/company/get',
           session: vm.session,
-          data: {
-            companyType: 4,
-            name: vm.name,
-            certificateNo: vm.certificateNo,
-            pageInfo: {
-              pageSize: 20,
-              pageNum: vm.currentPage
-            }
-          },
+          data: vm.inputData,
           callback: function (data) {
             vm.tableData = data.rows;
             if (data.pageInfo.total) {
@@ -153,12 +210,32 @@
             }
             for (let i = 0; i < vm.tableData.length; i++) {
               vm.tableData[i].index = (i + 1) + (vm.currentPage - 1) * 20;
+              if (vm.tableData[i].certificateType == 1) {
+                vm.tableData[i].certificateType = '营业执照'
+              } else if (vm.tableData[i].certificateType == 2) {
+                vm.tableData[i].certificateType = '从业资格证'
+              }
             }
+          },
+          errorCallback: function (data) {
+            vm.$router.push('/login')
           }
         })
       },
       search(){
         this.getCollaborate();
+      },
+      companyTypeChange(data){//证件类型id
+        this.inputData.certificateType = data;
+//          console.log(data);//没有入参入口
+      },
+      companyChange(data){
+//          console.log(data);
+        this.inputData.companyType = data;
+      },
+      getIndex(index){
+        this.saveCollaborate(this.tableData[index].name);
+        console.log(index);
       }
     },
     mounted: function () {
@@ -182,6 +259,11 @@
 
   }
 
+  .inputVal {
+    label {
+      min-width: 5em;
+    }
+  }
   select {
     width: 100%;
     height: 36px;
@@ -204,6 +286,10 @@
     }
   }
 
+  a {
+    text-decoration: none;
+    color: #000;
+  }
   input {
     width: 100%;
     height: 30px;
@@ -220,24 +306,26 @@
     text-align: center;
   }
 
+  .addColl {
+    margin-left: 10px;
+  }
   .search {
-    margin-left: 20px;
+    /*margin-left: 20px;*/
   }
 
   /*媒体查询做兼容*/
   @media screen and (max-width: 1760px) {
     label {
       font-size: 15px;
-      min-width: 5em;
     }
   }
 
   @media screen and (max-width: 1700px) {
     .el-col-2 {
-      width: 10%;
+      width: 12%;
     }
     .el-col-6 {
-      width: 23.333333%;
+      width: 21.333333%;
     }
     .el-col-3 {
       width: 15.5%;
@@ -257,9 +345,16 @@
     .el-col-3 {
       width: 17.5%;
     }
-    .search {
-      margin-left: 12px;
+    /*.search {*/
+    /*margin-left: 0px;*/
+    /*}*/
+    .addColl {
+      margin-left: 30px;
     }
+  }
+
+  .el-select {
+    width: 100%;
   }
 </style>
 <style type="text/css">

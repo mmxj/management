@@ -19,14 +19,14 @@
         tableData: [
           {
 //            '社保名称': '惠州市农村医疗保险',
-            '姓名': 'userName',//卡主
-            '关系': 'relationTypeName',//成员关系
-            '社保类型': 'securityTypeName', //社保类型名称
-            '社保卡号': 'account', //卡号
-            '社保归属地': '广东省惠州市',//暂无 //通过归属商户查找归属地
-            '社保卡发行日期': 'issueDate', //发行时间
+            '姓名': null,//卡主
+            '关系': null,//成员关系
+            '社保类型': null, //社保类型名称
+            '社保卡号': null, //卡号
+            '社保归属地': null,//暂无 //通过归属商户查找归属地
+            '社保卡发行日期': null, //发行时间
             '绑卡时间': '',//绑卡时间无
-            '绑卡商户': 'merchantName', //绑卡终端商户
+            '绑卡商户': null, //绑卡终端商户
             '社保卡个账余额': '', //这些接口没有
           }
         ]
@@ -52,6 +52,7 @@
             },
           },
           callback: function (data) {
+            console.log(data);
             if (data.rows.length > 0) {
               for (var i = 0; i < data.rows.length; i++) {
                 vm.tableData[i].姓名 = data.rows[i].userName;
@@ -59,7 +60,7 @@
                 vm.tableData[i].社保类型 = data.rows[i].securityTypeName;
                 vm.tableData[i].社保卡号 = data.rows[i].account;
                 vm.tableData[i].社保归属地 = data.rows[i].areaId;
-                vm.tableData[i].社保卡发行日期 = data.rows[i].issueDate;
+                vm.tableData[i].社保卡发行日期 = data.rows[i].issueDate.split(" ")[0];
                 vm.tableData[i].绑卡时间 = data.rows[i].sfsCreate;
                 vm.tableData[i].绑卡商户 = data.rows[i].merchantName;
                 vm.tableData[i].社保卡个账余额 = null;
@@ -89,6 +90,7 @@
       border-top: 1px solid #747474;
       border-left: 1px solid #747474;
       padding: 10px;
+      min-width: 150px;
     }
   }
 </style>

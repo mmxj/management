@@ -122,7 +122,7 @@
         <el-col :span="8">
           <div class="girid-content girid-ipt">
 
-            <input type="text" name="" v-model="inputData.certificateList[0].certificateName">
+            <input type="text" name="" v-model="imgName[0]">
 
           </div>
         </el-col>
@@ -149,7 +149,7 @@
 
           <div class="girid-content girid-ipt">
 
-            <input type="text" name="" v-model="inputData.certificateList[1].certificateName">
+            <input type="text" name="" v-model="imgName[1]">
 
           </div>
         </el-col>
@@ -174,7 +174,7 @@
         </el-col>
         <el-col :span="8">
           <div class="girid-content girid-ipt"><input type="text" name=""
-                                                      v-model="inputData.certificateList[2].certificateName"></div>
+                                                      v-model="imgName[2]"></div>
         </el-col>
         <el-col :span="3">
           <div class="upload-btn" @click="changeIndex(2)">浏览选择附件
@@ -197,7 +197,7 @@
         </el-col>
         <el-col :span="8">
           <div class="girid-content girid-ipt"><input type="text" name=""
-                                                      v-model="inputData.certificateList[3].certificateName"></div>
+                                                      v-model="imgName[3]"></div>
         </el-col>
         <el-col :span="3">
           <div class="upload-btn" @click="changeIndex(3)">浏览选择附件
@@ -216,7 +216,7 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="2" :offset="20">
-          <button type="button" class="grid-content upload-btn" @click="addMerchant">添加商户</button>
+          <button type="button" class="grid-content upload-btn" @click="addMerchant">添加合作行业</button>
         </el-col>
       </el-row>
     </div>
@@ -297,7 +297,8 @@
         imgIndex: 0,
         imgUrls: null,
         Url: null,
-        fileList: []
+        fileList: [],
+        imgName: [],
       }
     },
     methods: {
@@ -342,7 +343,12 @@
           data: {
             parentAreaId: 0
           },
-          callback: this.getAreaCallback
+          callback: this.getAreaCallback,
+          errorCallback: function (data) {
+            if (data) {
+              _this.$router.push('/login')
+            }
+          }
         });
       },
       getAreaCallback(data){
@@ -412,7 +418,8 @@
       changeUrl(file){//点击上传后修改路径
         this.inputData.certificateList[this.imgIndex].imgUrls = this.Url;
         console.log(file.name)
-        this.inputData.certificateList[this.imgIndex].certificateName = file.name;
+        this.inputData.certificateList[this.imgIndex].certificateName = file.name
+        this.$set(this.imgName, this.imgIndex, file.name);
       },
       changeIndex(index){//获取不同点击上传按钮的事件
         this.imgIndex = index;
@@ -446,12 +453,12 @@
         }
       },
       addMerchant(){//点击进行添加
-        console.log(this.inputData.certificateList[this.imgIndex].imgVal);
+//        console.log(this.inputData.certificateList[this.imgIndex].imgVal);
         var vm = this;
-        this.setPicture("#form1", 0, this.addCompany);
-        this.setPicture("#form2", 1, this.addCompany);
-        this.setPicture("#form3", 2, this.addCompany);
-        this.setPicture("#form4", 3, this.addCompany);
+
+        vm.setPictures();
+        console.log(1111);
+
 //        var addMerchant = new RemoteCall();
 //        addMerchant.init({
 //          router: "/company/add",
@@ -461,7 +468,14 @@
 //          }
 //        })
       },
+      setPictures(){
+        this.setPicture("#form1", 0);
+        this.setPicture("#form2", 1);
+        this.setPicture("#form3", 2);
+        this.setPicture("#form4", 3, this.addCompany);
+      },
       addCompany(){//检测图片是否全部成功的函数
+        var vm = this;
         if (this.checkPictureUrl()) {
           for (var i = 0; i < this.inputData.certificateList.length; i++) {
             this.inputData.certificateList[i].imgUrls = null;
@@ -474,17 +488,33 @@
             router: "/company/add",
             session: this.session,
             data: this.inputData,
-            callback: routerGo
+            callback: vm.routerGo
           })
+        } else {
+          this.$alert('添加失败请上传完整的图片信息', '提示', {
+            confirmButtonText: '确定',
+            callback: function () {
+//              window.location.reload()
+              return false;
+            }
+          });
         }
       },
       routerGo(data){
         if (data.ret.errorMessage == 'success') {
-          window.location.reload()
+          this.$alert('添加成功', '提示', {
+            confirmButtonText: '确定',
+            callback: function () {
+              window.location.reload()
+            }
+          })
+        } else {
+          this.$alert(data.ret.errorMessage, '提示', {
+            confirmButtonText: '确定'
+          })
         }
-      }
-      , checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
-
+      },
+      checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
         for (var i = 0; i < 4; i++) {
           if (!this.inputData.certificateList[i].picSavePath) {
 //            console.log(this.inputData.certificateList[i].picSavePath);
@@ -498,6 +528,7 @@
         $(id).ajaxSubmit({//为了获取跨域的iframe的内容 没办法动用了jq插件
           type: "POST",
           url: "http://192.168.0.137:18081/yxsj-openapi-web/openapi/upload/upload.do",
+          async: false,
           success: function (data) {
             if (data) {
               if (JSON.parse(data).data.length > 0) {
@@ -505,32 +536,49 @@
               } else {
                 switch (index) {
                   case 0:
-                    alert("营业执照上传失败")
+//                    alert("营业执照上传失败")
+                    vm.$alert("营业执照上传失败", '提示', {
+                      confirmButtonText: '确定'
+                    })
                     break;
                   case 1:
-                    alert("从业资格证上传")
+//                    alert("从业资格证上传")
+                    vm.$alert("从业资格证上传", '提示', {
+                      confirmButtonText: '确定'
+                    })
                     break;
                   case 2:
-                    alert("银行卡资料上传")
+//                    alert("银行卡资料上传")
+                    vm.$alert("银行卡资料上传", '提示', {
+                      confirmButtonText: '确定'
+                    })
                     break;
                   case 3:
-                    alert("法人身份证照片上传")
+//                    alert("法人身份证照片上传")
+                    vm.$alert("法人身份证照片上传", '提示', {
+                      confirmButtonText: '确定'
+                    })
                     break;
                   default:
-                    alert("照片上传错误请重新上传")
+//                    alert("照片上传错误请重新上传");
+                    vm.$alert("照片上传错误请重新上传", '提示', {
+                      confirmButtonText: '确定'
+                    })
                     break
                 }
               }
             }
-
           }
-        })
-      },
-      callback(data, index, addcompany){//图片调用成功后的回调函数
-        this.inputData.certificateList[index].picSavePath = JSON.parse(data).data[0].saved_file;
+        });
         if (addcompany) {
           addcompany();//判断所有图片上传成功后回调
         }
+      },
+      callback(data, index, addcompany){//图片调用成功后的回调函数
+        this.inputData.certificateList[index].picSavePath = JSON.parse(data).data[0].saved_file;
+//        if (addcompany) {
+//          addcompany();//判断所有图片上传成功后回调
+//        }
       },
     },
     computed: mapGetters(['saveSession']),
@@ -618,6 +666,7 @@
 
   .checkImg {
     line-height: 36px;
+    cursor: pointer;
   }
 
   /*媒体查询做兼容*/

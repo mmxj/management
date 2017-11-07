@@ -116,21 +116,22 @@
       <el-col :span="6">
         <input type="text" v-model="inputData.loginName">
       </el-col>
-      <el-col :span="2">
-        <label for="">登录密码</label>
-      </el-col>
-      <el-col :span="6">
-        <input type="text" v-model="password">
-      </el-col>
+      <!--<el-col :span="2">-->
+      <!--<label for="">登录密码</label>-->
+      <!--</el-col>-->
+      <!--<el-col :span="6">-->
+      <!--<input type="password" v-model="inputData.password">-->
+      <!--</el-col>-->
     </el-row>
     <el-row>
       <el-col :offset="22" :span="2">
-        <el-button @click="addStaff">点击添加</el-button>
+        <el-button @click="addStaff">确定修改</el-button>
       </el-col>
     </el-row>
   </div>
 </template>
 <script>
+  import {mapGetters} from 'vuex'
   export default{
     data(){
       return {
@@ -166,7 +167,6 @@
         sex: null,
         company: null,
         doctor: null,
-        password: null,
         session: sessionStorage.getItem('session'),
         parentId: [],
         department: null,
@@ -187,6 +187,7 @@
         },
       }
     },
+    computed: mapGetters(['saveHealthData']),
     methods: {
       getParentId(){//获取父级卫生院数据 插入到节点中
         var vm = this;
@@ -234,10 +235,12 @@
             vm.departmentOptions = [];
             for (var i = 0; i < str.rows.length; i++) {
               var parentData = {};
-              console.log(str.rows);
               parentData.label = str.rows[i].name;
               parentData.value = str.rows[i].id;
               vm.$set(vm.departmentOptions, i, parentData);
+            }
+            if (vm.inputData.departmentId) {
+              vm.department = vm.inputData.departmentId;
             }
           }
         })
@@ -255,12 +258,14 @@
           callback: function (str) {
             vm.role = null;
             vm.roleData = [];
-            console.log(str.rows);
             for (var i = 0; i < str.rows.length; i++) {
               var parentData = {};
               parentData.label = str.rows[i].name;
               parentData.value = str.rows[i].id;
               vm.roleData.push(parentData);
+            }
+            if (vm.inputData.roleTypeId) {
+              vm.role = vm.inputData.roleTypeId;
             }
           }
         })
@@ -290,29 +295,38 @@
       },
       addStaff(){
         var vm = this;
-        vm.inputData.password = vm.password;
-        vm.inputData.password = $.md5(vm.inputData.password).toUpperCase();
+        if (vm.inputData.password) {
+          vm.inputData.password = $.md5(vm.inputData.password).toUpperCase();
+        }
         console.log(vm.inputData);
-        var addStaff = new RemoteCall();
-        addStaff.init({
-          router: '/company/staff/add',
+        var addStaffs = new RemoteCall();
+        addStaffs.init({
+          router: '/company/staff/update',
           session: vm.session,
           data: vm.inputData,
           callback: function (data) {
-            if (data.ret.errorCode == 0) {
-              vm.$alert('医生添加成功，请添加', '提示', {
-                confirmButtonText: '确定',
-                callback: function () {
-                  vm.$router.go(0)
-                }
-              });
-            }
+            console.log(data);
+
           }
         })
+      },
+      getDocotr(){
+        if (this.saveHealthData) {
+          this.inputData = this.saveHealthData;
+          this.sex = this.inputData.sex;
+//          this.role=this.inputData.roleTypeId;
+          this.company = this.inputData.companyId;
+          this.doctor = this.inputData.staffType;
+          this.value1 = this.inputData.beginDoctorDate;
+          this.value2 = this.inputData.sfsCreate.split(' ')[0];
+        } else {
+          this.$router.push('/doctormanage')
+        }
       }
     },
     mounted: function () {
       this.getParentId();
+      this.getDocotr();
     }
   }
 </script>

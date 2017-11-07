@@ -26,18 +26,20 @@
         <el-col :span="2">
           <label for="">订单金额：</label>
         </el-col>
-        <el-col :span="21">
+        <el-col :span="9">
           <span v-for="(item,index) in money" :class="{active:index==isActive3}"
                 @click="setMoney(index)">{{item}}</span>
+        </el-col>
+        <el-col :span="5">
           <span>自定义范围：</span>
-          <input class="money" type="text">
+          <input class="money" v-model="beginAmount" type="text">
           <span class="add">至</span>
-          <input class="money" type="text">
+          <input class="money" v-model="endAmount" type="text">
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :offset="20" :span="4"><span>下载数据</span>
-          <el-button class="search" @click="search">搜索</el-button>
+          <el-button class="search" @click="searchget">搜索</el-button>
         </el-col>
       </el-row>
     </div>
@@ -120,7 +122,8 @@
         },
         value1: '',
         value2: '',
-
+        beginAmount: null,
+        endAmount: null,
         tableData: [{//表格信息
           ordinal: "111"
         }],
@@ -136,7 +139,7 @@
         },
         currentPage: 1,
         pageSize: 20,
-        total: 1,
+        total: 0,
       };
     },
     methods: {
@@ -164,8 +167,25 @@
         this.multipleSelection = val;
         console.log(this.multipleSelection)
       },
+      searchget(){
+        this.currentPage = 1;
+        this.search()
+      },
       search(){
         var vm = this;
+        if (this.beginAmount) {
+          this.inputData.beginAmount = this.beginAmount;
+        }
+        if (this.endAmount) {
+          this.inputData.endAmount = this.endAmount;
+        }
+        if (this.inputData.beginAmount) {
+          this.inputData.beginAmount = this.inputData.beginAmount * 100;
+        }
+        if (this.inputData.endAmount) {
+          this.inputData.endAmount = this.inputData.endAmount * 100;
+        }
+
         var searchOrder = new RemoteCall();
         vm.inputData.pageInfo.pageNum = vm.currentPage;
         searchOrder.init({
@@ -173,10 +193,12 @@
           session: vm.session,
           data: vm.inputData,
           callback: function (data) {
-            console.log(data);
             vm.tableData = data.rows;
             if (data.pageInfo.total) {
               vm.total = data.pageInfo.total;
+            }
+            if (data.rows.length <= 0) {
+              vm.total = 0
             }
             for (var i = 0; i < vm.tableData.length; i++) {
               switch (vm.tableData[i].businessType) {
@@ -239,22 +261,22 @@
         switch (index) {
           case 1:
             this.inputData.beginAmount = 0;
-            this.inputData.endAmount = 100 * 100;
+            this.inputData.endAmount = 100;
             break;
           case 2:
-            this.inputData.beginAmount = 100 * 100;
-            this.inputData.endAmount = 1000 * 100;
+            this.inputData.beginAmount = 100;
+            this.inputData.endAmount = 1000;
             break;
           case 3:
-            this.inputData.beginAmount = 1000 * 100;
-            this.inputData.endAmount = 5000 * 100;
+            this.inputData.beginAmount = 1000;
+            this.inputData.endAmount = 5000;
             break;
           case 4:
-            this.inputData.beginAmount = 5000 * 100;
-            this.inputData.endAmount = 10000 * 100;
+            this.inputData.beginAmount = 5000;
+            this.inputData.endAmount = 10000;
             break;
           case 5:
-            this.inputData.beginAmount = 10000 * 100;
+            this.inputData.beginAmount = 10000;
             this.inputData.endAmount = null;
             break;
         }
@@ -314,12 +336,64 @@
     }
   }
 
+  .el-col-9 {
+    width: 37.5%;
+  }
+
+  .el-col-5 {
+    width: 21.83333%;
+  }
   @media screen and (max-width: 1400px) {
     #Order span {
       margin-right: 10px;
     }
     #Order .money {
       width: 60px;
+    }
+  }
+
+  @media screen and (max-width: 1990px) {
+    .el-col-9 {
+      width: 41.5%;
+    }
+    .el-col-5 {
+      width: 26.83333%;
+    }
+  }
+
+  @media screen and (max-width: 1790px) {
+    .el-col-9 {
+      width: 46.5%;
+    }
+    .el-col-5 {
+      width: 26.83333%;
+    }
+  }
+
+  @media screen and (max-width: 1600px) {
+    .el-col-9 {
+      width: 52.5%;
+    }
+    .el-col-5 {
+      width: 29.83333%;
+    }
+  }
+
+  @media screen and (max-width: 1450px) {
+    .el-col-9 {
+      width: 55.5%;
+    }
+    .el-col-5 {
+      width: 29.83333%;
+    }
+  }
+
+  @media screen and (max-width: 1300px) {
+    .el-col-9 {
+      width: 59.5%;
+    }
+    .el-col-5 {
+      width: 27.83333%;
     }
   }
 </style>

@@ -19,7 +19,7 @@ import HealthStationAdd from '../components/HealthStationAdd' //添加卫生站�
 import HealthStationUpdata from '../components/HealthStationUpdata' //添加卫生站卫生站
 import DoctorAdd from '../components/DoctorAdd'//添加村医
 import DoctorManage from '../components/DoctorManage'//添加村医
-import DoctorUpdata from '../components/DoctorUpdata' //村医编辑
+import DoctorUpData from '../components/DoctorUpData' //村医编辑
 import MerchantChannel from '../components/MerchantChannel' //导入商户信息
 import BusinessIssue from '../components/BusinessIssue' //业务专区发布
 import InformationUp from '../components/InformationUp'//信息专区发布
@@ -34,7 +34,11 @@ import UserBank from '../components/UserBank' //银行卡信息
 import UserFamily from '../components/UserFamily' //家人关系
 import UserRecord from '../components/UserRecord' //使用记录
 import UserTownship from '../components/UserTownship'//用户乡银宝
-
+import Staffadd from '../components/Staffadd' //员工新增
+import Department from '../components/Department' //部门新建
+import RoleAdd from '../components/RoleAdd' //角色新增
+import SystemMange from '../components/SystemManage' //系统用户管理页
+import SystemThrones from '../components/SystemThrones' //系统权限管理页
 Vue.use(Router)
 
 export default new Router({
@@ -207,13 +211,38 @@ export default new Router({
           path: '/userdetailsusertownship',
           name: 'UserTownship',
           component: UserTownship
-        },
-        {
-          path: '/doctorupdata',
-          name: 'DoctorUpdata',
-          component: DoctorUpdata
         }
       ]
+    },
+    {
+      path: '/doctorupdata',
+      name: 'DoctorUpData',
+      component: DoctorUpData
+    },
+    {
+      path: '/staffadd',
+      name: 'Staffadd',
+      component: Staffadd
+    },
+    {
+      path: '/department',
+      name: 'Department',
+      component: Department
+    },
+    {
+      path: '/roleadd',
+      name: 'RoleAdd',
+      component: RoleAdd
+    },
+    {
+      path: '/systemmange',
+      name: 'SystemMange',
+      component: SystemMange
+    },
+    {
+      path: '/systemthrones',
+      name: 'SystemThrones',
+      component: SystemThrones
     }
   ]
 })

@@ -10,7 +10,7 @@
 */
 function RemoteCall(){
 	this.setting={//外部传进来的参数http://192.168.0.104
-		openUrl : "http://onlinepay.site:8091",//设置请求的域名
+    openUrl: "http://www.yxunionpay.com:8091",//设置请求的域名
 		router:"/base/validatecode/picture/get", //设置请求的地址路径
     appid: 3,
     callback: function () {
@@ -59,6 +59,11 @@ RemoteCall.prototype.init = function(opt){
         success: function (resp) {
         		_this.res=resp;
           _this.setting.callback(resp)//成功的回调函数
+          if (resp.ret.errorCode == -1) {//等于-1返回错误信息
+            if (resp.ret.errorMessage != "ValidateCode error" && resp.ret.errorMessage != "user login not exist" && resp.ret.errorMessage != "password error") {
+              alert(resp.ret.errorMessage);
+            }
+          }
         },
         error:function (resp) {
           _this.setting.errorCallback(resp);

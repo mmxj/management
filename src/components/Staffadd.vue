@@ -2,7 +2,7 @@
   <div id="Staffadd">
     <el-row :gutter="20">
       <el-col :span="2">
-        <label for="">村医姓名</label>
+        <label for="">员工姓名</label>
       </el-col>
       <el-col :span="6">
         <input type="text" v-model="inputData.name">
@@ -22,7 +22,7 @@
     </el-row>
     <el-row :gutter="20">
       <el-col :span="2">
-        <label for="">归属医院</label>
+        <label for="">归属公司</label>
       </el-col>
       <el-col :span="6">
         <el-select v-model="company" filterable placeholder="请选择公司" @change="companyChange">
@@ -120,7 +120,7 @@
         <label for="">登录密码</label>
       </el-col>
       <el-col :span="6">
-        <input type="text" v-model="password">
+        <input type="password" v-model="password">
       </el-col>
     </el-row>
     <el-row>
@@ -136,6 +136,7 @@
       return {
         options: [],
         departmentOptions: [],
+        password: null,
         roleData: [],
         doctorData: [{
           value: 0,
@@ -166,7 +167,6 @@
         sex: null,
         company: null,
         doctor: null,
-        password: null,
         session: sessionStorage.getItem('session'),
         parentId: [],
         department: null,
@@ -323,6 +323,7 @@
     background: #fff;
     min-height: 800px;
   }
+
   .el-col {
     margin-bottom: 20px;
     label {

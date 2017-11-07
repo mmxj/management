@@ -26,25 +26,6 @@
           <label for="">安装地址</label>
         </el-col>
         <el-col :span="6" class="area">
-          <!--<el-row>-->
-          <!--<el-col :span="12">-->
-          <!--<div class="distpicker">-->
-          <!--<select name="" id="province2" @change="setCity2()">-->
-          <!--<option value="">省</option>-->
-          <!--<option v-for="data in provinceData2" v-bind:value="data.id">{{data.name}}</option>-->
-          <!--</select>-->
-          <!--<select name="" id="city2" @change="setDistrict2()">-->
-          <!--<option value="">市</option>-->
-          <!--<option v-for="data in cityData2" v-bind:value="data.id">{{data.name}}</option>-->
-          <!--</select>-->
-          <!--<select name="" id="district2" @change="setAreaId2()">-->
-          <!--<option value="">区</option>-->
-          <!--<option v-for="datas in districtData2" v-bind:value="datas.id">{{datas.name}}</option>-->
-          <!--</select>-->
-          <!--</div>-->
-          <!--</el-col>-->
-          <!--<el-col :span="12"><input type="text" v-model="inputData.address"></el-col>-->
-          <!--</el-row>-->
           <input type="text" v-model="inputData.address">
         </el-col>
         <el-col :span="2">
@@ -71,10 +52,11 @@
           <label for="">收单机构</label>
         </el-col>
         <el-col :span="6">
-          <input type="text" v-model="merchantName2" :placeholder="placeholder2" @blur="getText2(merchantName2)">
-          <ul class="company" ref="searchBox2">
-            <li v-for="name in companyName" v-on:click="getText2(name)">{{name}}</li>
-          </ul>
+          <el-select v-model="companyTypeName" filterable remote reserve-keyword :remote-method="remoteMethod"
+                     placeholder="收单机构名称" @change="companyTypeChange">
+            <el-option v-for="item in companyType" :key="item.value" :label="item.label"
+                       :value="item.value"></el-option>
+          </el-select>
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -103,10 +85,15 @@
           <label for="">商户名称</label>
         </el-col>
         <el-col :span="6">
-          <input type="text" v-model="merchantName" :placeholder="placeholder" @blur="getText(merchantName)">
-          <ul class="company" ref="searchBox">
-            <li v-for="name in companyName" v-on:click="getText(name)">{{name}}</li>
-          </ul>
+          <!--<input type="text" v-model="merchantName" :placeholder="placeholder" @blur="getText(merchantName)">-->
+          <!--<ul class="company" ref="searchBox">-->
+          <!--<li v-for="name in companyName" v-on:click="getText(name)">{{name}}</li>-->
+          <!--</ul>-->
+          <el-select v-model="companyName" filterable remote reserve-keyword :remote-method="remoteMethods"
+                     placeholder="商户名称" @change="companyChange">
+            <el-option v-for="item in companyNames" :key="item.value" :label="item.label"
+                       :value="item.value"></el-option>
+          </el-select>
         </el-col>
         <el-col :span="2">
           <label for="">商户主营业务</label>
@@ -212,7 +199,11 @@
         session: sessionStorage.getItem('session'),
         onoff: true,
         placeholder: null,
-        placeholder2: null
+        placeholder2: null,
+        companyTypeName: null,
+        companyType: [],
+        companyName: null,
+        companyNames: []
       }
     },
     methods: {
@@ -427,19 +418,6 @@
           this.placeholder = '请输入合作行业名称或编号搜索对应商户图片信息'
         }
       },
-      getText2(name){//点击获取提示框的文字替换到数据中
-        this.placeholder2 = name;
-        this.merchantName2 = null;
-        this.inputData.acquirerName = this.placeholder2;
-        this.saveData = [];
-        for (var i = 0; i < this.dataList.length; i++) {
-          if (name == this.dataList[i].companyName) {
-            this.saveData.push(this.dataList[i])//将匹配的信息保存的到数组中
-          }
-        }
-        this.$refs.searchBox2.style.display = 'none';
-        this.getCompanyIp2(this.inputData.acquirerName);
-      },
       holder(){
         if (!this.valChange) {
           this.placeholder = '请输入合作行业名称或编号搜索对应商户图片信息'
@@ -471,31 +449,6 @@
           },
         })
       },
-      getCompanyIp2(name){
-        var vm = this;
-        var getCompanyIp = new RemoteCall();
-        getCompanyIp.init({
-          router: "/company/get",
-          session: this.session,
-          data: {
-            companyName: name,
-            pageInfo: {
-              pageSize: 15,
-              pageNum: 1
-            }
-          },
-          callback: function (data) {
-            console.log(data);
-            for (let i = 0; i < data.rows.length; i++) {
-              if (data.rows[i].name == vm.inputData.acquirerName) {
-                vm.inputData.acquirerId = data.rows[i].id;
-                return
-              }
-            }
-            alert('找不到该收单机构，请新建')
-          },
-        })
-      },
       getTerminal(){//获取终端信息 终端信息表格
         var vm = this;
         var getCompanyIp = new RemoteCall();
@@ -513,11 +466,82 @@
             vm.tableData = data.rows
           }
         })
-      }
+      },
+      remoteMethod(data){//远程搜索公司名收单机构
+        if (data !== '') {
+          this.companyInit(data)
+        } else {
+          this.companyInit(null)
+        }
+      },
+      remoteMethods(data){//商户名
+        if (data !== '') {
+          this.companyNameInit(data)
+        } else {
+          this.companyNameInit(null)
+        }
+      },
+      companyTypeChange(data){
+        this.inputData.acquirerId = data;
+      },
+      companyChange(data){
+        this.inputData.companyId = data;
+      },
+      companyInit(name){//初始化公司列表
+        var companyName = new RemoteCall();
+        var vm = this;
+        companyName.init({
+          router: '/company/get',
+          session: this.session,
+          data: {
+            name: name,
+            companyType: 1,
+            pageInfo: {
+              pageSize: 100,
+              pageNum: 1
+            }
+          },
+          callback: function (data) {
+            vm.companyType = [];
+            for (var i = 0; i < data.rows.length; i++) {
+              var options = {};
+              options.value = data.rows[i].id;
+              options.label = data.rows[i].name;
+              vm.$set(vm.companyType, i, options)
+            }
+          }
+        })
+      },
+      companyNameInit(name){//初始化公司列表
+        var companyName = new RemoteCall();
+        var vm = this;
+        companyName.init({
+          router: '/company/get',
+          session: this.session,
+          data: {
+            name: name,
+            pageInfo: {
+              pageSize: 100,
+              pageNum: 1
+            }
+          },
+          callback: function (data) {
+            vm.companyNames = [];
+            for (var i = 0; i < data.rows.length; i++) {
+              var options = {};
+              options.value = data.rows[i].id;
+              options.label = data.rows[i].name;
+              vm.$set(vm.companyNames, i, options)
+            }
+          }
+        })
+      },
     },
     mounted: function () {
       this.getArea();
       this.getTerminal();
+      this.companyInit(null);
+      this.companyNameInit(null)
     },
     watch: {
       merchantName: function () {
@@ -598,6 +622,9 @@
     line-height: 30px;
   }
 
+  .el-select {
+    width: 100%;
+  }
   @media screen and (max-width: 1760px) {
     label {
       font-size: 14px;
@@ -615,6 +642,9 @@
     .el-col-3 {
       width: 15.5%;
     }
+    .el-col-offset-2 {
+      margin-left: 3.33333%;
+    }
   }
 
   @media screen and (max-width: 1450px) {
@@ -627,6 +657,10 @@
     .el-col-3 {
       width: 17.5%;
     }
+    .el-col-4 {
+      width: 15%;
+    }
+
   }
 
   .el-col-6 {
@@ -678,7 +712,7 @@
 
   @media screen and (max-width: 1450px) {
     .distpicker select {
-      width: 31% !important;
+      width: 30% !important;
     }
   }
 </style>

@@ -32,5 +32,8 @@ export default {
   },
   urlArr: ({commit}, urlArr) => {
     commit(types.URL, urlArr)
+  },
+  saveCollaborate: ({commit}, saveCollaborate) => {
+    commit(types.COLL, saveCollaborate)
   }
 }

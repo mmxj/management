@@ -94,7 +94,7 @@
           '云浮市'
         ],
         inputData: {
-          enableFlag: null
+//          enableFlag: null
         },
         checkedNames: []
       }
@@ -107,16 +107,6 @@
           this.inputData.areaRange = '所有区域'
         }
         this.setPicture('#from');
-        var data = this.inputData;
-        var dataUp = new RemoteCall();
-        dataUp.init({
-          router: '/ips/product/update',
-          session: this.session,
-          data: data,
-          callback: function (res) {
-            console.log(res);
-          }
-        })
       },
       setPicture(id){
         var vm = this;
@@ -126,8 +116,29 @@
           success: function (data) {
             if (data) {
               if (JSON.parse(data).data.length > 0) {
-                vm.inputData.enableFlag = JSON.parse(data).data[0].saved_file; //图片上传接口有问题
+                vm.inputData.picSavePath = JSON.parse(data).data[0].saved_file; //图片上传接口有问题
               }
+
+              var datas = vm.inputData;
+              var dataUp = new RemoteCall();
+              dataUp.init({
+                router: '/ips/product/add',
+                session: vm.session,
+                data: datas,
+                callback: function (res) {
+                  console.log(res);
+                  if (res.ret.errorMessage == 'success') {
+                    vm.$alert('发布成功', '提示', {
+                      confirmButtonText: '确定'
+                    });
+                  }
+                },
+                errorCallback: function (data) {
+                  if (data) {
+                    vm.$router.push('/login')
+                  }
+                }
+              })
             }
           }
         })
@@ -144,13 +155,27 @@
         }
       },
       getAll(index){
+        var vm = this;
         if (index == 0) {
-          if (this.checkedNames[0] == '全选') {
-            this.checkedNames = this.checkBoxData
-          } else {
-            this.checkedNames = []
+//            this.checkedNames = this.checkBoxData;
+          for (var i = 0; i < this.checkBoxData.length; i++) {
+//              this.checkedNames[i]=this.checkBoxData[i]
+            this.$set(vm.checkedNames, i, this.checkBoxData[i])
           }
-          console.log(this.checkedNames);
+//            this.checkedNames = []
+        } else {
+          function getIndex() {
+            for (var i = 0; i < vm.checkedNames.length; i++) {
+              if (vm.checkedNames[i] == '全选') {
+                return i
+              }
+            }
+            return false;
+          }
+
+          if (getIndex() || getIndex() === 0) {
+            this.checkedNames.splice(getIndex(), 1)
+          }
         }
       }
     },

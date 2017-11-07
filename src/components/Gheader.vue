@@ -8,8 +8,9 @@
         <div>今天是<span class="today">{{time}}</span></div>
       </div>
       <div class="site">
-        {{companyName}}
+        {{companyName}} <span class="goBack" @click="goBack">退出</span>
       </div>
+
     </header>
     <router-link to="/message" class="page1 left-title">运营管理后台首页</router-link>
   </div>
@@ -45,6 +46,9 @@
         var time = new Date();
         console.log(time);
         this.time = time.getFullYear() + '年' + (time.getMonth() + 1) + '月' + time.getDate() + '日'
+      },
+      goBack(){
+        this.$router.push('/login')
       }
     },
     mounted: function () {
@@ -61,6 +65,7 @@
 </script>
 <style type="text/css" lang="scss" scoped="">
   #Gheader {
+    background: #fff;
     header {
       font-size: 14px;
       line-height: 70px;
@@ -111,5 +116,11 @@
     height: 100%;
     text-decoration: none;
     font-weight: bold;
+    width: 250px;
+  }
+
+  .goBack {
+    margin-left: 30px;
+    cursor: pointer;
   }
 </style>

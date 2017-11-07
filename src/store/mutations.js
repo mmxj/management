@@ -1,7 +1,7 @@
 /**
  * Created by 银信数据科技 on 2017/9/27.
  */
-import {INCREMENT, SAVEDATA, SESSION, USER, USERNAME, HEALTH, LIST, URL} from './types'
+import {INCREMENT, SAVEDATA, SESSION, USER, USERNAME, HEALTH, LIST, URL, COLL} from './types'
 import getters from './getters'
 const state={
   show:false,
@@ -11,7 +11,8 @@ const state={
   loginData: null,
   saveHealthData: null,
   addList: null,
-  urlArr: null
+  urlArr: null,
+  saveCollaborate: null
 }
 const mutations = {
   [INCREMENT](state){
@@ -37,6 +38,9 @@ const mutations = {
   },
   [URL](state, urlArr){
     state.urlArr = urlArr
+  },
+  [COLL](state, saveCollaborate){
+    state.saveCollaborate = saveCollaborate
   }
 }
 export default{

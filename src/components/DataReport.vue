@@ -7,34 +7,41 @@
         </el-col>
         <el-col :span="22">
           <el-row :gutter="20">
-            <el-col :span="12" class="el-timer">
+            <el-col :span="14" class="el-timer">
               <el-row>
                 <el-col :span="4" v-for="(data,index) in btnData" :key="data.id">
                   <el-button :class="{active:index==isActive}" @click="getTodays(index)">{{data.name}}</el-button>
                 </el-col>
               </el-row>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="8">
               <el-row :gutter="20">
-                <el-col :span="6" class="el-timer">
-                  <el-date-picker v-model="value1" align="right" type="date" placeholder="选择日期"
+                <el-col :span="12" class="el-timer">
+                  <el-date-picker v-model="value1" align="right" type="date" placeholder="选择起始日期"
                                   :picker-options="pickerOptions1" @change="getStartTime"></el-date-picker>
                 </el-col>
-                <el-col :span="6" class="el-timer">
-                  <el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期"
+                <el-col :span="12" class="el-timer">
+                  <el-date-picker v-model="value2" align="right" type="date" placeholder="选择结束日期"
                                   :picker-options="pickerOptions1" @change="getEndTime"></el-date-picker>
                 </el-col>
               </el-row>
             </el-col>
           </el-row>
           <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :span="14">
               <el-row>
                 <el-col :span="4" v-for="(item,index) in reportdata" :key="item.id">
                   <el-button :class="{'active':index==isActive2}" @click="getReportActive(index)">{{item.name}}
                   </el-button>
                 </el-col>
               </el-row>
+            </el-col>
+            <el-col :span="4">
+              <el-select v-model="companyType" @change="companyTypeChange">
+                <el-option v-for="item in companyTypeData" :key="item.value" :label="item.label" :value="item.value">
+
+                </el-option>
+              </el-select>
             </el-col>
             <el-col :span="3">
               <el-button class="elButton" @click="getReport">确定</el-button>
@@ -139,7 +146,35 @@
         value2: '',
         tableData: [],
         inputData: {},
-        routerUrl: null
+        routerUrl: null,
+        companyType: null,
+        companyTypeData: [
+          {
+            value: null,
+            label: '请选择商户类型'
+          }, {
+            value: 1,
+            label: '收单机构'
+          }, {
+            value: 2,
+            label: '支付通道机构'
+          }, {
+            value: 3,
+            label: '社保局'
+          }, {
+            value: 4,
+            label: '医院(卫生站)'
+          }, {
+            value: 5,
+            label: '药店'
+          }, {
+            value: 6,
+            label: '平台'
+          }, {
+            value: 7,
+            label: '卫计局'
+          }
+        ]
       }
     },
     methods: {
@@ -168,26 +203,36 @@
             this.routerUrl = "/report/order/businesstype/list";
             break;
         }
-        var getReport = new RemoteCall();
         var vm = this;
+        if (vm.companyType == null) {
+          this.$alert('商户类型不能为空', '温馨提示', {
+            confirmButtonText: '确定'
+          });
+          return;
+        }
+        var getReport = new RemoteCall();
         getReport.init({
           router: this.routerUrl,
           session: this.session,
           data: {
             beginCreate: vm.startTime,
             endCreate: vm.endTime,
-            companyType: 4,
+            companyType: vm.companyType,
             pageInfo: {
               pageSize: 100,
               pageNum: 1
             }
           },
           callback: function (data) {
-            if (data.rows.length == 0) {
-              vm.openWindows()
+            if (data.rows) {
+              if (data.rows.length == 0) {
+                vm.openWindows()
+              }
+              vm.tableData = data.rows;
+              for (var i = 0; i < vm.tableData.length; i++) {
+                vm.tableData[i].payTotalMoney = vm.tableData[i].payTotalMoney / 100;
+              }
             }
-            vm.tableData = data.rows;
-            vm.tableData.payTotalMoney = vm.tableData.payTotalMoney / 100;
           }
         })
       },
@@ -240,6 +285,10 @@
         this.$alert('查无数据', '温馨提示', {
           confirmButtonText: '确定'
         });
+      },
+      companyTypeChange(data){
+//          console.log(data)
+
       }
     },
     mounted: function () {
@@ -300,7 +349,7 @@
     }
     .el-button {
       font-size: 14px;
-      min-width: 6em;
+      min-width: 7em;
     }
   }
 
@@ -316,6 +365,10 @@
 
   a {
     line-height: 30px;
+  }
+
+  .el-col-4 {
+    min-width: 6em;
   }
 </style>
 <style type="text/css">

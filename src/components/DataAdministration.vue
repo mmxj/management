@@ -153,7 +153,6 @@
         } else {
           this.$router.push({path: '/login'})
         }
-        console.log(this.session);
         var _this = this;
         var getArea = new RemoteCall();
         getArea.init({
@@ -168,10 +167,10 @@
       getAreaCallback(data){
         var _this = this;
         this.provinceData = data.rows
-        clearTimeout(timer)
-        var timer = setTimeout(function () {
-          _this.setCity();
-        }, 0)
+//        clearTimeout(timer)
+//        var timer = setTimeout(function () {
+////          _this.setCity();
+//        }, 0)
       },
       setCity(){
         var _this = this;
@@ -187,10 +186,10 @@
           }
         });
         this.cityData = getCity.res.rows;
-        clearTimeout(timer);
-        var timer = setTimeout(function () {
-          _this.setDistrict();
-        }, 10)
+//        clearTimeout(timer);
+//        var timer = setTimeout(function () {
+//          _this.setDistrict();
+//        }, 10)
       },
       setDistrict(){//县区获取
         var myCity = document.getElementById('city');
@@ -206,10 +205,10 @@
           }
         });
         this.districtData = getDistrict.res.rows;
-        clearTimeout(timer);
-        var timer = setTimeout(function () {
-          _this.setAreaId();
-        }, 10)
+//        clearTimeout(timer);
+//        var timer = setTimeout(function () {
+//          _this.setAreaId();
+//        }, 10)
       },
       setAreaId(){//获取areaid 给inputData赋值
         var myCity = document.getElementById('district');

@@ -4,7 +4,7 @@
       <el-row :gutter="10">
         <el-col :span="6">
           <div class="el-ipt">
-            <input type="text" :placeholder="placeholder" v-model="valChange" @keyup="holder">
+            <input type="text" :placeholder="placeholder" v-model="valChange" @keyup="holder" @keydown.13="getText2">
             <ul class="company" ref="searchBox">
               <li v-for="name in companyName" v-on:click="getText(name)">{{name}}</li>
             </ul>
@@ -38,6 +38,7 @@
   </div>
 </template>
 <script type="text/javascript">
+  import {mapGetters} from 'vuex'
   export default{
     data(){
       return {
@@ -52,22 +53,31 @@
         placeholder: '请输入商家名称或编号搜索对应商户图片信息'
       }
     },
+    computed: mapGetters(['saveCollaborate']),
     methods: {
-      getPicture(){
-        console.log(this.valChange);
-        var pictureMessage = new RemoteCall();
-        pictureMessage.init({
-          router: "/company/certificate/get",
-          session: this.session,
-          data: {
-            companyName: this.valChange,
-            pageInfo: {
-              pageSize: 15,
-              pageNum: 1
-            }
-          },
-          callback: this.dataCallback
-        })
+      getPicture(name){
+        if (name) {
+          this.valChange = name;
+        }
+        if (this.valChange == '' || this.valChange == ' ') {
+          this.valChange = null;
+        }
+        if (this.valChange) {
+          var pictureMessage = new RemoteCall();
+          pictureMessage.init({
+            router: "/company/certificate/get",
+            session: this.session,
+            data: {
+              companyName: this.valChange,
+              pageInfo: {
+                pageSize: 15,
+                pageNum: 1
+              }
+            },
+            callback: this.dataCallback
+          })
+        }
+
       },
       dataCallback(data){//对数据进行检查 将公司名字提取出来
         this.dataList = data.rows;
@@ -98,8 +108,15 @@
         if (i) {
           this.index = i;
         }
-        this.pictureName = this.saveData[this.index].certificateTypeName;
-        this.getPic(this.saveData[this.index].certificatePic)
+        if (this.saveData[this.index]) {
+          this.pictureName = this.saveData[this.index].certificateTypeName;
+          this.getPic(this.saveData[this.index].certificatePic)
+        } else {
+          this.$alert('查无该商户的证件信息', '提示', {
+            confirmButtonText: '确定',
+          });
+        }
+
       },
       getPic(name){//根据名字查找图片
         var vm = this;
@@ -122,16 +139,24 @@
         this.placeholder = name;
         this.valChange = null;
         this.saveData = [];
+        if (!this.dataList) {
+          this.$alert('查无该商户的证件信息', '提示', {
+            confirmButtonText: '确定',
+          });
+          return false;
+        }
         for (var i = 0; i < this.dataList.length; i++) {
           if (name == this.dataList[i].companyName) {
             this.saveData.push(this.dataList[i])//将匹配的信息保存的到数组中
           }
         }
+//        console.log(this.saveData);
         this.$refs.searchBox.style.display = 'none';
         this.showPic()
       },
       getText2(){//点击搜索触发
         this.getText(this.valChange);
+        return false
       },
       pageAdd(){//上一页
         if (this.index < this.saveData.length - 1) {
@@ -149,15 +174,22 @@
         if (!this.valChange) {
           this.placeholder = '请输入商家名称或编号搜索对应商户图片信息'
         }
-        console.log(111)
       }
     },
     mounted: function () {
       this.getSession();
+      if (this.saveCollaborate) {
+        this.getPicture(this.saveCollaborate);
+        this.getText(this.saveCollaborate)
+      }
     },
     watch: {
       valChange: function () {
-        this.getPicture();
+        if (this.valChange) {
+          this.getPicture();
+        } else {
+          this.companyName = [];
+        }
         if (this.companyName != '[]') {
           if (this.companyName.length > 0) {
             this.$refs.searchBox.style.display = 'block';
@@ -188,7 +220,7 @@
       border-radius: 4px;
       text-indent: 1em;
       position: relative;
-      z-index: 10000;
+      z-index: 1000;
     }
   }
 

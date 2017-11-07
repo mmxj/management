@@ -1,6 +1,5 @@
 <template>
   <div id="MerchantAdd">
-
     <div>
       <el-row :gutter="20">
         <el-col :span="2">
@@ -8,11 +7,15 @@
         </el-col>
         <el-col :span="6">
           <div class="girid-content girid-ipt">
-            <select ref="companyType" @change="setCompanyType">
-              <option>请选择商户类型</option>
-              <option>医院(卫生站)</option>
-              <option>药店</option>
-            </select>
+            <!--<select ref="companyType" @change="setCompanyType">-->
+            <!--<option>请选择商户类型</option>-->
+            <!--<option>医院(卫生站)</option>-->
+            <!--<option>药店</option>-->
+            <!--</select>-->
+            <el-select v-model="companyType" @change="setCompanyType">
+              <el-option v-for="item in companyOption" :key="item.value" :label="item.label"
+                         :value="item.value"></el-option>
+            </el-select>
           </div>
         </el-col>
         <el-col :span="2">
@@ -302,7 +305,33 @@
         imgIndex: 0,
         imgUrls: null,
         Url: null,
-        fileList: []
+        fileList: [],
+        companyOption: [{
+          value: null,
+          label: '请选择商户类型'
+        }, {
+          value: 1,
+          label: '收单机构'
+        }, {
+          value: 2,
+          label: '支付通道机构'
+        }, {
+          value: 3,
+          label: '社保局'
+        }, {
+          value: 4,
+          label: '医院(卫生站)'
+        }, {
+          value: 5,
+          label: '药店'
+        }, {
+          value: 6,
+          label: '平台'
+        }, {
+          value: 7,
+          label: '卫计局'
+        }],
+        companyType: null,
       }
     },
     compontents: {
@@ -310,17 +339,9 @@
     },
     methods: {
       //获取公司类型id companyTypeId
-      setCompanyType(){
-        var index = this.$refs.companyType.selectedIndex;
+      setCompanyType(data){
         var vm = this;
-        switch (index) {
-          case 1:
-            vm.inputData.companyTypeId = 4;
-            break;
-          case 2:
-            vm.inputData.companyTypeId = 5;
-            break;
-        }
+        vm.inputData.companyTypeId = data;
       },
       //获取选中的公司证书类型
       certificateType(){
@@ -333,6 +354,9 @@
           case 2:
             vm.inputData.certificateType = 2;
             break;
+          default:
+            vm.inputData.certificateType = null;
+            break
         }
       },
       //地市联动方法 //找个时间封装
@@ -457,9 +481,9 @@
       addMerchant(){//点击进行添加
         console.log(this.inputData.certificateList[this.imgIndex].imgVal);
         var vm = this;
-        this.setPicture("#form1", 0, this.addCompany);
-        this.setPicture("#form2", 1, this.addCompany);
-        this.setPicture("#form3", 2, this.addCompany);
+        this.setPicture("#form1", 0);
+        this.setPicture("#form2", 1);
+        this.setPicture("#form3", 2);
         this.setPicture("#form4", 3, this.addCompany);
 //        var addMerchant = new RemoteCall();
 //        addMerchant.init({
@@ -471,6 +495,7 @@
 //        })
       },
       addCompany(){//检测图片是否全部成功的函数
+        var vm = this;
         if (this.checkPictureUrl()) {
           for (var i = 0; i < this.inputData.certificateList.length; i++) {
             this.inputData.certificateList[i].imgUrls = null;
@@ -482,19 +507,39 @@
             router: "/company/add",
             session: this.session,
             data: this.inputData,
-            callback: routerGo
+            callback: vm.routerGo
           })
+        } else {
+          this.$alert('添加失败请上传完整的图片信息', '提示', {
+            confirmButtonText: '确定',
+            callback: function () {
+//              window.location.reload()
+            }
+          });
         }
       },
       routerGo(data){
         if (data.ret.errorMessage == 'success') {
-          window.location.reload()
+//          window.location.reload()
+          this.$alert('添加成功', '提示', {
+            confirmButtonText: '确定',
+            callback: function () {
+              window.location.reload()
+            }
+          });
+        } else {
+          if (data.ret.errorMessage == 'Exception: 字段：name为空值，请检查!\r\n') {
+            this.$alert('商户名不能为空', '提示', {
+              confirmButtonText: '确定'
+            })
+          }
         }
       },
       checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
         for (var i = 0; i < 4; i++) {
           if (!this.inputData.certificateList[i].picSavePath) {
 //            console.log(this.inputData.certificateList[i].picSavePath);
+
             return false
           }
         }
@@ -505,6 +550,7 @@
         $(id).ajaxSubmit({//为了获取跨域的iframe的内容 没办法动用了jq插件
           type: "POST",
           url: "http://192.168.0.137:18081/yxsj-openapi-web/openapi/upload/upload.do",
+          async: false,
           success: function (data) {
             if (data) {
               if (JSON.parse(data).data.length > 0) {
@@ -512,33 +558,45 @@
               } else {
                 switch (index) {
                   case 0:
-                    alert("营业执照上传失败")
+                    vm.$alert('营业执照上传失败', '提示', {
+                      confirmButtonText: '确定',
+                    });
                     break;
                   case 1:
-                    alert("从业资格证上传")
+                    vm.$alert('从业资格证上传失败', '提示', {
+                      confirmButtonText: '确定',
+                    });
                     break;
                   case 2:
-                    alert("银行卡资料上传")
+                    vm.$alert('银行卡资料上传失败', '提示', {
+                      confirmButtonText: '确定',
+                    });
                     break;
                   case 3:
-                    alert("法人身份证照片上传")
+                    vm.$alert('法人身份证照片上传失败', '提示', {
+                      confirmButtonText: '确定',
+                    });
                     break;
                   default:
-                    alert("照片上传错误请重新上传")
+                    vm.$alert('照片上传失败', '提示', {
+                      confirmButtonText: '确定',
+                    });
                     break
-
                 }
               }
             }
 
           }
-        })
-      },
-      callback(data, index, addcompany){//图片调用成功后的回调函数
-        this.inputData.certificateList[index].picSavePath = JSON.parse(data).data[0].saved_file;
+        });
         if (addcompany) {
           addcompany();//判断所有图片上传成功后回调
         }
+      },
+      callback(data, index, addcompany){//图片调用成功后的回调函数
+        this.inputData.certificateList[index].picSavePath = JSON.parse(data).data[0].saved_file;
+//        if (addcompany) {
+//          addcompany();//判断所有图片上传成功后回调
+//        }
 
 //        console.log(JSON.parse(data).data[0].saved_file)
       }
@@ -632,6 +690,9 @@
     }
   }
 
+  .el-select {
+    width: 100%;
+  }
   .checkImg {
     line-height: 36px;
     cursor: pointer;

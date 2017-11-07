@@ -1,250 +1,202 @@
 <template>
-  <div id="DoctorManage">
-    <div>
-      <el-row :gutter="20">
-        <el-col :span="2"><label for="">
-          <!--<router-link to="/doctoradd">编辑村医</router-link>-->
-          <a href="javascript:" @click="goUpdata">编辑村医</a>
-        </label></el-col>
-        <el-col :span="2"><label for="" @click="open">删除村医</label></el-col>
-      </el-row>
-    </div>
+  <div id="DocotrManage">
+    <el-row :gutter="20">
+      <el-col :span=2>
+        <span class="btn" @click="changeDoctor">编辑村医</span>
+      </el-col>
+      <el-col class="btn" :span="2">
+        <span @click="DeleteDoctor">删除村医</span>
+      </el-col>
+    </el-row>
     <div class="tables">
       <el-table :data="tableData" border align="center" style="width:100%" max-height="600"
                 @selection-change="handleSelectionChange">
         <el-table-column label="选择" width="70">
-          <template scope="scope">
+          <template slot-scope="scope">
             <el-radio :label="scope.$index" v-model="radio" @change.native="getIndex(scope.$index)">&nbsp;</el-radio>
           </template>
         </el-table-column>
         <el-table-column prop="name" label="村医姓名" width="150"></el-table-column>
-        <el-table-column prop="parent2CompanyName" label="归属卫生院" width="180"></el-table-column>
-        <el-table-column prop="parentCompanyName" label="归属卫生站" width="200"></el-table-column>
-        <el-table-column prop="no" label="村医编号" width="200"></el-table-column>
-        <el-table-column prop="certificateNo" label="身份证号" width="200"></el-table-column>
+        <el-table-column prop="companyName" label="归属卫生院" width="180"></el-table-column>
+        <el-table-column prop="departmentName" label="归属部门" width="200"></el-table-column>
+        <el-table-column prop="id" label="村医编号" width="200"></el-table-column>
+        <el-table-column prop="idCardNo" label="身份证号" width="200"></el-table-column>
         <el-table-column prop="email" label="村医邮箱" width="200"></el-table-column>
-        <el-table-column prop="leader" label="卫生站联系人" width="200"></el-table-column>
-        <el-table-column prop="telephone" label="联系电话" width="200"></el-table-column>
-        <el-table-column prop="accountName" label="银行账户名" width="200"></el-table-column>
-        <el-table-column prop="account" label="银行账号" width="200"></el-table-column>
-        <el-table-column prop="auditTime" label="添加日期" width="200"></el-table-column>
+        <el-table-column prop="mobile" label="联系电话" width="200"></el-table-column>
+        <!--<el-table-column prop="" label="银行账户名" width="200"></el-table-column>-->
+        <!--<el-table-column prop="" label="银行账号" width="200"></el-table-column>-->
+        <el-table-column prop="sfsCreate" label="添加日期" width="200"></el-table-column>
         <el-table-column prop="auditFlag" label="医生状态" width="200"></el-table-column><!--屏蔽的效果还没做-->
       </el-table>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
     </div>
   </div>
 </template>
-<script type="text/javascript">
+<script>
   import {mapActions} from 'vuex'
   export default{
     data(){
       return {
         session: sessionStorage.getItem('session'),
+        tableData: [],
         radio: null,
-        tableData: [
-//            {
-//          name: null,
-//          parentCompanyId:null,
-//          certificateType:null,
-//          certificateNo:null,
-//          no:null,
-//          corporation:null,
-//          leaderName:null,
-//          telephone:null,
-//          email:null,
-//          address:null,
-//          accountName:null,
-//          account:null,
-//          auditTime:null
-//        }
-        ]
+        saveDoctorData: null,
+        currentPage: 1,
+        pageSize: 20,
+        total: 1,
+        inputData: {
+          staffType: 1,
+          pageInfo: {
+            pageSize: 20,
+            pageNum: 1
+          }
+        }
       }
     },
     methods: {
       ...mapActions(['saveHealthData']),
-      getIndex(index){
-        this.dataIndex = index;
-        this.choose = this.tableData[index];
-      },
-      //变化的时候出发 将数据放入multipleSelection中
-      toggleSelection(rows) {
-        if (rows) {
-          rows.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row);
-          });
-        } else {
-          this.$refs.multipleTable.clearSelection();
-        }
-        console.log(row)
-      },
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-        console.log(this.multipleSelection)
-      },
-      open(){ //弹窗模块
-        if (this.choose) {
-          var vm = this;
-          var checkhealth = new RemoteCall();//检查下面有没有处方
-          checkhealth.init({
-            router: '/order/prescription/get',
-            session: this.session,
-            data: {
-              doctorId: this.choose.id
-            },
-            callback: function (data) {
-              if (data.rows.length > 0) {
-                vm.choose.children = 1;
-              } else {
-                vm.choose.children = 0;
-              }
-              vm.deleteHealth();
-            }
-          })
-        } else {
-          this.$alert('请选择要删除的村医', '提示', {
-            confirmButtonText: '确定',
-            callback: action => {
-
-            }
-          })
-        }
-      },
-      deleteHealth(){
+      getStaff(){
         var vm = this;
-        if (this.choose.children == 1) {
-          this.$confirm('由于该村医已开出处方，不允许删除，如该村医信息变更可屏蔽该村医', '提示',
-            {
+        var staffGet = new RemoteCall();
+        staffGet.init({
+          router: '/company/staff/get',
+          session: this.session,
+          data: vm.inputData,
+          callback: function (data) {
+            if (data) {
+              vm.tableData = data.rows;
+              for (var i = 0; i < vm.tableData.length; i++) {
+                vm.tableData[i].sfsCreate = vm.tableData[i].sfsCreate.split(' ')[0];
+              }
+            }
+
+          },
+          errorCallback: function (data) {
+            if (data.responseText == 'session not found') {
+              vm.$router.push('/login');
+            }
+          }
+        })
+      },
+      getIndex(data){
+        if (data) {
+          this.saveDoctorData = this.tableData[data];
+          this.saveHealthData(this.tableData[data])
+        }
+      },
+      handleSelectionChange(data){
+        console.log(data)
+      },
+      handleCurrentChange(data){
+        console.log(data)
+        this.inputData.pageInfo.pageNum = data;
+      },
+      changeDoctor(){//修改村医 跳转到修改的页面;
+        if (this.saveDoctorData) {
+          this.$router.push('/doctorupdata')
+        } else {
+          this.$alert('请选择要修改的村医', '提示', {
+            confirmButtonText: '确定',
+          });
+        }
+
+      },
+      DeleteDoctor(){//删除村医
+        var vm = this;
+        if (this.saveDoctorData) {
+          if (this.checkOrder(this.saveDoctorData.id)) {//执行屏蔽; 村医的状态值没有 有的话通过修改村医的状态值来实现屏蔽
+            this.$confirm('由于该村医已开出处方，不允许删除，如该村医信息变更可屏蔽该村医', '提示', {
               cancelButtonText: '取消',
               confirmButtonText: '屏蔽',
               type: 'warning',
-            }).then(() => {
-            vm.shield();
-          })
-        } else if (this.choose.children === 0) {
-          this.$confirm('选择了删除该村医信息，请确定是否继续删除', '提示',
-            {
+              callback: function () {
+
+              }
+            });
+          } else {//执行删除
+            this.$confirm('你选择了删除该村医信息，请确定是否继续删除', '提示', {
               cancelButtonText: '取消',
               confirmButtonText: '删除',
               type: 'warning',
             }).then(() => {
-            vm.deletDoctor()
-          })
+              var deletDoctor = new RemoteCall();
+              deletDoctor.init({
+                router: '/company/staff/delete',
+                session: vm.session,
+                data: {
+                  id: vm.saveDoctorData.id
+                },
+                callback: function (data) {
+                  if (data.ret.errorCode === 0) {
+                    vm.$alert('删除成功', '提示', {
+                      confirmButtonText: '确定',
+                    });
+                  } else {
+                    vm.$alert('删除失败', '提示', {
+                      confirmButtonText: '确定',
+                    });
+                  }
+                }
+              })
+            });
+          }
+        } else {
+          this.$alert('请选择要删除的村医', '提示', {
+            confirmButtonText: '确定',
+          });
         }
-      },
-      shield(){//屏蔽卫生站
-        var vm = this;
-        var shieldHealth = new RemoteCall();
-        shieldHealth.init({
-          router: '/company/update',
-          session: vm.session,
-          data: {
-            id: vm.choose.id,
-            enableFlag: 0
-          },
-          callback: function (data) {
-            console.log(data);
-          }
-        })
-      },
-      deletDoctor(){//删除村医
-        var vm = this;
-        var shieldHealth = new RemoteCall();
-        shieldHealth.init({
-          router: '/company/delete',
-          session: vm.session,
-          data: {
-            id: vm.choose.id,
-          },
-          callback: function (data) {
-            console.log(data);
-          }
-        })
 
       },
-      initData(){
-        var getParent = new RemoteCall();
-        getParent.init({
-          router: "/company/get",
+      checkOrder(doctorId){//检查村医底下是否有处方 返回false执行删除 返回true只能屏蔽
+        var doctor = new RemoteCall();
+        var check = false;
+        doctor.init({
+          router: '/order/prescription/get',
           session: this.session,
           data: {
-//            aredId:parseInt(this.inputData.areaId)
+            pageInfo: {
+              pageSize: 100,
+              pageNum: 1
+            },
+            doctorId: doctorId
           },
-          callback: this.parentCallback
-        })
-      },
-      parentCallback(data){
-//          console.log(data)//数据不全
-        for (var i = 0; i < data.rows.length; i++) {
-//              console.log(data.rows[i]);
-          if (data.rows[i].companyType == 5) {
-//              console.log(data.rows[i]);
-            this.tableData.push(data.rows[i]);
-//            console.log(this.tableData)
-//            for(var i=0;i<this.tableData.length;i++){
-//              if(this.tableData[i].auditFlag===0){
-//                this.tableData[i].auditFlag='屏蔽'
-//              }else if(this.tableData[i].auditFlag==1){
-//                this.tableData[i].auditFlag='正常'
-//              }
-//            }
+          callback: function (data) {
+            if (data.rows.length > 0) {
+              check = true;
+            }
           }
+        });
+        return check;
+      },
+      handleSizeChange(data){
+            console.log(data);
         }
       },
-      goUpdata(){
-        console.log(this.choose);
-        this.saveHealthData(this.choose);
-        this.$router.push('/doctorupdata')
-      }
-    },
     mounted: function () {
-      this.initData();
+      this.getStaff();
     }
   }
 </script>
-<style lang="scss" scoped="">
-  #DoctorManage {
+<style scoped="">
+  #DocotrManage {
     margin: 15px;
-    padding: 15px;
-    padding-top: 25px;
+    padding: 20px;
     background: #fff;
+    min-height: 800px;
   }
 
-  a {
-    text-align: center;
-    color: #000;
-    text-decoration: none;
-  }
   .tables {
-    margin-top: 20px;
+    margin-top: 10px;
   }
 
-  @media screen and (max-width: 1700px) {
-    .el-col-2 {
-      width: 10%;
-    }
-    .el-col-6 {
-      width: 23.333333%;
-    }
-    .el-col-3 {
-      width: 14%;
-    }
-    .el-col-5 {
-      width: 17.8333%;
-    }
-    .addHealth {
-      text-indent: 1em;
-    }
-  }
-</style>
-<style>
-  .el-table th {
-    text-align: center !important;
-  }
-
-  .el-table td {
-    text-align: center !important;
-    word-break: keep-all !important; /* 不换行 */
-    white-space: nowrap !important; /* 不换行 */
-    overflow: hidden !important; /* 内容超出宽度时隐藏超出部分的内容 */
-    text-overflow: ellipsis !important; /* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
+  .btn {
+    cursor: pointer;
   }
 </style>

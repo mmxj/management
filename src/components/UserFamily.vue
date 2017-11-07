@@ -8,7 +8,7 @@
       <el-table-column prop="socialNum" label="社保卡号"></el-table-column>
       <el-table-column prop="ruralAccout" label="乡银保账户"></el-table-column>
       <el-table-column>
-        <template scope="scope">
+        <template slot-scope="scope">
           X
         </template>
       </el-table-column>

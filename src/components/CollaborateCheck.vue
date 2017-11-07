@@ -38,6 +38,7 @@
   </div>
 </template>
 <script type="text/javascript">
+  import {mapGetters} from 'vuex'
   export default{
     data(){
       return {
@@ -53,21 +54,31 @@
         placeholder: '请输入合作行业名称或编号搜索对应商户图片信息'
       }
     },
+    computed: mapGetters(['saveCollaborate']),
     methods: {
-      getPicture(){
-        var pictureMessage = new RemoteCall();
-        pictureMessage.init({
-          router: "/company/certificate/get",
-          session: this.session,
-          data: {
-            companyName: this.valChange,
-            pageInfo: {
-              pageSize: 15,
-              pageNum: 1
-            }
-          },
-          callback: this.dataCallback
-        })
+      getPicture(name){
+        if (name) {
+          this.valChange = name;
+        }
+        if (this.valChange == '') {
+          this.valChange = null;
+        }
+        if (this.valChange) {
+          var pictureMessage = new RemoteCall();
+          pictureMessage.init({
+            router: "/company/certificate/get",
+            session: this.session,
+            data: {
+              companyName: this.valChange,
+              pageInfo: {
+                pageSize: 15,
+                pageNum: 1
+              }
+            },
+            callback: this.dataCallback
+          })
+        }
+
       },
       dataCallback(data){//对数据进行检查 将公司名字提取出来
         this.dataList = data.rows;
@@ -98,8 +109,10 @@
         if (i) {
           this.index = i;
         }
-        this.pictureName = this.saveData[this.index].certificateTypeName;
-        this.getPic(this.saveData[this.index].certificatePic)
+        if (this.saveData[this.index]) {
+          this.pictureName = this.saveData[this.index].certificateTypeName;
+          this.getPic(this.saveData[this.index].certificatePic)
+        }
       },
       getPic(name){//根据名字查找图片
         var vm = this;
@@ -122,6 +135,12 @@
         this.placeholder = name;
         this.valChange = null;
         this.saveData = [];
+        console.log(this.dataList)
+        if (this.dataList.length == 0) {
+          this.$alert('查无该公司的证件信息', '提示', {
+            confirmButtonText: '确定'
+          });
+        }
         for (var i = 0; i < this.dataList.length; i++) {
           if (name == this.dataList[i].companyName) {
             this.saveData.push(this.dataList[i])//将匹配的信息保存的到数组中
@@ -149,11 +168,14 @@
         if (!this.valChange) {
           this.placeholder = '请输入合作行业名称或编号搜索对应商户图片信息'
         }
-        console.log(111)
       }
     },
     mounted: function () {
       this.getSession();
+      if (this.saveCollaborate) {
+        this.getPicture(this.saveCollaborate);
+        this.getText(this.saveCollaborate)
+      }
     },
     watch: {
       valChange: function () {
@@ -188,7 +210,7 @@
       border-radius: 4px;
       text-indent: 1em;
       position: relative;
-      z-index: 10000;
+      z-index: 1000;
     }
   }
 

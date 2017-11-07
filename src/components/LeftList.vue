@@ -8,7 +8,7 @@
         </el-menu-item>
         <el-submenu index="1-2">
           <template slot="title">
-            <router-link class="el-lvtwo" to="/merchant" @click="getIndex(1)">{{listArr[1]}}</router-link>
+            <router-link class="el-lvtwo" to="/merchant" @click.native="getIndex(1)">{{listArr[1]}}</router-link>
           </template>
           <el-menu-item index="/merchantadd" class="menu-border-bottom el-lvthree" @click="getIndex(2)">{{listArr[2]}}
           </el-menu-item>
@@ -19,7 +19,7 @@
         </el-submenu>
         <el-submenu index="1-3">
           <template slot="title">
-            <router-link class="el-lvtwo" to="/collaborate" @click="getIndex(5)">{{listArr[5]}}</router-link>
+            <router-link class="el-lvtwo" @click.native="getIndex(5)" to="/collaborate">{{listArr[5]}}</router-link>
           </template>
           <el-menu-item index="/collaborateadd" class="menu-border-bottom el-lvthree" @click="getIndex(6)">{{listArr[6]}}</el-menu-item>
           <el-menu-item index="/collaboratecheck" class="menu-border-bottom el-lvthree" @click="getIndex(7)">
@@ -53,6 +53,16 @@
           </el-menu-item>
           <el-menu-item index="/doctormanage" class="menu-border-bottom el-lvthree" @click="getIndex(16)">{{listArr[16]}}</el-menu-item>
         </el-submenu>
+        <el-submenu index="4-7">
+          <template slot="title">部门管理</template>
+          <el-menu-item index="/department" class="menu-border-bottom el-lvthree" @click="getIndex(26)">
+            {{listArr[26]}}
+          </el-menu-item>
+          <el-menu-item index="/roleadd" class="menu-border-bottom el-lvthree" @click="getIndex(27)">{{listArr[27]}}
+          </el-menu-item>
+          <el-menu-item index="/staffadd" class="menu-border-bottom el-lvthree" @click="getIndex(25)">{{listArr[25]}}
+          </el-menu-item>
+        </el-submenu>
         <el-submenu index="4-5">
           <template slot="title">医疗后台信息发布</template>
           <el-menu-item index="/businessissue" class="menu-border-bottom el-lvthree" @click="getIndex(17)">{{listArr[17]}}</el-menu-item>
@@ -73,9 +83,9 @@
       <el-menu-item index="/terminal" class="menu-border-bottom" @click="getIndex(22)">{{listArr[22]}}</el-menu-item>
       <el-submenu index="6">
         <template slot="title">系统管理</template>
-        <el-menu-item index="6-1" class="menu-border-bottom el-lvtwo" @click="getIndex(23)">{{listArr[23]}}
+        <el-menu-item index="/systemmange" class="menu-border-bottom el-lvtwo" @click="getIndex(23)">{{listArr[23]}}
         </el-menu-item>
-        <el-menu-item index="6-2" class="menu-border-bottom el-lvtwo" @click="getIndex(24)">{{listArr[24]}}
+        <el-menu-item index="/systemthrones" class="menu-border-bottom el-lvtwo" @click="getIndex(24)">{{listArr[24]}}
         </el-menu-item>
       </el-submenu>
     </el-menu>
@@ -89,12 +99,14 @@
         opened: true,
         listArr: ['用户信息', '商户信息', '添加新商户', '查阅商户证件', '导入商户信息', '合作行业', '新增合作行业客户', '查阅行业客户证件',
           '订单管理', '产品通道基础管理', '三大目录上传', '三大目录列表', '三大目录管理', '添加卫生站', '管理卫生站', '添加村医',
-          '管理村医', '业务专区发布', '信息专区发布', '支付流水数据', '绑卡数据管理', '数据报表', '社保受理终端管理平台', '系统用户管理', '系统权限管理'],
+          '管理村医', '业务专区发布', '信息专区发布', '支付流水数据', '绑卡数据管理', '数据报表', '社保受理终端管理平台', '系统用户管理', '系统权限管理', '添加员工',
+          '添加部门', '添加角色'],
         listUrl: ['/user', '/merchant', '/merchantadd', '/merchantcheck', '/merchantchannel', '/collaborate', '/collaborateadd', '/collaboratecheck',
           '/order', '/channel', '/uploaddir', '/dirlist', '/dirmanage', '/healthstationadd', '/healthstation', '/doctoradd', '/doctormanage',
-          '/businessissue', '/informationup', '/paydata', '/dataadministration', '/datareport', '/terminal', '/other', '/other'],
+          '/businessissue', '/informationup', '/paydata', '/dataadministration', '/datareport', '/terminal', '/systemmange', '/systemthrones', '/staff',
+          '/department', '/roleadd'],//staff是25
         saveList: [],
-        saveUrl: []
+        saveUrl: [],
       }
     },
     methods: {
@@ -104,7 +116,7 @@
       handleClose(key, keyPath) {
       },
       getIndex(index){
-//          console.log(this.listArr[index]) //将这个用数组储存起来用vuex传递
+        console.log(this.listArr[index]) //将这个用数组储存起来用vuex传递
         for (var i = 0; i < this.saveList.length; i++) {
           if (this.saveList[i] == this.listArr[index]) {
             return;
@@ -118,14 +130,15 @@
     },
     mounted: function () {
 
-    }
+    },
   }
 </script>
 <style type="text/css" lang="scss" scoped="">
   #LeftList {
     background: #fff;
-    min-height: 1234px;
+    min-height: 900px;
     border-top: 1px solid #EEEEEE;
+    height: 100%;
     li {
       color: #333;
       text-indent: 25%;

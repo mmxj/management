@@ -2,8 +2,12 @@
   <div id="app">
     <Gheader></Gheader>
     <el-row id="elRow">
-        <el-col :span="4"><LeftList ></LeftList></el-col>
-        <el-col :span="20"><RightPage ></RightPage></el-col>
+      <el-col :span="4" class="left">
+        <LeftList></LeftList>
+      </el-col>
+      <el-col :span="20" id="rightPage" class="right">
+        <RightPage></RightPage>
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -49,19 +53,19 @@ export default {
         this.$router.push({path: '/login'})
       }
       var _this = this;
-      var getArea = new RemoteCall();
-      getArea.init({
-        router: "/base/area/idname/get",
-        session: _this.session,
-        data: {
-          parentAreaId: 0
-        },
-        errorCallback: function (data) {
-          if (data) {
-            vm.$router.push('/login')
-          }
-        }
-      });
+//      var getArea = new RemoteCall();
+//      getArea.init({
+//        router: "/base/area/idname/get",
+//        session: _this.session,
+//        data: {
+//          parentAreaId: 0
+//        },
+//        errorCallback: function (data) {
+//          if (data) {
+//            vm.$router.push('/login')
+//          }
+//        }
+//      });
     }
   },
   mounted: function () {
@@ -71,6 +75,7 @@ export default {
 //      console.log(sessionStorage.getItem('session'));
     }
     this.getArea();
+//    console.log(this.$refs.rightPage.offsetHeight);
   },
   watch: {
     $route(){
@@ -85,6 +90,14 @@ export default {
         document.getElementsByTagName('body')[0].style.overflow = "";
       }
       ;
+
+      var timer;
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+//        console.log(document.getElementById('RightPage').clientHeight);
+        document.getElementById('LeftList').style.height = document.getElementById('RightPage').clientHeight + 'px';
+      }, 500)
+
     }
 
   }
@@ -108,6 +121,14 @@ body{
 }
   #elRow{
     position: static;
+    height: 100%;
+    overflow: hidden;
+  }
+
+.left {
+  float: left;
+  /*height:2000px;*/
+  height: 100%;
   }
 </style>
 

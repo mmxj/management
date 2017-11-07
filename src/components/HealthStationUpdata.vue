@@ -38,11 +38,15 @@
           <label for="">卫生院证件类型</label>
         </el-col>
         <el-col :span="5">
-          <select ref="certificate" @change="certificateType">
-            <option>请选择证件类型</option>
-            <option>营业执照</option>
-            <option>从业资格证</option>
-          </select>
+          <!--<select ref="certificate" @change="certificateType">-->
+          <!--<option>请选择证件类型</option>-->
+          <!--<option>营业执照</option>-->
+          <!--<option>从业资格证</option>-->
+          <!--</select>-->
+          <el-select v-model="certificateTypeName" filterable placeholder="请选择证件类型" @change="companyTypeChange">
+            <el-option v-for="item in certificate" :key="item.value" :label="item.label"
+                       :value="item.value"></el-option>
+          </el-select>
         </el-col>
         <el-col :span="3"><label for="">归属卫生院</label></el-col>
         <el-col :span="5">
@@ -70,7 +74,7 @@
           <label for="">卫生站联系人</label>
         </el-col>
         <el-col :span="5">
-          <input type="text" v-model="inputData.leaderName">
+          <input type="text" v-model="inputData.leader">
         </el-col>
         <el-col :span="3">
           <label for="">卫生站法人</label>
@@ -90,8 +94,6 @@
         <el-col :span="5">
           <input type="text" v-model="inputData.account">
         </el-col>
-
-
         <el-col :span="3">
           <label for="">银行账号名</label>
         </el-col>
@@ -107,9 +109,7 @@
         </el-col>
         <el-col :span="8">
           <div class="girid-content girid-ipt">
-
             <input type="text" name="" v-model="inputData.certificateList[0].certificateName">
-
           </div>
         </el-col>
         <el-col :span="3">
@@ -202,7 +202,7 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="2" :offset="20">
-          <button type="button" class="grid-content upload-btn" @click.prevent="addMerchant">添加商户</button>
+          <button type="button" class="grid-content upload-btn" @click.prevent="addMerchant">修改卫生站</button>
         </el-col>
       </el-row>
     </div>
@@ -221,6 +221,7 @@
         provinceData: [],
         cityData: [],
         districtData: [],
+        certificateTypeName: null,
         session: sessionStorage.getItem('session'),
         parentId: [],
         inputData: {//输入框值
@@ -284,7 +285,18 @@
         imgIndex: 0,
         imgUrls: null,
         Url: null,
-        fileList: []
+        fileList: [],
+        companyTypeName: null,
+        certificate: [{
+          value: null,
+          label: '请选择证件类型'
+        }, {
+          value: 1,
+          label: '营业执照',
+        }, {
+          value: 2,
+          label: '从业资格证'
+        }]
       }
     },
     compontents: {
@@ -328,10 +340,10 @@
       getAreaCallback(data){
         var _this = this;
         this.provinceData = data.rows
-        clearTimeout(timer)
-        var timer = setTimeout(function () {
-          _this.setCity();
-        }, 0)
+//        clearTimeout(timer)
+//        var timer = setTimeout(function () {
+//          _this.setCity();
+//        }, 0)
       },
       setCity(){
         var _this = this;
@@ -347,10 +359,10 @@
           }
         });
         this.cityData = getCity.res.rows;
-        clearTimeout(timer);
-        var timer = setTimeout(function () {
-          _this.setDistrict();
-        }, 10)
+//        clearTimeout(timer);
+//        var timer = setTimeout(function () {
+//          _this.setDistrict();
+//        }, 10)
       },
       setDistrict(){//县区获取
         var myCity = document.getElementById('city');
@@ -424,20 +436,41 @@
           document.getElementsByClassName('showImg')[0].style.display = 'block';
         }
       },
+      companyTypeChange(data){
+        this.inputData.certificateType = data;
+      },
       addMerchant(){//点击进行添加
-        console.log(this.inputData.certificateList[this.imgIndex].imgVal);
         var vm = this;
-        this.setPicture("#form1", 0);
-        this.setPicture("#form2", 1);
-        this.setPicture("#form3", 2);
-        this.setPicture("#form4", 3);
+//        console.log(this.inputData.certificateList[this.imgIndex].imgVal);
+        var vm = this;
+        if (vm.inputData.certificateList[0].certificateName) {
+          this.setPicture("#form1", 0);
+        }
+        if (vm.inputData.certificateList[1].certificateName) {
+          this.setPicture("#form2", 1);
+        }
+        if (vm.inputData.certificateList[2].certificateName) {
+          this.setPicture("#form3", 2);
+        }
+        if (vm.inputData.certificateList[3].certificateName) {
+          this.setPicture("#form4", 3);
+        }
+        vm.inputData.leaderName = vm.inputData.leader;
         var addMerchant = new RemoteCall();
         addMerchant.init({
           router: "/company/update",
           session: this.session,
           data: this.inputData,
           callback: function (data) {
-            console.log(data);
+            if (data.ret.errorMessage == 'success') {
+//          window.location.reload()
+              vm.$alert('添加成功', '提示', {
+                confirmButtonText: '确定',
+                callback: function () {
+//                    window.location.reload()
+                }
+              });
+            }
           }
         })
       },
@@ -458,8 +491,17 @@
 //        }
 //      },
       routerGo(data){
+        var vm = this;
         if (data.ret.errorMessage == 'success') {
-          window.location.reload()
+          if (data.ret.errorMessage == 'success') {
+//          window.location.reload()
+            this.$alert('添加成功', '提示', {
+              confirmButtonText: '确定',
+              callback: function () {
+                window.location.reload()
+              }
+            });
+          }
         }
       },
       checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
@@ -547,6 +589,13 @@
       }
       for (var i in this.saveHealthData) {
         this.inputData[i] = this.saveHealthData[i];
+      }
+      if (this.inputData.certificateType == '营业执照') {
+        this.inputData.certificateType = 1;
+        this.certificateTypeName = 1;
+      } else if (this.inputData.certificateType == '营业执照') {
+        this.inputData.certificateType = 2;
+        this.certificateTypeName = 2;
       }
       this.getArea();
     }
@@ -702,6 +751,10 @@
 
     }
   }
+
+  .el-select {
+    width: 100%;
+  }
 </style>
 <style type="text/css">
   .distpicker select {
@@ -718,4 +771,5 @@
       width: 31% !important;
     }
   }
+
 </style>

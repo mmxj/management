@@ -289,34 +289,25 @@
       addMerchant(){//点击进行添加
         console.log(this.inputData.certificateList[this.imgIndex].imgVal);
         var vm = this;
-        this.setPicture("#form1", 0, this.addCompany);
-        this.setPicture("#form2", 1, this.addCompany);
-        this.setPicture("#form3", 2, this.addCompany);
-        this.setPicture("#form4", 3, this.addCompany);
-//        var addMerchant = new RemoteCall();
-//        addMerchant.init({
-//          router: "/company/add",
-//          session: this.session,
-//          data: {
-//            parentAreaId: this.inputData
-//          }
-//        })
+//        this.setPicture("#form1", 0);
+//        this.setPicture("#form2", 1);
+//        this.setPicture("#form3", 2);
+//        this.setPicture("#form4", 3);
+        vm.addCompany()
       },
       addCompany(){//检测图片是否全部成功的函数
-        if (this.checkPictureUrl()) {
-          for (var i = 0; i < this.inputData.certificateList.length; i++) {
-            this.inputData.certificateList[i].imgUrls = null;
+        for (var i = 0; i < this.inputData.certificateList.length; i++) {
+          this.inputData.certificateList[i].imgUrls = null;
 //            this.inputData.certificateList[i].imgVal = null;
 //            this.inputData.certificateList[i].certificateName = null;
-          }
-          var addMerchant = new RemoteCall();
-          addMerchant.init({
-            router: "/company/add",
-            session: this.session,
-            data: this.inputData,
-            callback: this.routerGo
-          })
         }
+        var addMerchant = new RemoteCall();
+        addMerchant.init({
+          router: "/company/update",
+          session: this.session,
+          data: this.inputData,
+          callback: this.routerGo
+        })
       },
       routerGo(data){
         if (data.ret.errorMessage == 'success') {
@@ -332,7 +323,7 @@
         }
         return true
       },
-      setPicture(id, index, addcompany){//调用图片接口
+      setPicture(id, index){//调用图片接口
         var vm = this;
         $(id).ajaxSubmit({//为了获取跨域的iframe的内容 没办法动用了jq插件
           type: "POST",
@@ -363,11 +354,8 @@
           }
         })
       },
-      callback(data, index, addcompany){//图片调用成功后的回调函数
+      callback(data, index){//图片调用成功后的回调函数
         this.inputData.certificateList[index].picSavePath = JSON.parse(data).data[0].saved_file;
-        if (addcompany) {
-          addcompany();//判断所有图片上传成功后回调
-        }
 //        console.log(JSON.parse(data).data[0].saved_file)
       },
       getParentId(){//获取父级卫生院数据 插入到节点中

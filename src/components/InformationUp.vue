@@ -110,11 +110,26 @@
         }
       },
       getAll(index){
+        var vm = this;
         if (index == 0) {
-          if (this.checkedNames[0] == '全选') {
-            this.checkedNames = this.checkBoxData
-          } else {
-            this.checkedNames = []
+//            this.checkedNames = this.checkBoxData;
+          for (var i = 0; i < this.checkBoxData.length; i++) {
+//              this.checkedNames[i]=this.checkBoxData[i]
+            this.$set(vm.checkedNames, i, this.checkBoxData[i])
+          }
+//            this.checkedNames = []
+        } else {
+          function getIndex() {
+            for (var i = 0; i < vm.checkedNames.length; i++) {
+              if (vm.checkedNames[i] == '全选') {
+                return i
+              }
+            }
+            return false;
+          }
+
+          if (getIndex() || getIndex() === 0) {
+            this.checkedNames.splice(getIndex(), 1)
           }
         }
       },

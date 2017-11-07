@@ -20,7 +20,7 @@
               <label for="">登录密码:</label>
             </el-col>
             <el-col :span="18">
-              <input type="password" placeholder="请输入登录密码" id="password">
+              <input type="password" placeholder="请输入登录密码" id="password" @keydown.13="login">
             </el-col>
           </el-row>
           <el-row :gutter="10">
@@ -28,7 +28,7 @@
               <img id="auth" src="" alt="">
             </el-col>
             <el-col :span="10">
-              <input type="text" placeholder="请输入验证码" id="validateCode">
+              <input type="text" placeholder="请输入验证码" id="validateCode" @keydown.13="login">
             </el-col>
             <el-col :span="8">
               <b class="authCode" @click="resetVal">点击刷新验证码</b>
