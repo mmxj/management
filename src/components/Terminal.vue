@@ -146,6 +146,13 @@
         <el-table-column prop="model" label="终端型号" width="180"></el-table-column>
       </el-table>
     </div>
+    <el-pagination
+      @current-change="handleCurrentChange"
+      :current-page="currentPage"
+      :page-size="pageSize"
+      layout="total, prev, pager, next, jumper"
+      :total="total">
+    </el-pagination>
   </div>
 </template>
 <script>
@@ -203,7 +210,10 @@
         companyTypeName: null,
         companyType: [],
         companyName: null,
-        companyNames: []
+        companyNames: [],
+        pageSize: 20,
+        total: 0,
+        currentPage: 1
       }
     },
     methods: {
@@ -228,10 +238,10 @@
       getAreaCallback(data){
         var _this = this;
         this.provinceData = data.rows
-        clearTimeout(timer)
-        var timer = setTimeout(function () {
-          _this.setCity();
-        }, 0)
+//        clearTimeout(timer)
+//        var timer = setTimeout(function () {
+//          _this.setCity();
+//        }, 0)
       },
       setCity(){
         var _this = this;
@@ -248,10 +258,10 @@
             }
           });
           this.cityData = getCity.res.rows;
-          clearTimeout(timer);
-          var timer = setTimeout(function () {
-            _this.setDistrict();
-          }, 10)
+//          clearTimeout(timer);
+//          var timer = setTimeout(function () {
+//            _this.setDistrict();
+//          }, 10)
         }
       },
       setDistrict(){//县区获取
@@ -268,10 +278,10 @@
           }
         });
         this.districtData = getDistrict.res.rows;
-        clearTimeout(timer);
-        var timer = setTimeout(function () {
-          _this.setAreaId();
-        }, 10)
+//        clearTimeout(timer);
+//        var timer = setTimeout(function () {
+//          _this.setAreaId();
+//        }, 10)
       },
       setAreaId(){//获取areaid 给inputData赋值
 //        var myCity = document.getElementById('district');
@@ -320,10 +330,10 @@
           }
         });
         this.cityData2 = getCity.res.rows;
-        clearTimeout(timer);
-        var timer = setTimeout(function () {
-          _this.setDistrict2();
-        }, 10)
+//        clearTimeout(timer);
+//        var timer = setTimeout(function () {
+//          _this.setDistrict2();
+//        }, 10)
       },
       setDistrict2(){//县区获取
         var myCity = document.getElementById('city2');
@@ -339,10 +349,10 @@
           }
         });
         this.districtData2 = getDistrict.res.rows;
-        clearTimeout(timer);
-        var timer = setTimeout(function () {
-          _this.setAreaId2();
-        }, 10)
+//        clearTimeout(timer);
+//        var timer = setTimeout(function () {
+//          _this.setAreaId2();
+//        }, 10)
       },
       setAreaId2(){//获取areaid 给inputData赋值
         var myCity = document.getElementById('district2');
@@ -356,13 +366,31 @@
       },
       //上传终端信息
       dataUp(){
+        var vm = this;
+        if (vm.merchantNo == "") {
+          vm.merchantNo = null;
+        }
+        if (vm.merchantNo == null) {
+          vm.$alert('商户号不能为空', '提示', {
+            confirmButtonText: '确定',
+          })
+          return
+        }
         var terminal = new RemoteCall();
         terminal.init({
           router: '/base/terminal/add',
           session: this.session,
           data: this.inputData,
           callback: function (data) {
-
+            if (data.ret.errorCode === 0) {
+              vm.$alert('添加成功', '提示', {
+                confirmButtonText: '确定',
+              })
+            } else {
+              vm.$alert(data.ret.errorMessage, '提示', {
+                confirmButtonText: '确定',
+              })
+            }
           }
         })
       },
@@ -451,23 +479,37 @@
       },
       getTerminal(){//获取终端信息 终端信息表格
         var vm = this;
+        var pageInfo = {
+          pageSize: 20,
+        };
+        pageInfo.pageNum = vm.currentPage;
         var getCompanyIp = new RemoteCall();
         getCompanyIp.init({
           router: "/base/terminal/get",
           session: this.session,
           data: {
-            pageInfo: {
-              pageSize: 15,
-              pageNum: 1
-            }
+            pageInfo: pageInfo
           },
           callback: function (data) {
-            console.log(data);
-            vm.tableData = data.rows
+            if (data.ret.errorCode === 0) {
+              if (data.pageInfo.total) {
+                vm.total = data.pageInfo.total
+              }
+              vm.tableData = data.rows
+            } else {
+              vm.$alert(data.ret.errorMessage, '提示', {
+                confirmButtonText: '确定',
+              })
+            }
+
           }
         })
       },
       remoteMethod(data){//远程搜索公司名收单机构
+        console.log(data);
+        if (data == '') {
+          this.companyTypeName = null
+        }
         if (data !== '') {
           this.companyInit(data)
         } else {
@@ -475,6 +517,9 @@
         }
       },
       remoteMethods(data){//商户名
+        if (data == '') {
+          this.companyName = null;
+        }
         if (data !== '') {
           this.companyNameInit(data)
         } else {
@@ -536,6 +581,10 @@
           }
         })
       },
+      handleCurrentChange(data){
+        console.log(vm.currentPage)
+        this.getTerminal();
+      }
     },
     mounted: function () {
       this.getArea();

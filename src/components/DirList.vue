@@ -48,6 +48,7 @@
     computed: mapGetters(['saveSession']),
     methods: {
       getCatalog(){//获取目录数据
+        var vm = this;
         var getCatalog = new RemoteCall();
         getCatalog.init({
           router: "/base/hospital_charging_item_detail/get",

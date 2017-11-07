@@ -402,8 +402,12 @@
         })
       },
       remoteMethod(data){//远程搜索公司名
+        if (data == '') {
+          this.companyTypeName = null;
+        }
+        console.log(this.companyTypeName)
         if (data !== '') {
-          this.companyInit(data)
+          this.companyInit(data);
         } else {
           this.companyInit(null)
         }

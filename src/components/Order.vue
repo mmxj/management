@@ -282,10 +282,20 @@
         }
       },
       startTime(data){
+        this.isActive2 = 0;
         this.startTime = data;
       },
       endTime(data){
+        this.isActive2 = 0;
         this.endTime = data;
+      }
+    },
+    watch: {
+      beginAmount(){
+        this.isActive3 = 0;
+      },
+      endAmount(){
+        this.isActive3 = 0;
       }
     }
   }

@@ -191,23 +191,42 @@
         this.tableData = data.rows;
       },
       deleteCharging(data){//删除目标
-        console.log(data.$index);
         var vm = this;
-        var listId = this.tableData[data.$index].id;
+        this.$confirm('此操作将永久删除该项目, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          var listId = vm.tableData[data.$index].id;
 //          console.log(listId);
-        var del = new RemoteCall();
-        del.init({
+          var del = new RemoteCall();
+          del.init({
             router: '/base/hospital_charging_item/delete',
-            session: this.session,
+            session: vm.session,
             data: {
               id: listId
             },
             callback: function (data) {
-              console.log(data);
-              vm.getCatalog();
+              if (data.ret.errorCode === 0) {
+                vm.$alert('删除成功', '提示', {
+                  confirmButtonText: '确定',
+                  callback: function () {
+                    vm.getCatalog();
+                  }
+                });
+              } else {
+                vm.$alert('删除失败', '提示', {
+                  confirmButtonText: '确定',
+                  callback: function () {
+                    vm.getCatalog();
+                  }
+                });
+              }
             }
-          }
-        )
+          })
+        }).catch(() => {
+
+        });
       }
     },
     mounted: function () {

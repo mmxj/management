@@ -641,6 +641,7 @@
 
   .checkImg {
     line-height: 36px;
+    cursor: pointer;
   }
 
   .el-col-3 {

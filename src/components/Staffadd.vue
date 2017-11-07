@@ -299,13 +299,17 @@
           session: vm.session,
           data: vm.inputData,
           callback: function (data) {
-            if (data.ret.errorCode == 0) {
-              vm.$alert('医生添加成功，请添加', '提示', {
+            if (data.ret.errorCode === 0) {
+              vm.$alert('员工添加成功', '提示', {
                 confirmButtonText: '确定',
                 callback: function () {
                   vm.$router.go(0)
                 }
               });
+            } else {
+              vm.$alert('角色添加失败' + data.ret.errorMessage, '提示', {
+                confirmButtonText: '确定',
+              })
             }
           }
         })
