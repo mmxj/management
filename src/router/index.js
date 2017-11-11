@@ -39,10 +39,13 @@ import Department from '../components/Department' //部门新建
 import RoleAdd from '../components/RoleAdd' //角色新增
 import SystemMange from '../components/SystemManage' //系统用户管理页
 import SystemThrones from '../components/SystemThrones' //系统权限管理页
+import SystemMaintenance from '../components/SystemMaintenance' //系统维护界面
+import DepartmentManage from '../components/DepartmentManage' //部门管理
+import RoleManage from '../components/RoleManage' //部门管理
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  // mode: 'history',
   routes: [
     {
       path: '*',
@@ -243,6 +246,21 @@ export default new Router({
       path: '/systemthrones',
       name: 'SystemThrones',
       component: SystemThrones
+    },
+    {
+      path: '/systemmaintenance',
+      name: 'SystemMaintenance',
+      component: SystemMaintenance
+    },
+    {
+      path: '/departmentmanage',
+      name: 'DepartmentManage',
+      component: DepartmentManage
+    },
+    {
+      path: '/rolemanage',
+      name: 'RoleManage',
+      component: RoleManage
     }
   ]
 })

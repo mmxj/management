@@ -26,6 +26,24 @@
             {{listArr[7]}}
           </el-menu-item>
         </el-submenu>
+        <!--部门管理-->
+        <el-submenu index="4-7">
+          <template slot="title">部门管理</template>
+          <el-menu-item index="/department" class="menu-border-bottom el-lvthree" @click="getIndex(26)">
+            {{listArr[26]}}
+          </el-menu-item>
+          <el-menu-item index="/departmentmanage" class="menu-border-bottom el-lvthree" @click="getIndex(29)">
+            {{listArr[29]}}
+          </el-menu-item>
+          <el-menu-item index="/roleadd" class="menu-border-bottom el-lvthree" @click="getIndex(27)">{{listArr[27]}}
+          </el-menu-item>
+          <el-menu-item index="/rolemanage" class="menu-border-bottom el-lvthree" @click="getIndex(30)">
+            {{listArr[30]}}
+          </el-menu-item>
+          <el-menu-item index="/staffadd" class="menu-border-bottom el-lvthree" @click="getIndex(25)">{{listArr[25]}}
+          </el-menu-item>
+        </el-submenu>
+
       </el-submenu>
       <el-menu-item index="/order" class="menu-border-bottom" @click="getIndex(8)">{{listArr[8]}}</el-menu-item>
       <el-submenu index="3">
@@ -53,16 +71,18 @@
           </el-menu-item>
           <el-menu-item index="/doctormanage" class="menu-border-bottom el-lvthree" @click="getIndex(16)">{{listArr[16]}}</el-menu-item>
         </el-submenu>
-        <el-submenu index="4-7">
-          <template slot="title">部门管理</template>
-          <el-menu-item index="/department" class="menu-border-bottom el-lvthree" @click="getIndex(26)">
-            {{listArr[26]}}
-          </el-menu-item>
-          <el-menu-item index="/roleadd" class="menu-border-bottom el-lvthree" @click="getIndex(27)">{{listArr[27]}}
-          </el-menu-item>
-          <el-menu-item index="/staffadd" class="menu-border-bottom el-lvthree" @click="getIndex(25)">{{listArr[25]}}
-          </el-menu-item>
-        </el-submenu>
+        <!--<el-submenu index="4-7">-->
+        <!--<template slot="title">部门管理</template>-->
+        <!--<el-menu-item index="/department" class="menu-border-bottom el-lvthree" @click="getIndex(26)">-->
+        <!--{{listArr[26]}}-->
+        <!--</el-menu-item>-->
+        <!--<el-menu-item index="/departmentmanage"  class="menu-border-bottom el-lvthree" @click="getIndex(29)">{{listArr[29]}}</el-menu-item>-->
+        <!--<el-menu-item index="/roleadd" class="menu-border-bottom el-lvthree" @click="getIndex(27)">{{listArr[27]}}-->
+        <!--</el-menu-item>-->
+        <!--<el-menu-item index="/rolemanage"  class="menu-border-bottom el-lvthree" @click="getIndex(30)">{{listArr[30]}}</el-menu-item>-->
+        <!--<el-menu-item index="/staffadd" class="menu-border-bottom el-lvthree" @click="getIndex(25)">{{listArr[25]}}-->
+        <!--</el-menu-item>-->
+        <!--</el-submenu>-->
         <el-submenu index="4-5">
           <template slot="title">医疗后台信息发布</template>
           <el-menu-item index="/businessissue" class="menu-border-bottom el-lvthree" @click="getIndex(17)">{{listArr[17]}}</el-menu-item>
@@ -87,6 +107,8 @@
         </el-menu-item>
         <el-menu-item index="/systemthrones" class="menu-border-bottom el-lvtwo" @click="getIndex(24)">{{listArr[24]}}
         </el-menu-item>
+        <el-menu-item index="/systemmaintenance" class="menu-border-bottom el-lvtwo" @click="getIndex(28)">{{listArr[28]}}
+        </el-menu-item>
       </el-submenu>
     </el-menu>
   </div>
@@ -100,11 +122,11 @@
         listArr: ['用户信息', '商户信息', '添加新商户', '查阅商户证件', '导入商户信息', '合作行业', '新增合作行业客户', '查阅行业客户证件',
           '订单管理', '产品通道基础管理', '三大目录上传', '三大目录列表', '三大目录管理', '添加卫生站', '管理卫生站', '添加村医',
           '管理村医', '业务专区发布', '信息专区发布', '支付流水数据', '绑卡数据管理', '数据报表', '社保受理终端管理平台', '系统用户管理', '系统权限管理', '添加员工',
-          '添加部门', '添加角色'],
+          '添加部门', '添加角色', '系统维护', '管理部门', '管理角色'],
         listUrl: ['/user', '/merchant', '/merchantadd', '/merchantcheck', '/merchantchannel', '/collaborate', '/collaborateadd', '/collaboratecheck',
           '/order', '/channel', '/uploaddir', '/dirlist', '/dirmanage', '/healthstationadd', '/healthstation', '/doctoradd', '/doctormanage',
           '/businessissue', '/informationup', '/paydata', '/dataadministration', '/datareport', '/terminal', '/systemmange', '/systemthrones', '/staff',
-          '/department', '/roleadd'],//staff是25
+          '/department', '/roleadd', '/systemmaintenance', '/departmentmanage', '/rolemanage'],//staff是25 最后一个为29
         saveList: [],
         saveUrl: [],
       }

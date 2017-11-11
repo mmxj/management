@@ -48,7 +48,16 @@
         this.time = time.getFullYear() + '年' + (time.getMonth() + 1) + '月' + time.getDate() + '日'
       },
       goBack(){
-        this.$router.push('/login')
+        var vm = this;
+        this.$confirm('是否要退出?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          vm.$router.push('/login')
+        }).catch(() => {
+
+        });
       }
     },
     mounted: function () {

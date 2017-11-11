@@ -282,8 +282,12 @@
         this.getReport()
       },
       openWindows(){
+        var vm = this;
         this.$alert('查无数据', '温馨提示', {
-          confirmButtonText: '确定'
+          confirmButtonText: '确定',
+          callback: function () {
+            vm.tableData = [];
+          }
         });
       },
       companyTypeChange(data){

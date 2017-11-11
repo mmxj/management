@@ -129,7 +129,10 @@
                   console.log(res);
                   if (res.ret.errorMessage == 'success') {
                     vm.$alert('发布成功', '提示', {
-                      confirmButtonText: '确定'
+                      confirmButtonText: '确定',
+                      callback: function () {
+                        vm.$router.go(0)
+                      }
                     });
                   }
                 },

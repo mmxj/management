@@ -7,6 +7,12 @@
       <el-col class="btn" :span="2">
         <span @click="DeleteDoctor">删除村医</span>
       </el-col>
+      <el-col :span="4">
+        <input type="text" v-model="doctor">
+      </el-col>
+      <el-col :span="2">
+        <el-button @click="findDoctor">搜索村医</el-button>
+      </el-col>
     </el-row>
     <div class="tables">
       <el-table :data="tableData" border align="center" style="width:100%" max-height="600"
@@ -46,6 +52,7 @@
       return {
         session: sessionStorage.getItem('session'),
         tableData: [],
+        doctor: null,
         radio: null,
         saveDoctorData: null,
         currentPage: 1,
@@ -62,8 +69,12 @@
     },
     methods: {
       ...mapActions(['saveHealthData']),
-      getStaff(){
+      getStaff(name){
         var vm = this;
+        if (name) {
+          vm.inputData.name = name;
+        }
+        vm.inputData.pageInfo.pageNum = vm.currentPage;
         var staffGet = new RemoteCall();
         staffGet.init({
           router: '/company/staff/get',
@@ -71,11 +82,17 @@
           data: vm.inputData,
           callback: function (data) {
             if (data) {
-              vm.tableData = data.rows;
-              for (var i = 0; i < vm.tableData.length; i++) {
-                vm.tableData[i].sfsCreate = vm.tableData[i].sfsCreate.split(' ')[0];
+              if (data.ret.errorCode === 0) {
+                if (data.pageInfo.total) {
+                  vm.total = data.pageInfo.total;
+                }
+                vm.tableData = data.rows;
+                for (var i = 0; i < vm.tableData.length; i++) {
+                  vm.tableData[i].sfsCreate = vm.tableData[i].sfsCreate.split(' ')[0];
+                }
               }
             }
+
 
           },
           errorCallback: function (data) {
@@ -176,9 +193,17 @@
         return check;
       },
       handleSizeChange(data){
-            console.log(data);
-        }
+//            console.log(data);
+        this.getStaff()
       },
+      findDoctor(){//查找村医
+        var vm = this;
+        if (vm.doctor == "") {
+          vm.doctor = null;
+        }
+        this.getStaff(vm.doctor);
+      }
+    },
     mounted: function () {
       this.getStaff();
     }
@@ -198,5 +223,29 @@
 
   .btn {
     cursor: pointer;
+  }
+
+  .el-row input {
+    width: 100%;
+    height: 32px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    text-indent: 1em;
+  }
+
+  .el-row label {
+    line-height: 36px;
+  }
+
+  .el-button {
+    /*margin-left: 20px;*/
+    border: 0;
+    color: #fff;
+    background: #32BC6F;
+  }
+
+  .el-col-2 {
+    line-height: 36px;
+    min-width: 6em;
   }
 </style>

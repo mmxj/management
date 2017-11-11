@@ -67,6 +67,7 @@ RemoteCall.prototype.init = function(opt){
         },
         error:function (resp) {
           _this.setting.errorCallback(resp);
+          alert('未知错误')
         }
     });
 }

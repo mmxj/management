@@ -195,6 +195,11 @@
           router: "/company/get",
           session: this.session,
           data: {
+            companyType: 4,
+            pageInfo: {
+              pageSize: 100,
+              pageNum: 1
+            }
 //            aredId:parseInt(this.inputData.areaId)
           },
           callback: function (data) {
