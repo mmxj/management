@@ -54,7 +54,8 @@
         radio: null,
         currentPage: 1,
         pageSize: 20,
-        total: null
+        total: null,
+        loading:null
       }
     },
     methods: {
@@ -71,12 +72,14 @@
           data: dataVal,
           callback: function (data) {
             vm.options = [];
-            for (var i = 0; i < data.rows.length; i++) {
+            if (data.ret.errorCode === 0) {
+              for (var i = 0; i < data.rows.length; i++) {
 //              this.parentId.push(data.rows[i]);
-              var parentData = {};
-              parentData.label = data.rows[i].name;
-              parentData.value = data.rows[i].id;
-              vm.options.push(parentData);
+                var parentData = {};
+                parentData.label = data.rows[i].name;
+                parentData.value = data.rows[i].id;
+                vm.options.push(parentData);
+              }
             }
 //            console.log(this.parentId)
           },
@@ -106,11 +109,13 @@
               if (str.pageInfo.total) {
                 vm.total = str.pageInfo.total;
               }
-              if (str.rows.length === 0) {
-                vm.total = null
+              if(str.rows){
+                if (str.rows.length === 0) {
+                  vm.total = null
+                }
+                vm.tableData = str.rows;
               }
-              vm.tableData = str.rows;
-              console.log(vm.tableData)
+
             } else {
               vm.$alert(str.ret.errorMessage, '提示', {
                 confirmButtonText: '确定',
@@ -125,6 +130,11 @@
 //                parentData.value = str.rows[i].id;
 //                vm.$set(vm.departmentOptions, i, parentData);
 //              }
+          },
+          errorCallback: function (data) {
+            if (data) {
+              vm.$router.push('/login')
+            }
           }
         })
       },
@@ -216,7 +226,7 @@
         }).catch(() => {
 
         });
-      }
+      },
     },
     mounted: function () {
       this.getParentId(null)

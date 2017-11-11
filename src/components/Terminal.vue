@@ -367,11 +367,29 @@
       //上传终端信息
       dataUp(){
         var vm = this;
-        if (vm.merchantNo == "") {
-          vm.merchantNo = null;
+        if (vm.inputData.merchantNo == "") {
+          vm.inputData.merchantNo = null;
         }
-        if (vm.merchantNo == null) {
+        if (vm.inputData.merchantNo == null) {
           vm.$alert('商户号不能为空', '提示', {
+            confirmButtonText: '确定',
+          })
+          return
+        }
+        if (vm.inputData.companyId == "") {
+          vm.inputData.companyId = null;
+        }
+        if (vm.inputData.companyId == null) {
+          vm.$alert('公司不能为空', '提示', {
+            confirmButtonText: '确定',
+          })
+          return
+        }
+        if (vm.inputData.terminalNo== "") {
+          vm.inputData.terminalNo = null;
+        }
+        if (vm.inputData.terminalNo == null) {
+          vm.$alert('终端号不能为空', '提示', {
             confirmButtonText: '确定',
           })
           return
@@ -385,6 +403,9 @@
             if (data.ret.errorCode === 0) {
               vm.$alert('添加成功', '提示', {
                 confirmButtonText: '确定',
+                callback:function(data){
+                    vm.$router.go(0)
+                }
               })
             } else {
               vm.$alert(data.ret.errorMessage, '提示', {

@@ -54,7 +54,7 @@
       <el-col class="imglog" :span="12">
         <iframe name="frame" frameborder="0" height="0"></iframe>
         <form action="" class="upPic" target="frame" id="from">
-          <input type="file" v-on:change="imgUrl" name="file" class="upFile"
+          <input type="file" v-on:change="imgUrl" name="file" ref="iptimg" class="upFile"
                  accept="image/gif,image/jpeg,image/jpg,image/png,image/svg">
           <input type="text" name="upload_type" value="4" style="display:none">
           <img :src="urlImg" alt="">
@@ -110,6 +110,13 @@
       },
       setPicture(id){
         var vm = this;
+        if(vm.$refs.iptimg.value==''||vm.$refs.iptimg.value==null){
+
+          vm.$alert('请上传图片', '提示', {
+            confirmButtonText: '确定',
+          });
+          return
+        }
         $(id).ajaxSubmit({//上传图片地址 有回调可以使用
           type: "POST",
           url: "http://www.yxunionpay.com:8087/yxsj-openapi-web/openapi/upload/upload.do",
@@ -118,7 +125,6 @@
               if (JSON.parse(data).data.length > 0) {
                 vm.inputData.picSavePath = JSON.parse(data).data[0].saved_file; //图片上传接口有问题
               }
-
               var datas = vm.inputData;
               var dataUp = new RemoteCall();
               dataUp.init({
@@ -143,6 +149,11 @@
                 }
               })
             }
+          },
+          error:function(data){
+            vm.$alert('上传图片失败', '提示', {
+              confirmButtonText: '确定',
+            });
           }
         })
 

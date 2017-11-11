@@ -68,7 +68,9 @@ RemoteCall.prototype.init = function(opt){
         },
         error:function (resp) {
           _this.setting.errorCallback(resp);
-          alert('未知错误')
+          if(resp.responseText=='session not found'){
+            alert('身份认证失效,请重新登录');
+          };
         }
     });
 }

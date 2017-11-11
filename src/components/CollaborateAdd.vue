@@ -334,7 +334,6 @@
         } else {
           this.$router.push({path: '/login'})
         }
-        console.log(this.session);
         var _this = this;
         var getArea = new RemoteCall();
         getArea.init({
@@ -343,12 +342,7 @@
           data: {
             parentAreaId: 0
           },
-          callback: this.getAreaCallback,
-          errorCallback: function (data) {
-            if (data) {
-              _this.$router.push('/login')
-            }
-          }
+          callback: this.getAreaCallback
         });
       },
       getAreaCallback(data){
@@ -417,7 +411,6 @@
       },
       changeUrl(file){//点击上传后修改路径
         this.inputData.certificateList[this.imgIndex].imgUrls = this.Url;
-        console.log(file.name)
         this.inputData.certificateList[this.imgIndex].certificateName = file.name
         this.$set(this.imgName, this.imgIndex, file.name);
       },
@@ -583,7 +576,7 @@
     },
     computed: mapGetters(['saveSession']),
     mounted: function () {
-      this.getArea()
+      this.getArea();
     }
   }
 </script>
@@ -689,7 +682,7 @@
     }
   }
 
-  @media screen and (max-width: 1450px) {
+  @media screen and (max-width: 1480px) {
     .el-col-2 {
       width: 13%;
     }

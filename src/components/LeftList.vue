@@ -126,7 +126,7 @@
         listUrl: ['/user', '/merchant', '/merchantadd', '/merchantcheck', '/merchantchannel', '/collaborate', '/collaborateadd', '/collaboratecheck',
           '/order', '/channel', '/uploaddir', '/dirlist', '/dirmanage', '/healthstationadd', '/healthstation', '/doctoradd', '/doctormanage',
           '/businessissue', '/informationup', '/paydata', '/dataadministration', '/datareport', '/terminal', '/systemmange', '/systemthrones', '/staff',
-          '/department', '/roleadd', '/systemmaintenance', '/departmentmanage', '/rolemanage'],//staff是25 最后一个为29
+          '/department', '/roleadd', '/systemmaintenance', '/departmentmanage', '/rolemanage'],//staff是25 最后一个为30
         saveList: [],
         saveUrl: [],
       }

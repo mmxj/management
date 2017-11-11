@@ -59,15 +59,16 @@
 //            aredId:parseInt(this.inputData.areaId)
           },
           callback: function (data) {
-            for (var i = 0; i < data.rows.length; i++) {
-              var parentData = {};
-              parentData.label = data.rows[i].name;
-              parentData.value = data.rows[i].id;
-              vm.options.push(parentData);
+            if(data.ret.errorCode===0){
+              for (var i = 0; i < data.rows.length; i++) {
+                var parentData = {};
+                parentData.label = data.rows[i].name;
+                parentData.value = data.rows[i].id;
+                vm.options.push(parentData);
+              }
             }
-            ;
 //            console.log(this.parentId)
-          }
+          },
         })
       },
       companyChange(data){

@@ -9,6 +9,9 @@
         <RightPage></RightPage>
       </el-col>
     </el-row>
+    <div class="login">
+      <!--<img src="./img/" alt="">-->
+    </div>
   </div>
 </template>
 
@@ -19,6 +22,12 @@ import RightPage from './components/RightPage.vue'
 import {mapGetters, mapActions} from 'vuex'
 export default {
   name: 'app',
+  data(){
+      return {
+        loading:true,
+        loadingFn:null
+      }
+  },
   components:{
     Gheader,
     LeftList,
@@ -66,6 +75,15 @@ export default {
 //          }
 //        }
 //      });
+    },
+    openFullScreen2() {
+      var vm=this;
+      vm.loadingFn = this.$loading({
+        lock: vm.loading,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
     }
   },
   mounted: function () {
@@ -79,9 +97,10 @@ export default {
   },
   watch: {
     $route(){
+        var vm=this;
+//      vm.openFullScreen2();
       if (sessionStorage.getItem('session')) {
         this.saveSession(sessionStorage.getItem('session'));
-//      console.log(sessionStorage.getItem('session'));
       }
       if (this.$route.path != '/login') {
         document.body.scrollTop = 0;
@@ -89,15 +108,13 @@ export default {
         document.getElementsByTagName('body')[0].style.height = "";
         document.getElementsByTagName('body')[0].style.overflow = "";
       }
-      ;
-
       var timer;
       clearTimeout(timer);
       timer = setTimeout(function () {
 //        console.log(document.getElementById('RightPage').clientHeight);
         document.getElementById('LeftList').style.height = document.getElementById('RightPage').clientHeight + 'px';
       }, 500)
-
+//      vm.loadingFn.close();
     }
 
   }

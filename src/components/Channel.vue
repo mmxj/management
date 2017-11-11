@@ -134,16 +134,17 @@
             name: name
           },
           callback: function (data) {
-            console.log(data)
-            if (data.rows.length == 0) {
-              vm.collaborate = [];
-            }
-            for (var i = 0; i < data.rows.length; i++) {
-              var options = {};
-              options.value = data.rows[i].id;
-              options.label = data.rows[i].name;
-              vm.$set(vm.collaborate, i, options);
-            }
+           if(data.rows){
+             if (data.rows.length == 0) {
+               vm.collaborate = [];
+             }
+             for (var i = 0; i < data.rows.length; i++) {
+               var options = {};
+               options.value = data.rows[i].id;
+               options.label = data.rows[i].name;
+               vm.$set(vm.collaborate, i, options);
+             }
+           }
           }
         })
       },

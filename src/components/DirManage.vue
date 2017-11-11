@@ -201,29 +201,22 @@
 //          console.log(listId);
           var del = new RemoteCall();
           del.init({
-            router: '/base/hospital_charging_item/delete',
-            session: vm.session,
-            data: {
-              id: listId
-            },
-            callback: function (data) {
-              if (data.ret.errorCode === 0) {
-                vm.$alert('删除成功', '提示', {
-                  confirmButtonText: '确定',
-                  callback: function () {
-                    vm.getCatalog();
-                  }
-                });
-              } else {
-                vm.$alert('删除失败', '提示', {
-                  confirmButtonText: '确定',
-                  callback: function () {
-                    vm.getCatalog();
-                  }
-                });
+              router: '/base/hospital_charging_item/delete',
+              session: vm.session,
+              data: {
+                id: listId
+              },
+              callback: function (data) {
+                if (data.ret.errorCode == 0) {
+                  vm.$alert('医生添加成功', '提示', {
+                    confirmButtonText: '确定',
+                    callback: function () {
+                      vm.getCatalog();
+                    }
+                  });
+                }
               }
-            }
-          })
+            })
         }).catch(() => {
 
         });

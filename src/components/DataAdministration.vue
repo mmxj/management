@@ -177,6 +177,7 @@
         var mySelect = document.getElementById('province');
         var index = mySelect.selectedIndex;
         var parentId = mySelect.getElementsByTagName('option')[index].value;
+        if(parentId!="")
         var getCity = new RemoteCall();
         getCity.init({
           router: "/base/area/idname/get",
@@ -196,6 +197,7 @@
         var index = myCity.selectedIndex;
         var _this = this;
         var parentId = myCity.getElementsByTagName('option')[index].value;
+        if(parentId!="")
         var getDistrict = new RemoteCall();
         getDistrict.init({
           router: "/base/area/idname/get",
@@ -214,6 +216,7 @@
         var myCity = document.getElementById('district');
         var index = myCity.selectedIndex;
         var parentId = myCity.getElementsByTagName('option')[index].value;
+        if(parentId!="")
         this.inputData.areaId = parentId;
       },
       //地市联动结束

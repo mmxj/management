@@ -253,11 +253,15 @@
                   case 10:
                     vm.tableData[i].cooperationType = '其他政府单位'
                     break;
-
                 }
               }
             }
 
+          },
+          errorCallback(data){
+              if(data){
+                  vm.$router.push('/login')
+              }
           }
         })
       },

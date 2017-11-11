@@ -204,18 +204,21 @@
           session: vm.session,
           data: vm.inputData,
           callback: function (data) {
-            vm.tableData = data.rows;
-            if (data.pageInfo.total) {
-              vm.total = data.pageInfo.total;
-            }
-            for (let i = 0; i < vm.tableData.length; i++) {
-              vm.tableData[i].index = (i + 1) + (vm.currentPage - 1) * 20;
-              if (vm.tableData[i].certificateType == 1) {
-                vm.tableData[i].certificateType = '营业执照'
-              } else if (vm.tableData[i].certificateType == 2) {
-                vm.tableData[i].certificateType = '从业资格证'
+            if(data.ret.errorCode===0){
+              vm.tableData = data.rows;
+              if (data.pageInfo.total) {
+                vm.total = data.pageInfo.total;
+              }
+              for (let i = 0; i < vm.tableData.length; i++) {
+                vm.tableData[i].index = (i + 1) + (vm.currentPage - 1) * 20;
+                if (vm.tableData[i].certificateType == 1) {
+                  vm.tableData[i].certificateType = '营业执照'
+                } else if (vm.tableData[i].certificateType == 2) {
+                  vm.tableData[i].certificateType = '从业资格证'
+                }
               }
             }
+
           },
           errorCallback: function (data) {
             vm.$router.push('/login')

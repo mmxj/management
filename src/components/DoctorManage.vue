@@ -160,6 +160,11 @@
                       confirmButtonText: '确定',
                     });
                   }
+                },
+                errorCallback: function (data) {
+                  if (data) {
+                    vm.$router.push('/login')
+                  }
                 }
               })
             });
