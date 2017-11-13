@@ -75,11 +75,12 @@
             router: '/base/union/terminal/refreshCache',
             session: this.session,
             data: {
-              key: this.deal
+              key: this.deal,
+              deviceType: 3,
             },
             callback: function (data) {
               if (data.ret.errorCode === 0) {
-                vm.$alert('刷新openapi 缓存成功', '提示', {
+                vm.$alert('刷新银联交易前置终端缓存', '提示', {
                   confirmButtonText: '确定',
                 });
               } else {

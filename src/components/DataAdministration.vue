@@ -100,7 +100,7 @@
         districtData: [{'name': '区'}],
         currentPage: 1,
         pageSize: 20,
-        total: 1,
+        total: 0,
         pickerOptions0: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7;

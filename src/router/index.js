@@ -42,6 +42,10 @@ import SystemThrones from '../components/SystemThrones' //系统权限管理页
 import SystemMaintenance from '../components/SystemMaintenance' //系统维护界面
 import DepartmentManage from '../components/DepartmentManage' //部门管理
 import RoleManage from '../components/RoleManage' //部门管理
+import StaffManage from '../components/StaffManage' //员工管理
+import StaffUpData from '../components/StaffUpData' //员工编辑
+import MerchantUpData from '../components/MerchantUpData' //商户编辑
+import CollaborateUpData from '../components/CollaborateUpData' //合作行业编辑
 Vue.use(Router)
 
 export default new Router({
@@ -261,6 +265,26 @@ export default new Router({
       path: '/rolemanage',
       name: 'RoleManage',
       component: RoleManage
+    },
+    {
+      path: '/staffmanage',
+      name: 'StaffManage',
+      component: StaffManage
+    },
+    {
+      path: '/staffupdata',
+      name: 'StaffUpData',
+      component: StaffUpData
+    },
+    {
+      path: '/merchantupdata',
+      name: 'MerchantUpData',
+      component: MerchantUpData
+    },
+    {
+      path: '/collaborateupdata',
+      name: "CollaborateUpData",
+      component: CollaborateUpData
     }
   ]
 })

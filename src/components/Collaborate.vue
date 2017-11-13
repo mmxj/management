@@ -4,22 +4,6 @@
       <el-row :gutter="20">
         <el-col :span="2"><label for="">合作内容</label></el-col>
         <el-col :span="6">
-          <!--<select name="" id="">-->
-          <!--<option>请选择合作内容</option>-->
-          <!--<option>资源对接</option>-->
-          <!--<option>通道对接</option>-->
-          <!--<option>地区合作</option>-->
-          <!--<option>业务代理</option>-->
-          <!--<option>产品对接</option>-->
-          <!--<option>推广渠道</option>-->
-          <!--<option>其他合作</option>-->
-          <!--<option>社保局</option>-->
-          <!--<option>人民银行</option>-->
-          <!--<option>其他政府单位</option>-->
-          <!--</select>-->
-          <!--<el-select v-model="cooperation">-->
-          <!--<el-option v-for="item in cooperationType" :value="item.value">{{item.label}}</el-option>-->
-          <!--</el-select>-->
           <el-select v-model="cooperation" filterable placeholder="请选择合作内容" @change="cooperationChange">
             <el-option v-for="item in cooperationType" :key="item.value" :label="item.label"
                        :value="item.value"></el-option>
@@ -52,12 +36,18 @@
             <router-link to="/collaborateadd">添加新行业用户</router-link>
           </el-button>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="2">
+          <el-button @click="deleteCollaborate">删除合作行业</el-button>
+        </el-col>
+        <el-col :span="2">
+          <el-button @click="merchantUpdata">编辑合作行业</el-button>
+        </el-col>
+        <el-col :span="2">
           <div class="downText">下载所有数据</div>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="2">
           <div class="downText">
-            <router-link to="/collaboratecheck">查阅行业客户证件</router-link>
+            <router-link to="/collaboratecheck">查阅行业证件</router-link>
           </div>
         </el-col>
       </el-row>
@@ -73,9 +63,9 @@
         </el-table-column>
         <el-table-column prop="no" label="商户编码" width="120"></el-table-column>
         <el-table-column prop="cooperationType" label="合作内容" width="120"></el-table-column>
-        <el-table-column prop="companyTypeName" label="商户类型" width="120">
+        <el-table-column prop="companyTypeName" label="商户类型" width="150">
         </el-table-column>
-        <el-table-column prop="name" label="商户名称" width="180">
+        <el-table-column prop="name" label="商户名称" width="220">
         </el-table-column>
         <el-table-column prop="certificateType" label="商户证件类型" width="180">
         </el-table-column>
@@ -127,7 +117,8 @@
         tableData: [],
         currentPage: 1,
         pageSize: 20,
-        total: 1,
+        total: 0,
+        deleteId: null,
         name: null,
         certificateNo: null,
         radio: null,
@@ -138,6 +129,7 @@
             pageNum: 1
           }
         },
+        saveMerchantData: null,
         cooperation: null,
         cooperationType: [
           {
@@ -178,7 +170,7 @@
       }
     },
     methods: {
-      ...mapActions(['saveCollaborate']),
+      ...mapActions(['saveCollaborate', 'saveHealthData']),
       //变化的时候出发 将数据放入multipleSelection中
       toggleSelection(rows) {
         if (rows) {
@@ -274,11 +266,65 @@
       },
       getIndex(index){
         this.saveCollaborate(this.tableData[index].name);
-
+        this.deleteId = this.tableData[index].id;
+        this.saveMerchantData = this.tableData[index]
       },
       cooperationChange(data){
 //          console.log(data);
         this.inputData.cooperationType = data;
+      },
+      deleteCollaborate(){
+        var vm = this;
+        if (this.deleteId == '') {
+          this.deleteId = null
+        }
+        if (this.deleteId == null) {
+          this.$alert('请选择合作行业用户', '提示', {
+            confirmButtonText: '确定',
+          });
+          return
+        }
+        this.$confirm('此操作将永久删除该合作行业用户, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          var del = new RemoteCall();
+          del.init({
+            router: '/company/delete',
+            session: vm.session,
+            data: {
+              id: vm.deleteId
+            },
+            callback: function (data) {
+              if (data.ret.errorCode === 0) {
+                vm.$alert('删除成功', '提示', {
+                  confirmButtonText: '确定',
+                  callback: function () {
+                    vm.getCollaborate();
+                  }
+                });
+              } else {
+                vm.$alert('删除失败', '提示', {
+                  confirmButtonText: '确定',
+                });
+              }
+            }
+          })
+        }).catch(() => {
+
+        });
+      },
+      merchantUpdata(){
+        var vm = this;
+        if (vm.saveMerchantData == null) {
+          vm.$alert('请选择商户', '提示', {
+            confirmButtonText: '确定',
+          });
+          return
+        }
+        this.saveHealthData(vm.saveMerchantData);
+        this.$router.push('/collaborateupdata')
       }
     },
     mounted: function () {
@@ -321,7 +367,7 @@
     min-width: 100%;
     background: #32BC6F;
     border-radius: 5px;
-    width: 120px;
+    /*width: 120px;*/
     height: 36px;
     vertical-align: middle;
     color: #fff;
@@ -351,10 +397,13 @@
   /*.search {*/
   /*margin-left: 20px;*/
   /*}*/
-  .addColl {
-    margin-left: 10px;
-  }
+  /*.addColl {*/
+  /*margin-left: 10px;*/
+  /*}*/
   /*媒体查询做兼容*/
+  .el-col-2 {
+    min-width: 8em;
+  }
   @media screen and (max-width: 1760px) {
     label {
       font-size: 15px;
@@ -371,10 +420,10 @@
     .el-col-3 {
       width: 15.5%;
     }
-    .search {
-      margin-left: 12px;
-      width: 12%;
-    }
+    /*.search {*/
+    /*margin-left: 12px;*/
+    /*width: 12%;*/
+    /*}*/
   }
 
   @media screen and (max-width: 1420px) {
@@ -387,9 +436,9 @@
     .el-col-3 {
       width: 17.5%;
     }
-    .search {
-      margin-left: 12px;
-    }
+    /*.search {*/
+    /*margin-left: 12px;*/
+    /*}*/
   }
 </style>
 <style type="text/css">

@@ -42,6 +42,8 @@
           </el-menu-item>
           <el-menu-item index="/staffadd" class="menu-border-bottom el-lvthree" @click="getIndex(25)">{{listArr[25]}}
           </el-menu-item>
+          <el-menu-item index="/staffmanage" class="menu-border-bottom el-lvthree" @click="getIndex(31)">{{listArr[31]}}
+          </el-menu-item>
         </el-submenu>
 
       </el-submenu>
@@ -122,11 +124,11 @@
         listArr: ['用户信息', '商户信息', '添加新商户', '查阅商户证件', '导入商户信息', '合作行业', '新增合作行业客户', '查阅行业客户证件',
           '订单管理', '产品通道基础管理', '三大目录上传', '三大目录列表', '三大目录管理', '添加卫生站', '管理卫生站', '添加村医',
           '管理村医', '业务专区发布', '信息专区发布', '支付流水数据', '绑卡数据管理', '数据报表', '社保受理终端管理平台', '系统用户管理', '系统权限管理', '添加员工',
-          '添加部门', '添加角色', '系统维护', '管理部门', '管理角色'],
+          '添加部门', '添加角色', '系统维护', '管理部门', '管理角色', '员工管理'],
         listUrl: ['/user', '/merchant', '/merchantadd', '/merchantcheck', '/merchantchannel', '/collaborate', '/collaborateadd', '/collaboratecheck',
           '/order', '/channel', '/uploaddir', '/dirlist', '/dirmanage', '/healthstationadd', '/healthstation', '/doctoradd', '/doctormanage',
           '/businessissue', '/informationup', '/paydata', '/dataadministration', '/datareport', '/terminal', '/systemmange', '/systemthrones', '/staff',
-          '/department', '/roleadd', '/systemmaintenance', '/departmentmanage', '/rolemanage'],//staff是25 最后一个为30
+          '/department', '/roleadd', '/systemmaintenance', '/departmentmanage', '/rolemanage', '/staffmanage'],//staff是25 最后一个为31
         saveList: [],
         saveUrl: [],
       }
@@ -138,7 +140,7 @@
       handleClose(key, keyPath) {
       },
       getIndex(index){
-        console.log(this.listArr[index]) //将这个用数组储存起来用vuex传递
+//        console.log(this.listArr[index]) //将这个用数组储存起来用vuex传递
         for (var i = 0; i < this.saveList.length; i++) {
           if (this.saveList[i] == this.listArr[index]) {
             return;
@@ -148,10 +150,20 @@
         this.saveUrl.push(this.listUrl[index])
         this.addList(this.saveList);
         this.urlArr(this.saveUrl);
+//        sessionStorage.setItem('saveList',this.saveList);
+//        sessionStorage.setItem('urlArr',this.saveUrl);
       }
     },
     mounted: function () {
-
+//        var vm=this;
+//        if(sessionStorage.getItem('urlArr')){
+////          this.saveUrl=sessionStorage.getItem('urlArr').split(',')
+//            sessionStorage.getItem('urlArr').split(',').forEach(function(item,i){vm.saveUrl[i]=item})
+//        }
+//        if(sessionStorage.getItem('saveList')){
+////          this.saveList=sessionStorage.getItem('saveList').split(',')
+//            sessionStorage.getItem('saveList').split(',').forEach(function(item,i){vm.saveUrl[i]=item})
+//        }
     },
   }
 </script>

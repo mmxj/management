@@ -86,7 +86,10 @@
               vm.$alert('角色添加成功', '提示', {
                 confirmButtonText: '确定',
                 callback: function () {
-                  vm.$router.go(0)
+//                  vm.$router.go(0)
+                  vm.inputData.name = null;
+                  vm.inputData.code = null;
+                  vm.inputData.description = null;
                 }
               });
             } else {

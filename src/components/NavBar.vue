@@ -33,6 +33,9 @@
     watch: {
       readList(){
       }
+    },
+    mounted: function () {
+
     }
   }
 </script>

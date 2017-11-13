@@ -54,8 +54,9 @@
         radio: null,
         currentPage: 1,
         pageSize: 20,
-        total: null,
-        loading:null
+        total: 0,
+        loading: null,
+        saveId: null
       }
     },
     methods: {
@@ -111,7 +112,7 @@
               }
               if(str.rows){
                 if (str.rows.length === 0) {
-                  vm.total = null
+                  vm.total = 0
                 }
                 vm.tableData = str.rows;
               }
@@ -171,7 +172,9 @@
 //                  console.log(str.rows);
               if (str.rows.length > 0) {
                 if (str.rows[0].name == vm.company) {
+
                   vm.companyChange(str.rows[0].id)
+                  vm.saveId = str.rows[0].id;
                 } else {
                   vm.$alert('查无该公司', '提示', {
                     confirmButtonText: '确定',
@@ -208,12 +211,11 @@
               id: data.id
             },
             callback: function (data) {
-              console.log(1111);
               if (data.ret.errorCode === 0) {
                 vm.$alert('删除成功', '提示', {
                   confirmButtonText: '确定',
                   callback: function () {
-                    vm.$router.go(0)
+                    vm.companyChange(vm.saveId);
                   }
                 });
               } else {

@@ -286,14 +286,14 @@
       handleEdit(index, row, data){
         row.companyId = this.companyId(row.companyName);
         if (row.rate) {
-          if (isNaN(parseInt(row.rate))) {
+          if (isNaN(parseFloat(row.rate))) {
             this.$alert('请输入对应的比例比如：10%', '提示', {
               confirmButtonText: '确定'
             });
             row.rate = null;
             return;
           } else {
-            row.rate = parseInt(row.rate) / 100;
+            row.rate = parseFloat(row.rate) / 100;
           }
 
         }

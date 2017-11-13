@@ -350,6 +350,9 @@
         var mySelect = document.getElementById('province');
         var index = mySelect.selectedIndex;
         var parentId = mySelect.getElementsByTagName('option')[index].value;
+        if (parentId == '') {
+          return
+        }
         var getCity = new RemoteCall();
         getCity.init({
           router: "/base/area/idname/get",
@@ -369,6 +372,9 @@
         var index = myCity.selectedIndex;
         var _this = this;
         var parentId = myCity.getElementsByTagName('option')[index].value;
+        if (parentId == '') {
+          return
+        }
         var getDistrict = new RemoteCall();
         getDistrict.init({
           router: "/base/area/idname/get",
@@ -387,6 +393,9 @@
         var myCity = document.getElementById('district');
         var index = myCity.selectedIndex;
         var parentId = myCity.getElementsByTagName('option')[index].value;
+        if (parentId == '') {
+          return
+        }
         this.inputData.areaId = parentId;
         this.getParentId();//获取父级地区医院id
       },
@@ -418,14 +427,6 @@
 //            console.log(_this.Url);
           _this.changeUrl(file)
         }//将图片转成base64
-//
-//        if (window.createObjcectURL != undefined) {
-//          url = window.createOjcectURL(file);
-//        } else if (window.URL != undefined) {
-//          url = window.URL.createObjectURL(file);
-//        } else if (window.webkitURL != undefined) {
-//          url = window.webkitURL.createObjectURL(file);
-//        }
       },//关闭预览的图片
       closePic(){
         document.getElementsByClassName('showImg')[0].style.display = 'none';
@@ -464,45 +465,30 @@
           callback: function (data) {
             if (data.ret.errorMessage == 'success') {
 //          window.location.reload()
-              vm.$alert('添加成功', '提示', {
+              vm.$alert('修改成功', '提示', {
                 confirmButtonText: '确定',
                 callback: function () {
-//                    window.location.reload()
+                  if (data.ret.errorCode === 0) {
+                    vm.$alert('修改成功', '提示', {
+                      confirmButtonText: '确定',
+                      callback: function () {
+                        //                    window.location.reload()
+                        vm.$router.push('/healthstation');
+                      }
+                    });
+                  } else {
+                    vm.$alert('修改失败', '提示', {
+                      confirmButtonText: '确定',
+                      callback: function () {
+                        //                    window.location.reload()
+                      }
+                    });
+                  }
                 }
               });
             }
           }
         })
-      },
-//      addCompany(){//检测图片是否全部成功的函数
-//        if (this.checkPictureUrl()) {
-//          for (var i = 0; i < this.inputData.certificateList.length; i++) {
-//            this.inputData.certificateList[i].imgUrls = null;
-//            this.inputData.certificateList[i].imgVal = null;
-//            this.inputData.certificateList[i].certificateName = null;
-//          }
-//          var addMerchant = new RemoteCall(); //添加到数据库
-//          addMerchant.init({
-//            router: "/company/update,
-//            session: this.session,
-//            data: this.inputData,
-//            callback: this.routerGo
-//          })
-//        }
-//      },
-      routerGo(data){
-        var vm = this;
-        if (data.ret.errorMessage == 'success') {
-          if (data.ret.errorMessage == 'success') {
-//          window.location.reload()
-            this.$alert('添加成功', '提示', {
-              confirmButtonText: '确定',
-              callback: function () {
-                window.location.reload()
-              }
-            });
-          }
-        }
       },
       checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
         for (var i = 0; i < 4; i++) {

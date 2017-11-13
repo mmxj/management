@@ -2,7 +2,7 @@
   <div id="Staffadd">
     <el-row :gutter="20">
       <el-col :span="2">
-        <label for="">员工姓名</label>
+        <label for="">村医姓名</label>
       </el-col>
       <el-col :span="6">
         <input type="text" v-model="inputData.name">
@@ -22,7 +22,7 @@
     </el-row>
     <el-row :gutter="20">
       <el-col :span="2">
-        <label for="">归属公司</label>
+        <label for="">归属医院</label>
       </el-col>
       <el-col :span="6">
         <el-select v-model="company" filterable placeholder="请选择公司" @change="companyChange">
@@ -116,27 +116,27 @@
       <el-col :span="6">
         <input type="text" v-model="inputData.loginName">
       </el-col>
-      <el-col :span="2">
-        <label for="">登录密码</label>
-      </el-col>
-      <el-col :span="6">
-        <input type="password" v-model="password">
-      </el-col>
+      <!--<el-col :span="2">-->
+      <!--<label for="">登录密码</label>-->
+      <!--</el-col>-->
+      <!--<el-col :span="6">-->
+      <!--<input type="password" v-model="inputData.password">-->
+      <!--</el-col>-->
     </el-row>
     <el-row>
       <el-col :offset="22" :span="2">
-        <el-button @click="addStaff">点击添加</el-button>
+        <el-button @click="addStaff">确定修改</el-button>
       </el-col>
     </el-row>
   </div>
 </template>
 <script>
+  import {mapGetters} from 'vuex'
   export default{
     data(){
       return {
         options: [],
         departmentOptions: [],
-        password: null,
         roleData: [],
         doctorData: [{
           value: 0,
@@ -187,6 +187,7 @@
         },
       }
     },
+    computed: mapGetters(['saveHealthData']),
     methods: {
       getParentId(){//获取父级卫生院数据 插入到节点中
         var vm = this;
@@ -195,23 +196,17 @@
           router: "/company/get",
           session: this.session,
           data: {
-            pageInfo: {
-              pageSize: 100,
-              pageNum: 1
-            }
 //            aredId:parseInt(this.inputData.areaId)
           },
           callback: function (data) {
-            if(data.ret.errorCode===0){
-              for (var i = 0; i < data.rows.length; i++) {
+            for (var i = 0; i < data.rows.length; i++) {
 //                this.parentId.push(data.rows[i]);
-                var parentData = {};
-                parentData.label = data.rows[i].name;
-                parentData.value = data.rows[i].id;
-                vm.options.push(parentData);
-              };
+              var parentData = {};
+              parentData.label = data.rows[i].name;
+              parentData.value = data.rows[i].id;
+              vm.options.push(parentData);
             }
-
+            ;
 //            console.log(this.parentId)
           },
           errorCallback: function (data) {
@@ -240,10 +235,12 @@
             vm.departmentOptions = [];
             for (var i = 0; i < str.rows.length; i++) {
               var parentData = {};
-              console.log(str.rows);
               parentData.label = str.rows[i].name;
               parentData.value = str.rows[i].id;
               vm.$set(vm.departmentOptions, i, parentData);
+            }
+            if (vm.inputData.departmentId) {
+              vm.department = vm.inputData.departmentId;
             }
           }
         })
@@ -261,86 +258,86 @@
           callback: function (str) {
             vm.role = null;
             vm.roleData = [];
-            console.log(str.rows);
             for (var i = 0; i < str.rows.length; i++) {
               var parentData = {};
               parentData.label = str.rows[i].name;
               parentData.value = str.rows[i].id;
               vm.roleData.push(parentData);
             }
+            if (vm.inputData.roleTypeId) {
+              vm.role = vm.inputData.roleTypeId;
+            }
           }
         })
       },
-      departmentChange(data){//部门
+      departmentChange(data){
         this.inputData.departmentId = data;
       },
-      sexChange(data){//性别
+      sexChange(data){
         this.inputData.sex = data;
       },
       cardChange(data){
         this.inputData.idCardType = data;
       },
       timeChange(data){
+        console.log(data);
         this.inputData.beginDoctorDate = data;
       },
       timeChange2(data){
         this.inputData.birthday = data;
       },
-      roleChange(data){//角色
+      roleChange(data){
+        console.log(data)
         this.inputData.roleId = data;
       },
-      doctorChange(data){//是否是医生
+      doctorChange(data){
         this.inputData.staffType = data;
       },
       addStaff(){
         var vm = this;
-        vm.inputData.password = vm.password;
-        vm.inputData.password = $.md5(vm.inputData.password).toUpperCase();
+        if (vm.inputData.password) {
+          vm.inputData.password = $.md5(vm.inputData.password).toUpperCase();
+        }
         console.log(vm.inputData);
-        var addStaff = new RemoteCall();
-        addStaff.init({
-          router: '/company/staff/add',
+        var addStaffs = new RemoteCall();
+        addStaffs.init({
+          router: '/company/staff/update',
           session: vm.session,
           data: vm.inputData,
           callback: function (data) {
             if (data.ret.errorCode === 0) {
-              vm.$alert('员工添加成功', '提示', {
+              vm.$alert('修改成功', '提示', {
                 confirmButtonText: '确定',
                 callback: function () {
-//                  vm.$router.go(0);
-                  vm.inputData.name = null;
-                  vm.inputData.mobile = null;
-                  vm.inputData.email = null;
-                  vm.inputData.departmentId = null;
-                  vm.inputData.sex = null;
-                  vm.inputData.graduateSchool = null;
-                  vm.inputData.idCardNo = null;
-                  vm.inputData.beginDoctorDate = null;
-                  vm.inputData.birthday = null;
-                  vm.inputData.roleId = null;
-                  vm.inputData.staffType = null;
-                  vm.inputData.loginName = null;
-                  vm.inputData.password = null;
-                  vm.department = null;
-                  vm.password = null;
-                  vm.doctor = null;
-                  vm.sex = null;
-                  vm.value1 = null;
-                  vm.value2 = null;
-                  vm.role = null;
+                  vn.$router.push('/doctormanage')
                 }
               });
             } else {
-              vm.$alert('角色添加失败' + data.ret.errorMessage, '提示', {
+              vm.$alert('修改失败', '提示', {
                 confirmButtonText: '确定',
-              })
+              });
             }
+
           }
         })
+      },
+      getDocotr(){
+        if (this.saveHealthData) {
+          this.inputData = this.saveHealthData;
+          this.sex = this.inputData.sex;
+//          this.role=this.inputData.roleTypeId;
+          this.company = this.inputData.companyId;
+          this.doctor = this.inputData.staffType;
+          this.value1 = this.inputData.beginDoctorDate;
+          this.value2 = this.inputData.sfsCreate.split(' ')[0];
+        } else {
+          this.$router.push('/doctormanage')
+        }
       }
     },
     mounted: function () {
       this.getParentId();
+      this.getDocotr();
     }
   }
 </script>

@@ -84,7 +84,7 @@
       return {
         session: sessionStorage.getItem('session'),
         currentPage: 1,
-        total: 1,
+        total: 0,
         radio: null,
         pageSize: 20,
         dataIndex: null,

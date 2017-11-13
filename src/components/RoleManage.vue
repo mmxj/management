@@ -199,12 +199,12 @@
               id: data.id
             },
             callback: function (data) {
-              console.log(1111);
               if (data.ret.errorCode === 0) {
                 vm.$alert('删除成功', '提示', {
                   confirmButtonText: '确定',
                   callback: function () {
-                    vm.$router.go(0)
+//                    vm.$router.go(0)
+                    vm.clickCompany();
                   }
                 });
               } else {

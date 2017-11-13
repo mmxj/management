@@ -433,8 +433,6 @@
         this.inputData.areaId = parentId;
       },
       //地市联动结束
-
-
       //获取上传文件的路径
       imgUrl(e){
         var files = e.target.files || e.dataTransfer.files;

@@ -4,13 +4,7 @@
       <el-row :gutter="20">
         <el-col :span="2"><label for="">商户类型</label></el-col>
         <el-col :span="6">
-          <!--<select name="" id="">-->
-          <!--<option>请选择商户类型</option>-->
-          <!--<option value="">镇卫生院</option>-->
-          <!--<option value="">村卫生站</option>-->
-          <!--<option value="">药店</option>-->
-          <!--<option value="">其他</option>-->
-          <!--</select>-->
+
           <el-select v-model="company" filterable placeholder="商户类型" @change="companyChange">
             <el-option v-for="item in companyName" :key="item.value" :label="item.label"
                        :value="item.value"></el-option>
@@ -26,14 +20,6 @@
           <label for="">商户证件类型</label>
         </el-col>
         <el-col :span="6">
-          <!--<select>-->
-          <!--<option>请选择证件类型</option>-->
-          <!--<option>营业执照</option>-->
-          <!--<option>个人身份证</option>-->
-          <!--<option>无证件</option>-->
-          <!--<option>行业准入资格证</option>-->
-          <!--<option>其他证件</option>-->
-          <!--</select>-->
           <el-select v-model="companyTypeName" filterable placeholder="请选择证件类型" @change="companyTypeChange">
             <el-option v-for="item in companyType" :key="item.value" :label="item.label"
                        :value="item.value"></el-option>
@@ -51,10 +37,16 @@
             <router-link to="/merchantadd">添加新商户</router-link>
           </el-button>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="2">
+          <el-button @click="deleteMerchant">删除商户</el-button>
+        </el-col>
+        <el-col :span="2">
+          <el-button @click="merchantUpdata">编辑商户</el-button>
+        </el-col>
+        <el-col :span="2">
           <div class="downText">下载所有数据</div>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="2">
           <div class="downText">
             <router-link to="merchantcheck">查阅商户证件</router-link>
           </div>
@@ -122,6 +114,8 @@
         radio: null,
         certificateNo: null,
         companyTypeName: null,
+        saveMerchantData: null,
+        deleteId: null,
         companyType: [{
           value: null,
           label: '请选择证件类型'
@@ -171,7 +165,7 @@
     },
     methods: {
       //变化的时候出发 将数据放入multipleSelection中,
-      ...mapActions(['saveCollaborate']),
+      ...mapActions(['saveCollaborate', 'saveHealthData']),
       toggleSelection(rows) {
         if (rows) {
           rows.forEach(row => {
@@ -238,7 +232,61 @@
       },
       getIndex(index){
         this.saveCollaborate(this.tableData[index].name);
-        console.log(index);
+        this.deleteId = this.tableData[index].id;
+        this.saveMerchantData = this.tableData[index];
+      },
+      deleteMerchant(){
+        var vm = this;
+        if (this.deleteId == '') {
+          this.deleteId = null
+        }
+        if (this.deleteId == null) {
+          this.$alert('请选择商户', '提示', {
+            confirmButtonText: '确定',
+          });
+          return
+        }
+        this.$confirm('此操作将永久删除商户, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          var del = new RemoteCall();
+          del.init({
+            router: '/company/delete',
+            session: vm.session,
+            data: {
+              id: vm.deleteId
+            },
+            callback: function (data) {
+              if (data.ret.errorCode === 0) {
+                vm.$alert('删除成功', '提示', {
+                  confirmButtonText: '确定',
+                  callback: function () {
+                    vm.getCollaborate();
+                  }
+                });
+              } else {
+                vm.$alert('删除失败', '提示', {
+                  confirmButtonText: '确定',
+                });
+              }
+            }
+          })
+        }).catch(() => {
+
+        });
+      },
+      merchantUpdata(){
+        var vm = this;
+        if (vm.saveMerchantData == null) {
+          vm.$alert('请选择商户', '提示', {
+            confirmButtonText: '确定',
+          });
+          return
+        }
+        this.saveHealthData(vm.saveMerchantData);
+        this.$router.push('/merchantupdata')
       }
     },
     mounted: function () {
@@ -333,9 +381,9 @@
     .el-col-3 {
       width: 15.5%;
     }
-    .search {
-      margin-left: 12px;
-    }
+    /*.search {*/
+    /*margin-left: 12px;*/
+    /*}*/
   }
 
   @media screen and (max-width: 1420px) {
@@ -351,9 +399,9 @@
     /*.search {*/
     /*margin-left: 0px;*/
     /*}*/
-    .addColl {
-      margin-left: 30px;
-    }
+    /*.addColl {*/
+    /*margin-left: 30px;*/
+    /*}*/
   }
 
   .el-select {

@@ -2,16 +2,16 @@
   <div id="DocotrManage">
     <el-row :gutter="20">
       <el-col :span=2>
-        <span class="btn" @click="changeDoctor">编辑村医</span>
+        <span class="btn" @click="changeDoctor">编辑员工</span>
       </el-col>
       <el-col class="btn" :span="2">
-        <span @click="DeleteDoctor">删除村医</span>
+        <span @click="DeleteDoctor">删除员工</span>
       </el-col>
       <el-col :span="4">
         <input type="text" v-model="doctor">
       </el-col>
       <el-col :span="2">
-        <el-button @click="findDoctor">搜索村医</el-button>
+        <el-button @click="findDoctor">搜索员工</el-button>
       </el-col>
     </el-row>
     <div class="tables">
@@ -22,17 +22,16 @@
             <el-radio :label="scope.$index" v-model="radio" @change.native="getIndex(scope.$index)">&nbsp;</el-radio>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="村医姓名" width="150"></el-table-column>
-        <el-table-column prop="companyName" label="归属卫生院" width="180"></el-table-column>
+        <el-table-column prop="name" label="员工姓名" width="150"></el-table-column>
+        <el-table-column prop="companyName" label="归属商户" width="180"></el-table-column>
         <el-table-column prop="departmentName" label="归属部门" width="200"></el-table-column>
-        <el-table-column prop="id" label="村医编号" width="200"></el-table-column>
+        <el-table-column prop="id" label="员工编号" width="200"></el-table-column>
         <el-table-column prop="idCardNo" label="身份证号" width="200"></el-table-column>
-        <el-table-column prop="email" label="村医邮箱" width="200"></el-table-column>
+        <el-table-column prop="email" label="员工邮箱" width="200"></el-table-column>
         <el-table-column prop="mobile" label="联系电话" width="200"></el-table-column>
         <!--<el-table-column prop="" label="银行账户名" width="200"></el-table-column>-->
         <!--<el-table-column prop="" label="银行账号" width="200"></el-table-column>-->
         <el-table-column prop="sfsCreate" label="添加日期" width="200"></el-table-column>
-        <el-table-column prop="auditFlag" label="医生状态" width="200"></el-table-column><!--屏蔽的效果还没做-->
       </el-table>
       <el-pagination
         @size-change="handleSizeChange"
@@ -59,7 +58,7 @@
         pageSize: 20,
         total: 0,
         inputData: {
-          staffType: 1,
+          staffType: 0,
           pageInfo: {
             pageSize: 20,
             pageNum: 1
@@ -103,8 +102,9 @@
         })
       },
       getIndex(data){
-        if (data) {
+        if (data || data === 0) {
           this.saveDoctorData = this.tableData[data];
+          console.log(this.tableData[data]);
           this.saveHealthData(this.tableData[data])
         }
       },
@@ -117,9 +117,9 @@
       },
       changeDoctor(){//修改村医 跳转到修改的页面;
         if (this.saveDoctorData) {
-          this.$router.push('/doctorupdata')
+          this.$router.push('/staffupData')
         } else {
-          this.$alert('请选择要修改的村医', '提示', {
+          this.$alert('请选择要修改的员工', '提示', {
             confirmButtonText: '确定',
           });
         }
@@ -134,11 +134,10 @@
               confirmButtonText: '屏蔽',
               type: 'warning',
               callback: function () {
-
               }
             });
           } else {//执行删除
-            this.$confirm('你选择了删除该村医信息，请确定是否继续删除', '提示', {
+            this.$confirm('你选择了删除该员工信息，请确定是否继续删除', '提示', {
               cancelButtonText: '取消',
               confirmButtonText: '删除',
               type: 'warning',
@@ -173,7 +172,7 @@
             });
           }
         } else {
-          this.$alert('请选择要删除的村医', '提示', {
+          this.$alert('请选择要删除的员工', '提示', {
             confirmButtonText: '确定',
           });
         }

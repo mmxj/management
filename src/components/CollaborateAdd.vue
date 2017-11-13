@@ -358,6 +358,9 @@
         var mySelect = document.getElementById('province');
         var index = mySelect.selectedIndex;
         var parentId = mySelect.getElementsByTagName('option')[index].value;
+        if (parentId == '') {
+          return
+        }
         this.inputData.addressPathId.proviceId = parentId;
         var getCity = new RemoteCall();
         getCity.init({
@@ -378,6 +381,9 @@
         var index = myCity.selectedIndex;
         var _this = this;
         var parentId = myCity.getElementsByTagName('option')[index].value;
+        if (parentId == '') {
+          return
+        }
         this.inputData.addressPathId.cityId = parentId;
         var getDistrict = new RemoteCall();
         getDistrict.init({
@@ -397,6 +403,9 @@
         var myCity = document.getElementById('district');
         var index = myCity.selectedIndex;
         var parentId = myCity.getElementsByTagName('option')[index].value;
+        if (parentId == '') {
+          return
+        }
         this.inputData.addressPathId.areaId = parentId;
         this.inputData.areaId = parentId;
       },

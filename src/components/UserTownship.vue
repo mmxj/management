@@ -8,7 +8,7 @@
       <el-table-column prop="" label="最近一次消费时间"></el-table-column>
       <el-table-column prop="" label="重置密码">
         <template slot-scope="scope">
-          <el-button size="small" class="setPassword">点击发送密码到注册手机</el-button>
+          <el-button size="small" class="setPassword" @click="reset(scope)">点击发送密码到注册手机</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -47,7 +47,35 @@
 //              },
 
 //            })
-      }
+      },
+      reset(name){
+        console.log(name.row.moblie);
+        var vm = this;
+        if (name.row.moblie == '' || name.row.moblie == null) {
+          return;
+        }
+        var resetPassword = new RemoteCall();
+        resetPassword.init({
+          router: '/base/validatecode/sms/get',
+          session: this.session,
+          data: {
+            deviceType: 3,
+            validateCodeType: 2,
+            moblie: name.row.moblie
+          },
+          callback: function (data) {
+            if (data.ret.errorCode === 0) {
+              vm.$alert('发送成功', '提示', {
+                confirmButtonText: '确定',
+              })
+            } else {
+              vm.$alert('发送失败,' + data.ret.errorMessage, '提示', {
+                confirmButtonText: '确定',
+              })
+            }
+          }
+        })
+      },
     },
     mounted: function () {
       this.getUser()

@@ -305,7 +305,18 @@
           session: vm.session,
           data: vm.inputData,
           callback: function (data) {
-            console.log(data);
+            if (data.ret.errorCode === 0) {
+              vm.$alert('修改成功', '提示', {
+                confirmButtonText: '确定',
+                callback: function () {
+                  vn.$router.push('/doctormanage')
+                }
+              });
+            } else {
+              vm.$alert('修改失败', '提示', {
+                confirmButtonText: '确定',
+              });
+            }
 
           }
         })

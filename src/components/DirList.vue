@@ -1,6 +1,17 @@
 <template>
   <div id="DirList">
     <div class="block">
+      <el-row :gutter="20">
+        <el-col :span="2">
+          <label for="">药品名称</label>
+        </el-col>
+        <el-col :span="6">
+          <input type="text" v-model="chName">
+        </el-col>
+        <el-col :span="2">
+          <el-button @click="findName">点击搜索</el-button>
+        </el-col>
+      </el-row>
       <el-table :data="tableData" border width="100%" max-height="700" align="center">
         <el-table-column prop="companyId" label="医院编号" width="120"></el-table-column>
         <el-table-column prop="itemCode" label="项目类别" width="150"></el-table-column>
@@ -42,18 +53,26 @@
         }],
         currentPage: 1,
         pageSize: 20,
-        total: 100
+        total: 0,
+        chName: null
       }
     },
     computed: mapGetters(['saveSession']),
     methods: {
-      getCatalog(){//获取目录数据
+      getCatalog(name){//获取目录数据
         var vm = this;
+        var nameCh;
+        if (name) {
+          nameCh = name;
+        } else {
+          nameCh = null
+        }
         var getCatalog = new RemoteCall();
         getCatalog.init({
           router: "/base/hospital_charging_item_detail/get",
           session: this.saveSession,
           data: {
+            itemNameCh: nameCh,
             pageInfo: {
               pageSize: this.pageSize,
               pageNum: this.currentPage
@@ -82,7 +101,17 @@
       },
       handleCurrentChange(val) {
         this.currentPage = val;
-        this.getCatalog();
+        if (this.chName == '') {
+          this.chName = null
+        }
+        this.getCatalog(this.chName);
+      },
+      findName(){
+        if (this.chName == '') {
+          this.chName = null
+        }
+        this.currentPage = 1;
+        this.getCatalog(this.chName)
       }
     },
     mounted: function () {
@@ -106,6 +135,74 @@
       text-align: center;
       padding-top: 10px;
     }
+  }
+
+  .el-col {
+    margin-bottom: 20px;
+    label {
+      display: block;
+      width: 100%;
+      text-align: right;
+      line-height: 36px;
+    }
+    input {
+      width: 100%;
+      height: 30px;
+      border-radius: 3px;
+      border: 1px solid #aaa;
+    }
+    select {
+      width: 100%;
+      height: 36px;
+      border-radius: 3px;
+      border: 1px solid #aaa;
+    }
+    button {
+      background: #32BC6F;
+      border-radius: 5px;
+      width: 120px;
+      height: 36px;
+      vertical-align: middle;
+      color: #fff;
+      border: 5px;
+    }
+  }
+
+  @media screen and (max-width: 1760px) {
+    label {
+      font-size: 15px;
+    }
+  }
+
+  @media screen and (max-width: 1700px) {
+    .el-col-2 {
+      width: 10%;
+    }
+    .el-col-6 {
+      width: 21.333333%;
+    }
+    .el-col-3 {
+      width: 15.5%;
+    }
+    /*.search {*/
+    /*margin-left: 12px;*/
+    /*width: 12%;*/
+    /*}*/
+  }
+
+  @media screen and (max-width: 1420px) {
+    .el-col-2 {
+      width: 10%;
+    }
+    .el-col-6 {
+      width: 21.333333%;
+    }
+    .el-col-3 {
+      width: 17.5%;
+    }
+    /*.search {*/
+    /*margin-left: 12px;*/
+    /*}*/
   }
 </style>
 <style type="text/css">

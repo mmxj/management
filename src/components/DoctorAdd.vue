@@ -308,7 +308,26 @@
               vm.$alert('医生添加成功', '提示', {
                 confirmButtonText: '确定',
                 callback: function () {
-                  vm.$router.go(0)
+                  vm.inputData.name = null;
+                  vm.inputData.mobile = null;
+                  vm.inputData.email = null;
+                  vm.inputData.departmentId = null;
+                  vm.inputData.sex = null;
+                  vm.inputData.graduateSchool = null;
+                  vm.inputData.idCardNo = null;
+                  vm.inputData.beginDoctorDate = null;
+                  vm.inputData.birthday = null;
+                  vm.inputData.roleId = null;
+                  vm.inputData.staffType = null;
+                  vm.inputData.loginName = null;
+                  vm.inputData.password = null;
+                  vm.department = null;
+                  vm.password = null;
+                  vm.doctor = null;
+                  vm.sex = null;
+                  vm.value1 = null;
+                  vm.value2 = null;
+                  vm.role = null;
                 }
               });
             } else {

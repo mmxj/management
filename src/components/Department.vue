@@ -87,7 +87,10 @@
               vm.$alert('部门添加成功', '提示', {
                 confirmButtonText: '确定',
                 callback: function () {
-                  vm.$router.go(0)
+//                  vm.$router.go(0)
+                  vm.inputData.name = null;
+                  vm.inputData.code = null;
+                  vm.inputData.summary = null;
                 }
               });
             } else {

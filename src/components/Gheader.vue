@@ -131,5 +131,7 @@
   .goBack {
     margin-left: 30px;
     cursor: pointer;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #fff;
   }
 </style>
