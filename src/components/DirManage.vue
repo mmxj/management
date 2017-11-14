@@ -30,19 +30,6 @@
       </el-row>
     </div>
     <div class="dirTable">
-      <!--<el-table :data="tableData" border width="100%" align="center">-->
-      <!--<el-table-column prop="number" label="序号" width="80"></el-table-column>-->
-      <!--<el-table-column prop="filename" label="文件标识名称" width="300"></el-table-column>-->
-      <!--<el-table-column prop="city" label="使用地市" min-width="100"></el-table-column>-->
-      <!--<el-table-column prop="county" label="使用县区" min-width="100"></el-table-column>-->
-      <!--<el-table-column prop="district" label="使用镇区或街道办" min-width="200"></el-table-column>-->
-      <!--<el-table-column prop="file" label="三大目录文件" min-width="250"></el-table-column>-->
-      <!--<el-table-column label="操作">-->
-      <!--<template scope="scope">-->
-      <!--<el-button type="text" size="small">删除</el-button>-->
-      <!--</template>-->
-      <!--</el-table-column>-->
-      <!--</el-table>-->
       <div class="dirTable">
         <el-table :data="tableData" border width="100%" align="center">
           <el-table-column prop="itemNo" label="项目编码" width="120"></el-table-column>
@@ -217,11 +204,15 @@
               },
               callback: function (data) {
                 if (data.ret.errorCode == 0) {
-                  vm.$alert('医生添加成功', '提示', {
+                  vm.$alert('删除成功', '提示', {
                     confirmButtonText: '确定',
                     callback: function () {
                       vm.getCatalog();
                     }
+                  });
+                } else {
+                  vm.$alert('删除失败', '提示', {
+                    confirmButtonText: '确定'
                   });
                 }
               }

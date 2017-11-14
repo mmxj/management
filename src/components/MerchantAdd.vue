@@ -30,11 +30,10 @@
         <el-col :span="6">
           <div class="girid-content girid-ipt">
             <!--商户证书类型-->
-            <select ref="certificate" @change="certificateType">
-              <option>请选择证件类型</option>
-              <option>营业执照</option>
-              <option>从业资格证</option>
-            </select>
+            <el-select v-model="certificateType" @change="certificateTypeChange">
+              <el-option v-for="item in certificateData" :value="item.value" :label="item.label"
+                         :key="item.value"></el-option>
+            </el-select>
           </div>
         </el-col>
       </el-row>
@@ -49,7 +48,6 @@
           <div class="girid-content"><label>商户地址</label></div>
         </el-col>
         <el-col :span="6">
-          <!--<div class="distpicker"><v-distpicker province="省" city="市" area="区"></v-distpicker></div>-->
           <div class="distpicker">
             <select name="" id="province" @change="setCity()">
               <option v-for="data in provinceData" v-bind:value="data.id">{{data.name}}</option>
@@ -245,6 +243,19 @@
         cityData: [{'name': '市'}],
         districtData: [{'name': '区'}],
         session: sessionStorage.getItem('session'),
+        certificateType: null,
+        certificateData: [
+          {
+            value: null,
+            label: '请选择证件类型'
+          }, {
+            value: 1,
+            label: '营业执照'
+          }, {
+            value: 2,
+            label: '从业资格证'
+          }
+        ],
         inputData: {//输入框值
           companyTypeId: null,//商户类型
           code: '1',
@@ -344,20 +355,8 @@
         vm.inputData.companyTypeId = data;
       },
       //获取选中的公司证书类型
-      certificateType(){
-        var index = this.$refs.certificate.selectedIndex;
-        var vm = this;
-        switch (index) {
-          case 1:
-            vm.inputData.certificateType = 1;
-            break;
-          case 2:
-            vm.inputData.certificateType = 2;
-            break;
-          default:
-            vm.inputData.certificateType = null;
-            break
-        }
+      certificateTypeChange(data){
+        this.inputData.certificateType = data;
       },
       //地市联动方法 //找个时间封装
       getArea(){
@@ -411,6 +410,7 @@
         var _this = this;
         var parentId = myCity.getElementsByTagName('option')[index].value;
         this.inputData.addressPathId.cityId = parentId;
+        this.inputData.cityCode = parentId;
         var getDistrict = new RemoteCall();
         getDistrict.init({
           router: "/base/area/idname/get",

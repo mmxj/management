@@ -375,6 +375,7 @@
         if (parentId == '') {
           return
         }
+        this.inputData.cityCode = parentId;
         var getDistrict = new RemoteCall();
         getDistrict.init({
           router: "/base/area/idname/get",

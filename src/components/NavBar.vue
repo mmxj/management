@@ -1,7 +1,7 @@
 <template>
   <div id="NavBar">
     <ul class="clearfix">
-      <li v-for="(data,index) in readList">
+      <li v-for="(data,index) in readList" :class="{liActive:getUrlArr[index]==url}">
         <router-link :to="getUrlArr[index]">{{data}}</router-link>
         <span class="close" @click="close(index)">x</span></li>
     </ul>
@@ -11,7 +11,9 @@
   import {mapGetters, mapActions} from 'vuex'
   export default{
     data(){
-      return {}
+      return {
+        url: null,
+      }
     },
     computed: mapGetters(['readList', 'getUrlArr']),
     methods: {
@@ -22,9 +24,10 @@
         if (this.getUrlArr.length > 0) {
           this.$router.push(this.getUrlArr[this.getUrlArr.length - 1])
         } else {
-          this.$router.push('/message')
+          this.$router.push('/homepage')
         }
-
+        sessionStorage.setItem('saveList', this.readList);
+        sessionStorage.setItem('urlArr', this.getUrlArr);
       },
       goURl(){//在这里写路由跳转的原因是 操作数组比较方便 如果将传递的数据换成json来传递url的话
 
@@ -32,10 +35,13 @@
     },
     watch: {
       readList(){
+      },
+      $route(){
+        this.url = this.$route.fullPath
       }
     },
     mounted: function () {
-
+      this.url = this.$route.fullPath
     }
   }
 </script>
@@ -76,6 +82,9 @@
           cursor: pointer;
         }
       }
+    }
+    .liActive {
+      background: #36c675;
     }
   }
 </style>

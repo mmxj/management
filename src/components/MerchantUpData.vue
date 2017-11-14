@@ -426,6 +426,7 @@
         if (parentId == '') {
           return
         }
+        this.inputData.cityCode = parentId;
         this.inputData.addressPathId.cityId = parentId;
         var getDistrict = new RemoteCall();
         getDistrict.init({

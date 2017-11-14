@@ -87,12 +87,21 @@
         })
       },
       getCatalogCallback(data){
-        if (data.pageInfo.total) {
-          this.total = data.pageInfo.total;
-        }
-        this.tableData = data.rows;
-        for (var i = 0; i < this.tableData.length; i++) {
-          this.tableData[i].unitPrice = this.tableData[i].unitPrice / 100;
+        if (data.ret.errorCode === 0) {
+          if (data.rows.length == 0) {
+            this.total = 0
+          }
+          if (data.pageInfo.total) {
+            this.total = data.pageInfo.total;
+          }
+          this.tableData = data.rows;
+          for (var i = 0; i < this.tableData.length; i++) {
+            this.tableData[i].unitPrice = this.tableData[i].unitPrice / 100;
+          }
+        } else {
+          this.$alert(data.ret.errorMessage, '提示', {
+            confirmButtonText: '确定'
+          })
         }
       },
       handleSizeChange(val) {

@@ -124,7 +124,7 @@
         listArr: ['用户信息', '商户信息', '添加新商户', '查阅商户证件', '导入商户信息', '合作行业', '新增合作行业客户', '查阅行业客户证件',
           '订单管理', '产品通道基础管理', '三大目录上传', '三大目录列表', '三大目录管理', '添加卫生站', '管理卫生站', '添加村医',
           '管理村医', '业务专区发布', '信息专区发布', '支付流水数据', '绑卡数据管理', '数据报表', '社保受理终端管理平台', '系统用户管理', '系统权限管理', '添加员工',
-          '添加部门', '添加角色', '系统维护', '管理部门', '管理角色', '员工管理'],
+          '添加部门', '添加角色', '系统维护', '管理部门', '管理角色', '管理员工'],
         listUrl: ['/user', '/merchant', '/merchantadd', '/merchantcheck', '/merchantchannel', '/collaborate', '/collaborateadd', '/collaboratecheck',
           '/order', '/channel', '/uploaddir', '/dirlist', '/dirmanage', '/healthstationadd', '/healthstation', '/doctoradd', '/doctormanage',
           '/businessissue', '/informationup', '/paydata', '/dataadministration', '/datareport', '/terminal', '/systemmange', '/systemthrones', '/staff',
@@ -150,20 +150,28 @@
         this.saveUrl.push(this.listUrl[index])
         this.addList(this.saveList);
         this.urlArr(this.saveUrl);
-//        sessionStorage.setItem('saveList',this.saveList);
-//        sessionStorage.setItem('urlArr',this.saveUrl);
+        sessionStorage.setItem('saveList', this.saveList);
+        sessionStorage.setItem('urlArr', this.saveUrl);
+      },
+      getStart(){
+        this.addList(this.saveList);
+        this.urlArr(this.saveUrl);
       }
     },
     mounted: function () {
-//        var vm=this;
-//        if(sessionStorage.getItem('urlArr')){
-////          this.saveUrl=sessionStorage.getItem('urlArr').split(',')
-//            sessionStorage.getItem('urlArr').split(',').forEach(function(item,i){vm.saveUrl[i]=item})
-//        }
-//        if(sessionStorage.getItem('saveList')){
-////          this.saveList=sessionStorage.getItem('saveList').split(',')
-//            sessionStorage.getItem('saveList').split(',').forEach(function(item,i){vm.saveUrl[i]=item})
-//        }
+      var vm = this;
+      if (sessionStorage.getItem('urlArr')) {
+//          this.saveUrl=sessionStorage.getItem('urlArr').split(',')
+        sessionStorage.getItem('urlArr').split(',').forEach(function (item, i) {
+          vm.saveUrl[i] = item
+        });
+        sessionStorage.getItem('saveList').split(',').forEach(function (item, i) {
+          vm.saveList[i] = item
+        });
+        vm.getStart();
+      } else {
+        vm.getStart();
+      }
     },
   }
 </script>

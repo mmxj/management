@@ -32,7 +32,7 @@
         <el-col :span="2">
           <el-button class="search" @click="search">搜索</el-button>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="2">
           <el-button class="search addColl">
             <router-link to="/merchantadd">添加新商户</router-link>
           </el-button>
@@ -44,12 +44,12 @@
           <el-button @click="merchantUpdata">编辑商户</el-button>
         </el-col>
         <el-col :span="2">
-          <div class="downText">下载所有数据</div>
-        </el-col>
-        <el-col :span="2">
           <div class="downText">
             <router-link to="merchantcheck">查阅商户证件</router-link>
           </div>
+        </el-col>
+        <el-col :span="2">
+          <div class="downText">下载所有数据</div>
         </el-col>
       </el-row>
     </div>
@@ -357,9 +357,9 @@
     text-align: center;
   }
 
-  .addColl {
-    margin-left: 10px;
-  }
+  /*.addColl {*/
+  /*margin-left: 10px;*/
+  /*}*/
   .search {
     /*margin-left: 20px;*/
   }
@@ -403,7 +403,6 @@
     /*margin-left: 30px;*/
     /*}*/
   }
-
   .el-select {
     width: 100%;
   }

@@ -8,17 +8,6 @@
         <el-col :span="6">
           <select ref="collaborate" @change="collaborateType()">
             <option v-for="(item,index) in collaborateTypes" :value="index">{{item}}</option>
-            <!--<option>请选择合作内容</option>-->
-            <!--<option>资源对接</option>-->
-            <!--<option>通道对接</option>-->
-            <!--<option>地区合作</option>-->
-            <!--<option>业务代理</option>-->
-            <!--<option>产品对接</option>-->
-            <!--<option>推广渠道</option>-->
-            <!--<option>其他合作</option>-->
-            <!--<option>社保局</option>-->
-            <!--<option>人民银行</option>-->
-            <!--<option>其他政府单位</option>-->
           </select>
         </el-col>
         <el-col :span="2">
@@ -39,11 +28,10 @@
           <label for="">客户证件类型</label>
         </el-col>
         <el-col :span="6">
-          <select ref="certificate" @change="certificateType">
-            <option>请选择证件类型</option>
-            <option>营业执照</option>
-            <option>从业资格证</option>
-          </select>
+          <el-select v-model="certificateType" @change="certificateTypeChange">
+            <el-option v-for="item in certificateData" :value="item.value" :label="item.label"
+                       :key="item.value"></el-option>
+          </el-select>
         </el-col>
         <el-col :span="2">
           <label for="">行业客户编码</label>
@@ -234,6 +222,19 @@
         provinceData: [{'name': '省'}],
         cityData: [{'name': '市'}],
         districtData: [{'name': '区'}],
+        certificateType: null,
+        certificateData: [
+          {
+            value: null,
+            label: '请选择证件类型'
+          }, {
+            value: 1,
+            label: '营业执照'
+          }, {
+            value: 2,
+            label: '从业资格证'
+          }
+        ],
         session: sessionStorage.getItem('session'),
         collaborateTypes: ['请选择合作内容', '资源对接', '通道对接', '地区合作', '业务代理', '产品对接', '推广渠道', '其他合作', '社保局', '人民银行', '其他政府单位'],
         inputData: {//输入框值
@@ -303,19 +304,8 @@
     },
     methods: {
       //获取选中的公司证书类型
-      certificateType(){
-        var index = this.$refs.certificate.selectedIndex;
-        var vm = this;
-        switch (index) {
-          case 1:
-            vm.inputData.certificateType = 1;
-//            console.log(vm.inputData.certificateType)
-            break;
-          case 2:
-            vm.inputData.certificateType = 2;
-//            console.log(vm.inputData.certificateType)
-            break;
-        }
+      certificateTypeChange(data){
+        this.inputData.certificateType = data;
       },
       collaborateType(){ //合作关系
         var index = this.$refs.collaborate.selectedIndex;
@@ -385,6 +375,7 @@
           return
         }
         this.inputData.addressPathId.cityId = parentId;
+        this.inputData.cityCode = parentId;
         var getDistrict = new RemoteCall();
         getDistrict.init({
           router: "/base/area/idname/get",
@@ -459,16 +450,6 @@
         var vm = this;
 
         vm.setPictures();
-        console.log(1111);
-
-//        var addMerchant = new RemoteCall();
-//        addMerchant.init({
-//          router: "/company/add",
-//          session: this.session,
-//          data: {
-//            parentAreaId: this.inputData
-//          }
-//        })
       },
       setPictures(){
         this.setPicture("#form1", 0);
@@ -619,6 +600,9 @@
     }
   }
 
+  .el-select {
+    width: 100%;
+  }
   .girid-ipt {
     text-align: left;
   }

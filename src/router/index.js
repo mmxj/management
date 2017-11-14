@@ -46,6 +46,7 @@ import StaffManage from '../components/StaffManage' //员工管理
 import StaffUpData from '../components/StaffUpData' //员工编辑
 import MerchantUpData from '../components/MerchantUpData' //商户编辑
 import CollaborateUpData from '../components/CollaborateUpData' //合作行业编辑
+import HomePage from '../components/HomePage' //主页
 Vue.use(Router)
 
 export default new Router({
@@ -61,230 +62,236 @@ export default new Router({
       component: Login
     },
     {
-      path: '/message',
-      name: 'Message',
-      component: Message
-    },
-    {
-      path: '/user',
-      name: 'User',
-      component: User
-    },
-    {
-      path: '/merchant',
-      name: 'Merchant',
-      component: Merchant
-    },
-    {
-      path: '/merchantadd',
-      name: 'MerchantAdd',
-      component: MerchantAdd
-    },
-    {
-      path: '/merchantcheck',
-      name: 'MerchantCheck',
-      component: MerchantCheck
-    },
-    {
-      path: '/collaborate',
-      name: 'Collaborate',
-      component: Collaborate
-    },
-    {
-      path: '/collaborateadd',
-      name: 'CollaborateAdd',
-      component: CollaborateAdd
-    },
-    {
-      path: '/collaboratecheck',
-      name: 'CollaborateCheck',
-      component: CollaborateCheck
-    },
-    {
-      path: '/order',
-      name: 'Order',
-      component: Order
-    },
-    {
-      path: '/channel',
-      name: 'Channel',
-      component: Channel
-    },
-    {
-      path: '/uploaddir',
-      name: 'UploadDir',
-      component: UploadDir
-    },
-    {
-      path: '/dirlist',
-      name: 'DirList',
-      component: DirList
-    },
-    {
-      path: '/dirmanage',
-      name: 'DirManage',
-      component: DirManage
-    },
-    {
-      path: '/healthstation',
-      name: 'HealthStation',
-      component: HealthStation
-    },
-    {
-      path: '/healthstationadd',
-      name: 'HealthStationAdd',
-      component: HealthStationAdd
-    },
-    {
-      path: '/healthstationupdata',
-      name: 'HealthStationUpdata',
-      component: HealthStationUpdata
-    },
-    {
-      path: '/doctoradd',
-      name: 'DoctorAdd',
-      component: DoctorAdd
-    },
-    {
-      path: '/doctormanage',
-      name: 'DoctorManage',
-      component: DoctorManage
-    },
-    {
-      path: '/merchantchannel',
-      name: 'MerchantChannel',
-      component: MerchantChannel
-    },
-    {
-      path: '/businessissue',
-      name: 'BusinessIssue',
-      component: BusinessIssue
-    },
-    {
-      path: '/informationup',
-      name: 'InformationUp',
-      component: InformationUp
-    },
-    {
-      path: '/paydata',
-      name: 'PayData',
-      component: PayData
-    },
-    {
-      path: '/dataadministration',
-      name: 'DataAdministration',
-      component: DataAdministration
-    },
-    {
-      path: '/terminal',
-      name: 'Terminal',
-      component: Terminal
-    },
-    {
-      path: '/datareport',
-      name: 'DataReport',
-      component: DataReport
-    },
-    {
-      path: '/userdetails',
-      component: UserDetails,
+      path: '/homepage',
+      component: HomePage,
       children: [
         {
           path: '',
-          name: 'UserInformation',
-          component: UserInformation
+          name: 'Message',
+          component: Message
         },
         {
-          path: '/userdetailssocial',
-          name: 'Social',
-          component: Social
+          path: '/user',
+          name: 'User',
+          component: User
         },
         {
-          path: '/userdetailsbank',
-          name: 'UserBank',
-          component: UserBank
+          path: '/merchant',
+          name: 'Merchant',
+          component: Merchant
         },
         {
-          path: '/userdetailsfamily',
-          name: 'UserFamily',
-          component: UserFamily
+          path: '/merchantadd',
+          name: 'MerchantAdd',
+          component: MerchantAdd
         },
         {
-          path: '/userdetailsuserrecord',
-          name: 'UserRecord',
-          component: UserRecord
+          path: '/merchantcheck',
+          name: 'MerchantCheck',
+          component: MerchantCheck
         },
         {
-          path: '/userdetailsusertownship',
-          name: 'UserTownship',
-          component: UserTownship
+          path: '/collaborate',
+          name: 'Collaborate',
+          component: Collaborate
+        },
+        {
+          path: '/collaborateadd',
+          name: 'CollaborateAdd',
+          component: CollaborateAdd
+        },
+        {
+          path: '/collaboratecheck',
+          name: 'CollaborateCheck',
+          component: CollaborateCheck
+        },
+        {
+          path: '/order',
+          name: 'Order',
+          component: Order
+        },
+        {
+          path: '/channel',
+          name: 'Channel',
+          component: Channel
+        },
+        {
+          path: '/uploaddir',
+          name: 'UploadDir',
+          component: UploadDir
+        },
+        {
+          path: '/dirlist',
+          name: 'DirList',
+          component: DirList
+        },
+        {
+          path: '/dirmanage',
+          name: 'DirManage',
+          component: DirManage
+        },
+        {
+          path: '/healthstation',
+          name: 'HealthStation',
+          component: HealthStation
+        },
+        {
+          path: '/healthstationadd',
+          name: 'HealthStationAdd',
+          component: HealthStationAdd
+        },
+        {
+          path: '/healthstationupdata',
+          name: 'HealthStationUpdata',
+          component: HealthStationUpdata
+        },
+        {
+          path: '/doctoradd',
+          name: 'DoctorAdd',
+          component: DoctorAdd
+        },
+        {
+          path: '/doctormanage',
+          name: 'DoctorManage',
+          component: DoctorManage
+        },
+        {
+          path: '/merchantchannel',
+          name: 'MerchantChannel',
+          component: MerchantChannel
+        },
+        {
+          path: '/businessissue',
+          name: 'BusinessIssue',
+          component: BusinessIssue
+        },
+        {
+          path: '/informationup',
+          name: 'InformationUp',
+          component: InformationUp
+        },
+        {
+          path: '/paydata',
+          name: 'PayData',
+          component: PayData
+        },
+        {
+          path: '/dataadministration',
+          name: 'DataAdministration',
+          component: DataAdministration
+        },
+        {
+          path: '/terminal',
+          name: 'Terminal',
+          component: Terminal
+        },
+        {
+          path: '/datareport',
+          name: 'DataReport',
+          component: DataReport
+        },
+        {
+          path: '/userdetails',
+          component: UserDetails,
+          children: [
+            {
+              path: '',
+              name: 'UserInformation',
+              component: UserInformation
+            },
+            {
+              path: '/userdetailssocial',
+              name: 'Social',
+              component: Social
+            },
+            {
+              path: '/userdetailsbank',
+              name: 'UserBank',
+              component: UserBank
+            },
+            {
+              path: '/userdetailsfamily',
+              name: 'UserFamily',
+              component: UserFamily
+            },
+            {
+              path: '/userdetailsuserrecord',
+              name: 'UserRecord',
+              component: UserRecord
+            },
+            {
+              path: '/userdetailsusertownship',
+              name: 'UserTownship',
+              component: UserTownship
+            }
+          ]
+        },
+        {
+          path: '/doctorupdata',
+          name: 'DoctorUpData',
+          component: DoctorUpData
+        },
+        {
+          path: '/staffadd',
+          name: 'Staffadd',
+          component: Staffadd
+        },
+        {
+          path: '/department',
+          name: 'Department',
+          component: Department
+        },
+        {
+          path: '/roleadd',
+          name: 'RoleAdd',
+          component: RoleAdd
+        },
+        {
+          path: '/systemmange',
+          name: 'SystemMange',
+          component: SystemMange
+        },
+        {
+          path: '/systemthrones',
+          name: 'SystemThrones',
+          component: SystemThrones
+        },
+        {
+          path: '/systemmaintenance',
+          name: 'SystemMaintenance',
+          component: SystemMaintenance
+        },
+        {
+          path: '/departmentmanage',
+          name: 'DepartmentManage',
+          component: DepartmentManage
+        },
+        {
+          path: '/rolemanage',
+          name: 'RoleManage',
+          component: RoleManage
+        },
+        {
+          path: '/staffmanage',
+          name: 'StaffManage',
+          component: StaffManage
+        },
+        {
+          path: '/staffupdata',
+          name: 'StaffUpData',
+          component: StaffUpData
+        },
+        {
+          path: '/merchantupdata',
+          name: 'MerchantUpData',
+          component: MerchantUpData
+        },
+        {
+          path: '/collaborateupdata',
+          name: "CollaborateUpData",
+          component: CollaborateUpData
         }
       ]
-    },
-    {
-      path: '/doctorupdata',
-      name: 'DoctorUpData',
-      component: DoctorUpData
-    },
-    {
-      path: '/staffadd',
-      name: 'Staffadd',
-      component: Staffadd
-    },
-    {
-      path: '/department',
-      name: 'Department',
-      component: Department
-    },
-    {
-      path: '/roleadd',
-      name: 'RoleAdd',
-      component: RoleAdd
-    },
-    {
-      path: '/systemmange',
-      name: 'SystemMange',
-      component: SystemMange
-    },
-    {
-      path: '/systemthrones',
-      name: 'SystemThrones',
-      component: SystemThrones
-    },
-    {
-      path: '/systemmaintenance',
-      name: 'SystemMaintenance',
-      component: SystemMaintenance
-    },
-    {
-      path: '/departmentmanage',
-      name: 'DepartmentManage',
-      component: DepartmentManage
-    },
-    {
-      path: '/rolemanage',
-      name: 'RoleManage',
-      component: RoleManage
-    },
-    {
-      path: '/staffmanage',
-      name: 'StaffManage',
-      component: StaffManage
-    },
-    {
-      path: '/staffupdata',
-      name: 'StaffUpData',
-      component: StaffUpData
-    },
-    {
-      path: '/merchantupdata',
-      name: 'MerchantUpData',
-      component: MerchantUpData
-    },
-    {
-      path: '/collaborateupdata',
-      name: "CollaborateUpData",
-      component: CollaborateUpData
     }
   ]
 })

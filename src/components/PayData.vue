@@ -17,16 +17,20 @@
           <label for="">商户类型</label>
         </el-col>
         <el-col :span="6">
-          <input type="text" v-model="inputData.businessType">
+          <!--<input type="text" v-model="inputData.businessType">-->
+          <el-select v-model="companyTypes" @change="companyTypeChanges">
+            <el-option v-for="item in companyTypeData" :value="item.value" :label="item.label"
+                       :key="item.value"></el-option>
+          </el-select>
         </el-col>
         <el-col :span="2">
           <label for="">交易金额</label>
         </el-col>
         <el-col :span="3">
-          <input type="text" placeholder="起始金额" v-model="inputData.lowAmount">
+          <input type="text" placeholder="起始金额" v-model="lowAmount">
         </el-col>
         <el-col :span="3">
-          <input type="text" placeholder="结束金额" v-model="inputData.highAmount">
+          <input type="text" placeholder="结束金额" v-model="highAmount">
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -37,11 +41,12 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-date-picker v-model="value1" align="right" type="date" placeholder="选择日期"
-                              :picker-options="pickerOptions1"></el-date-picker>
+                              :picker-options="pickerOptions1" @change="clearDateStart"></el-date-picker>
+              <!--没有清算日期的接口暂时使用了交易日期的接口-->
             </el-col>
             <el-col :span="12">
               <el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期"
-                              :picker-options="pickerOptions1"></el-date-picker>
+                              :picker-options="pickerOptions1" @change="clearDateEnd"></el-date-picker>
             </el-col>
           </el-row>
         </el-col>
@@ -245,7 +250,37 @@
         companyTypeName: null,
         companyType: [],
         currentPage: 1,
-        total: 0
+        total: 0,
+        companyTypeData: [
+          {
+            value: null,
+            label: '请选择商户类型'
+          }, {
+            value: 1,
+            label: '收单机构'
+          }, {
+            value: 2,
+            label: '支付通道机构'
+          }, {
+            value: 3,
+            label: '社保局'
+          }, {
+            value: 4,
+            label: '医院(卫生站)'
+          }, {
+            value: 5,
+            label: '药店'
+          }, {
+            value: 6,
+            label: '平台'
+          }, {
+            value: 7,
+            label: '卫计局'
+          }
+        ],
+        companyTypes: null,
+        highAmount: null,
+        lowAmount: null
       }
     },
     methods: {
@@ -262,7 +297,16 @@
 //          });
 //          return false;
 //        }
-
+        if (this.highAmount) {
+          this.inputData.highAmount = this.highAmount * 100
+        } else {
+          this.inputData.highAmount = null;
+        }
+        if (this.lowAmount) {
+          this.inputData.lowAmount = this.lowAmount * 100
+        } else {
+          this.inputData.lowAmount = null
+        }
         var getPayData = new RemoteCall();
         getPayData.init({
           router: '/payment/paymentdeal/get',
@@ -366,10 +410,13 @@
         this.inputData.status = data;
       },
       statusChange(data){
-
+        this.inputData.planPayType = data;
       },
       companyTypeChange(data){
         this.inputData.acquirerId = data;
+      },
+      companyTypeChanges(data){//商户类型
+        this.inputData.companyType = data
       },
       companyInit(name){//初始化公司列表
         var companyName = new RemoteCall();

@@ -231,6 +231,27 @@
               vm.tableData = data.rows;
               for (var i = 0; i < vm.tableData.length; i++) {
                 vm.tableData[i].payTotalMoney = vm.tableData[i].payTotalMoney / 100;
+
+                switch (vm.tableData[i].personPayType) {
+                  case 1:
+                    vm.tableData[i].personPayType = '社保个账银联扫码主扫支付'
+                    break;
+                  case 2:
+                    vm.tableData[i].personPayType = '银行卡银联扫码主扫支付'
+                    break;
+                  case 3:
+                    vm.tableData[i].personPayType = '社保个账银联扫码被扫支付'
+                    break;
+                  case 4:
+                    vm.tableData[i].personPayType = '银行卡银联扫码被扫支付'
+                    break;
+                  case 5:
+                    vm.tableData[i].personPayType = '银行卡pos刷卡'
+                    break;
+                  default :
+                    vm.tableData[i].personPayType = null;
+                    break;
+                }
               }
             }
           }

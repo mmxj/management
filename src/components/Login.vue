@@ -103,7 +103,6 @@
 
       },
       loginCallback(data){
-        console.log(data);
         if (data.ret.errorCode === 0) {
           var session = data.session;
           this.saveSession(session);
@@ -112,7 +111,7 @@
           sessionStorage.setItem('userName', data.staffName)
           sessionStorage.setItem('companyName', data.companyName)
           this.resSize()
-          this.$router.push({path: '/message'});
+          this.$router.push({path: '/homepage'});
         } else if (data.ret.errorCode === -1) {
           switch (data.ret.errorMessage) {
             case 'password error':
@@ -150,6 +149,7 @@
       //调用默认函数
       this.setHeight();
       this.getPicture();
+      sessionStorage.removeItem('session');
     }
   }
 </script>

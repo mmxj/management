@@ -6,7 +6,10 @@
           <label for="">社保卡类型</label>
         </el-col>
         <el-col :span="6">
-          <input type="text" v-model="inputData.cardType">
+          <!--<input type="text" v-model="inputData.cardType">-->
+          <el-select v-model="inputData.cardType">
+            <el-option v-for="item in cardData" :value="item.value" :label="item.label" :key="item.value"></el-option>
+          </el-select>
         </el-col>
         <el-col :span="2">
           <label for="">卡归属地</label>
@@ -133,10 +136,29 @@
         tableData: [],
         session: sessionStorage.getItem('session'),
         inputData: {
+          cardType: null,
           pageInfo: {
             pageSize: 20,
           },
-        }
+        },
+        cardData: [
+          {
+            value: null,
+            label: '请选择社保卡类型'
+          }, {
+            value: 1,
+            label: '社保卡'
+          }, {
+            value: 2,
+            label: '诊疗卡'
+          }, {
+            value: 3,
+            label: '储蓄卡'
+          }, {
+            value: 4,
+            label: '信用卡'
+          }
+        ]
       }
     },
     methods: {
@@ -289,6 +311,9 @@
     }
   }
 
+  .el-select {
+    width: 100%;
+  }
   @media screen and (max-width: 1760px) {
     label {
       font-size: 14px;

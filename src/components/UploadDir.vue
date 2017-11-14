@@ -391,6 +391,7 @@
       height: 100%;
       opacity: 0;
       position: absolute;
+      cursor: pointer;
     }
   }
 

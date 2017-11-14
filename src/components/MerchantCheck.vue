@@ -19,7 +19,7 @@
     </div>
     <div>
       <el-row :gutter="10" class="logoContent">
-        <el-col :span="16" :offset="4">
+        <el-col :span="24" class="imgBox">
           <img class="MerchantImg" :src="imgUrl"/>
         </el-col>
       </el-row>
@@ -236,7 +236,7 @@
   }
 
   .MerchantImg {
-    width: 100%;
+    height: 900px;
 
   }
 
@@ -252,6 +252,13 @@
     margin: 40px 0;
   }
 
+  .el-col-offset-9 {
+    margin-left: 33%;
+  }
+
+  .imgBox {
+    text-align: center;
+  }
   .company {
     background: #fff;
     border: 1px solid #aaa;

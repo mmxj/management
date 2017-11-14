@@ -2,8 +2,6 @@
   <div id="HeadlthStationAdd">
     <div>
       <el-row :gutter="20">
-        <el-col :span="3"><label for="">卫生站名称</label></el-col>
-        <el-col :span="5"><input type="text" v-model="inputData.name"></el-col>
         <el-col :span="3">
           <label for="">卫生站地址</label>
         </el-col>
@@ -23,6 +21,8 @@
           </div>
           <!--</div>-->
         </el-col>
+        <el-col :span="3"><label for="">卫生站名称</label></el-col>
+        <el-col :span="5"><input type="text" v-model="inputData.name"></el-col>
         <el-col :span="3">
           <label for="">卫生站操作员号</label>
         </el-col>
@@ -35,20 +35,38 @@
           <label for="">卫生院证件类型</label>
         </el-col>
         <el-col :span="5">
-          <select ref="certificate" @change="certificateType">
-            <option>请选择证件类型</option>
-            <option>营业执照</option>
-            <option>从业资格证</option>
-          </select>
+          <!--<select ref="certificate" @change="certificateType">-->
+          <!--<option>请选择证件类型</option>-->
+          <!--<option>营业执照</option>-->
+          <!--<option>从业资格证</option>-->
+          <!--</select>-->
+          <el-select v-model="certificateType" @change="certificateTypeChange">
+            <el-option v-for="item in certificateData" :value="item.value" :label="item.label"
+                       :key="item.value"></el-option>
+          </el-select>
         </el-col>
         <el-col :span="3"><label for="">归属卫生院</label></el-col>
         <el-col :span="5">
-          <select ref="mySelect" @change="getparentChange">
-            <option>
-              请选择归属卫生院
-            </option>
-            <option v-for="data in parentId" v-bind:value="data.id" ref="options">{{data.name}}</option>
-          </select>
+          <!--<select ref="mySelect" @change="getparentChange">-->
+          <!--<option>-->
+          <!--请选择归属卫生院-->
+          <!--</option>-->
+          <!--<option v-for="data in parentId" v-bind:value="data.id" ref="options">{{data.name}}</option>-->
+          <!--</select>-->
+          <el-select
+            v-model="mySelect"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="输入搜索卫生院"
+            :remote-method="getparentChange" @change="companyChange">
+            <el-option
+              v-for="item in parentId"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </el-col>
         <el-col :span="7">
           <router-link class="addHealth" to="/merchantadd">找不到对应的卫生院？请点击添加</router-link>
@@ -224,6 +242,20 @@
         districtData: [{'name': '区'}],
         session: sessionStorage.getItem('session'),
         parentId: [],
+        certificateType: null,
+        mySelect: null,
+        certificateData: [
+          {
+            value: null,
+            label: '请选择证件类型'
+          }, {
+            value: 1,
+            label: '营业执照'
+          }, {
+            value: 2,
+            label: '从业资格证'
+          }
+        ],
         inputData: {//输入框值
           companyTypeId: 4,//商户类型
           code: '1',
@@ -294,19 +326,8 @@
     computed: mapGetters(['saveHealthData']),
     methods: {
       //获取选中的公司证书类型
-      certificateType(){
-        var index = this.$refs.certificate.selectedIndex;
-        var vm = this;
-        switch (index) {
-          case 1:
-            vm.inputData.certificateType = 1;
-//            console.log(vm.inputData.certificateType)
-            break;
-          case 2:
-            vm.inputData.certificateType = 2;
-//            console.log(vm.inputData.certificateType)
-            break;
-        }
+      certificateTypeChange(data){
+        this.inputData.certificateType = data;
       },
       //地市联动方法
       getArea(){
@@ -363,6 +384,7 @@
         var _this = this;
         var parentId = myCity.getElementsByTagName('option')[index].value;
         this.inputData.addressPathId.cityId = parentId;
+        this.inputData.cityCode = parentId;
         if (parentId == '') {
           return
         }
@@ -471,7 +493,6 @@
       },
       routerGo(data){
         if (data.ret.errorMessage == 'success') {
-//          window.location.reload()
           this.$alert('添加成功', '提示', {
             confirmButtonText: '确定',
             callback: function () {
@@ -483,7 +504,6 @@
       checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
         for (var i = 0; i < 4; i++) {
           if (!this.inputData.certificateList[i].picSavePath) {
-//            console.log(this.inputData.certificateList[i].picSavePath);
             return false
           }
         }
@@ -515,7 +535,6 @@
                   default:
                     alert("照片上传错误请重新上传")
                     break
-
                 }
               }
             }
@@ -528,40 +547,51 @@
         if (addcompany) {
           addcompany();//判断所有图片上传成功后回调
         }
-
-//        console.log(JSON.parse(data).data[0].saved_file)
       },
-      getParentId(){//获取父级卫生院数据 插入到节点中
+      getParentId(name){//获取父级卫生院数据 插入到节点中
+        var companyName = null;
+        if (name) {
+          companyName = name
+        }
         var getParent = new RemoteCall();
         getParent.init({
           router: "/company/get",
           session: this.session,
           data: {
-            aredId: parseInt(this.inputData.areaId)
+            name: companyName,
+            aredId: parseInt(this.inputData.areaId)//对地区进行筛选
           },
           callback: this.parentCallback
         })
-
       },
-      parentCallback(data){
-        this.parentId = [];
-        for (var i = 0; i < data.rows.length; i++) {
-          if (data.rows[i].companyType == 1 || data.rows[i].companyType == 4) {//对公司类型进行判断
-            this.parentId.push(data.rows[i]);
+      parentCallback(data){//成功的回调
+        if (data.ret.errorCode === 0) {
+          this.parentId = [];
+          for (var i = 0; i < data.rows.length; i++) {
+            if (data.rows[i].companyType == 4) {//对公司类型进行判断
+              var option = {};
+              option.value = data.rows[i].id;
+              option.label = data.rows[i].name;
+              this.parentId.push(option);
+            }
           }
         }
+
       },
-      getparentChange(){
-        var index = this.$refs.mySelect.selectedIndex - 1;
-        if (index >= 0) {
-          console.log(this.$refs.options[index].value)
-          this.inputData.parentCompanyId = this.$refs.options[index].value;
-        }
+      getparentChange(data){
+        this.getParentId(data);
+//        var index = this.$refs.mySelect.selectedIndex - 1;
+//        if (index >= 0) {
+//          console.log(this.$refs.options[index].value)
+//          this.inputData.parentCompanyId = this.$refs.options[index].value;
+//        }
+      },
+      companyChange(data){
+        console.log(data);
       }
     },
     mounted: function () {
       this.getArea();
-      console.log(this.saveHealthData);
       for (var i in this.saveHealthData) {
         this.inputData[i] = this.saveHealthData[i];
       }
@@ -641,6 +671,9 @@
     }
   }
 
+  .el-select {
+    width: 100%;
+  }
   .addHealth {
     display: block;
     line-height: 36px;

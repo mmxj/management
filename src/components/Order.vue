@@ -16,10 +16,10 @@
                 @click="getTime(index)">{{name}}</span>
           <span>自定义时间</span>
           <el-date-picker v-model="value1" align="right" type="date" placeholder="选择日期"
-                          :picker-options="pickerOptions1" @change="startTime"></el-date-picker>
+                          :picker-options="pickerOptions1" @change="startTimes"></el-date-picker>
           <span class="add">至</span>
           <el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期"
-                          :picker-options="pickerOptions1" @change="endTime"></el-date-picker>
+                          :picker-options="pickerOptions1" @change="endTimes"></el-date-picker>
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -120,6 +120,28 @@
             }
           }]
         },
+        pickerOptions2: {
+          shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.$emit('pick', new Date());
+            }
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit('pick', date);
+            }
+          }, {
+            text: '一周前',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', date);
+            }
+          }]
+        },
         value1: '',
         value2: '',
         beginAmount: null,
@@ -174,18 +196,11 @@
       search(){
         var vm = this;
         if (this.beginAmount) {
-          this.inputData.beginAmount = this.beginAmount;
+          this.inputData.beginAmount = this.beginAmount * 100;
         }
         if (this.endAmount) {
-          this.inputData.endAmount = this.endAmount;
+          this.inputData.endAmount = this.endAmount * 100;
         }
-        if (this.inputData.beginAmount) {
-          this.inputData.beginAmount = this.inputData.beginAmount * 100;
-        }
-        if (this.inputData.endAmount) {
-          this.inputData.endAmount = this.inputData.endAmount * 100;
-        }
-
         var searchOrder = new RemoteCall();
         vm.inputData.pageInfo.pageNum = vm.currentPage;
         searchOrder.init({
@@ -211,6 +226,9 @@
                 case 3:
                   vm.tableData[i].businessType = '门诊';
                   break
+                default:
+                  vm.tableData[i].businessType = null;
+                  break;
               }
               vm.tableData[i].amount = vm.tableData[i].amount / 100;
               if (vm.tableData[i].isXybPay) {
@@ -254,40 +272,57 @@
             this.inputData.beginCreate = myDate.getThisYear().split('/')[0];
             this.inputData.endCreate = myDate.getThisYear().split('/')[1];
             break;
+          default:
+            this.inputData.beginCreate = null;
+            this.inputData.endCreate = null;
+            break;
         }
+        this.value1 = null;
+        this.value2 = null;
       },
       setMoney(index){
         this.isActive3 = index;
         switch (index) {
           case 1:
             this.inputData.beginAmount = 0;
-            this.inputData.endAmount = 100;
+            this.inputData.endAmount = 100 * 100;
             break;
           case 2:
-            this.inputData.beginAmount = 100;
-            this.inputData.endAmount = 1000;
+            this.inputData.beginAmount = 100 * 100;
+            this.inputData.endAmount = 1000 * 100;
             break;
           case 3:
-            this.inputData.beginAmount = 1000;
-            this.inputData.endAmount = 5000;
+            this.inputData.beginAmount = 1000 * 100;
+            this.inputData.endAmount = 5000 * 100;
             break;
           case 4:
-            this.inputData.beginAmount = 5000;
-            this.inputData.endAmount = 10000;
+            this.inputData.beginAmount = 5000 * 100;
+            this.inputData.endAmount = 10000 * 100;
             break;
           case 5:
-            this.inputData.beginAmount = 10000;
+            this.inputData.beginAmount = 10000 * 100;
+            this.inputData.endAmount = null;
+            break;
+          default:
+            this.inputData.beginAmount = null;
             this.inputData.endAmount = null;
             break;
         }
       },
-      startTime(data){
-        this.isActive2 = 0;
-        this.startTime = data;
+      startTimes(data){
+        if (data != null) {
+          this.isActive2 = 0;
+          this.startTime = data;
+          this.inputData.beginCreate = data;
+        }
+
       },
-      endTime(data){
-        this.isActive2 = 0;
-        this.endTime = data;
+      endTimes(data){
+        if (data != null) {
+          this.isActive2 = 0;
+          this.endTime = data;
+          this.inputData.endCreate = data;
+        }
       }
     },
     watch: {
