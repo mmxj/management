@@ -103,7 +103,7 @@
         })
       },
       getIndex(data){
-        if (data) {
+        if (data || data === 0) {
           this.saveDoctorData = this.tableData[data];
           this.saveHealthData(this.tableData[data])
         }

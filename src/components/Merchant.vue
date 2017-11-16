@@ -48,9 +48,9 @@
             <router-link to="merchantcheck">查阅商户证件</router-link>
           </div>
         </el-col>
-        <el-col :span="2">
-          <div class="downText">下载所有数据</div>
-        </el-col>
+        <!--<el-col :span="2">-->
+        <!--<div class="downText">下载所有数据</div>-->
+        <!--</el-col>-->
       </el-row>
     </div>
     <div class="table-box">

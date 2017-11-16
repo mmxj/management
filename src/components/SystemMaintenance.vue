@@ -13,7 +13,6 @@
       <el-col :span="4">
         <label for="">刷新银联交易前置终端缓存:</label>
       </el-col>
-      <el-col :span="6"><input type="text" placeholder="请输入密钥" v-model="deal"></el-col>
       <el-col :span="2">
         <!--<el-select v-model="te">-->
         <!--<el-option>终端类型</el-option>-->
@@ -61,36 +60,34 @@
               }
             }
           })
+        } else {
+          vm.$alert('密匙不能为空', '提示', {
+            confirmButtonText: '确定',
+          });
         }
       },
       dealUpdata(){
         var vm = this;
-        if (this.deal == '') {
-          this.deal = null;
-          return
-        }
-        if (this.deal != null) {
-          var openApiup = new RemoteCall();
-          openApiup.init({
-            router: '/base/union/terminal/refreshCache',
-            session: this.session,
-            data: {
-              key: this.deal,
-              deviceType: 3,
-            },
-            callback: function (data) {
-              if (data.ret.errorCode === 0) {
-                vm.$alert('刷新银联交易前置终端缓存', '提示', {
-                  confirmButtonText: '确定',
-                });
-              } else {
-                vm.$alert(data.ret.errorMessage, '提示', {
-                  confirmButtonText: '确定',
-                });
-              }
+        var openApiup = new RemoteCall();
+        openApiup.init({
+          router: '/base/union/terminal/refreshCache',
+          session: this.session,
+          data: {
+            deviceType: 3,
+          },
+          callback: function (data) {
+            if (data.ret.errorCode === 0) {
+              vm.$alert('刷新银联交易前置终端缓存', '提示', {
+                confirmButtonText: '确定',
+              });
+            } else {
+              vm.$alert(data.ret.errorMessage, '提示', {
+                confirmButtonText: '确定',
+              });
             }
-          })
-        }
+          }
+        })
+
       }
     }
 

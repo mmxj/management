@@ -161,7 +161,10 @@
       },
       //地市联动结束
       getCatalog(){//获取目录数据
-        var vm = this
+        var vm = this;
+        if (vm.sendData.itemNameCh == '') {
+          vm.sendData.itemNameCh = null;
+        }
         this.pageInfo.pageSize = this.pageSize;
         this.pageInfo.pageNum = this.currentPage;
         this.sendData.pageInfo = this.pageInfo;
@@ -197,7 +200,7 @@
 //          console.log(listId);
           var del = new RemoteCall();
           del.init({
-              router: '/base/hospital_charging_item/delete',
+            router: '/base/hospital_charging_item_detail/delete',
               session: vm.session,
               data: {
                 id: listId
@@ -215,6 +218,11 @@
                     confirmButtonText: '确定'
                   });
                 }
+              },
+            errorCallback: function (data) {
+              vm.$alert('删除失败' + data.responseText, '提示', {
+                confirmButtonText: '确定',
+              })
               }
             })
         }).catch(() => {

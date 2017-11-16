@@ -47,6 +47,8 @@ import StaffUpData from '../components/StaffUpData' //员工编辑
 import MerchantUpData from '../components/MerchantUpData' //商户编辑
 import CollaborateUpData from '../components/CollaborateUpData' //合作行业编辑
 import HomePage from '../components/HomePage' //主页
+import ResourceAdd from '../components/ResourceAdd' //新建资源
+import ResourceAlert from '../components/ResourceAlert' //新建资源弹窗
 Vue.use(Router)
 
 export default new Router({
@@ -290,6 +292,18 @@ export default new Router({
           path: '/collaborateupdata',
           name: "CollaborateUpData",
           component: CollaborateUpData
+        },
+        {
+          path: '/resourceadd',
+          // name: 'ResourceAdd',
+          component: ResourceAdd,
+          children: [
+            {
+              path: '/resourceadd/add',
+              name: 'ResourceAlert',
+              component: ResourceAlert
+            }
+          ]
         }
       ]
     }

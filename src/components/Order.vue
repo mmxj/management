@@ -38,7 +38,8 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :offset="20" :span="4"><span>下载数据</span>
+        <el-col :offset="20" :span="4">
+          <!--<span>下载数据</span>-->
           <el-button class="search" @click="searchget">搜索</el-button>
         </el-col>
       </el-row>

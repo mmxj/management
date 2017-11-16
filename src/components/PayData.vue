@@ -129,9 +129,9 @@
         <el-col :offset="2" :span="2">
           <el-button @click="getPayData">搜索</el-button>
         </el-col>
-        <el-col :span="4">
-          <a href="javascript:">下载所有数据</a>
-        </el-col>
+        <!--<el-col :span="4">-->
+        <!--<a href="javascript:">下载所有数据</a>-->
+        <!--</el-col>-->
       </el-row>
     </div>
     <div>
@@ -150,7 +150,7 @@
         <el-table-column prop="terminalNo" label="终端号" width="180"></el-table-column>
         <el-table-column prop="departmentName" label="门店名称" width="180"></el-table-column>
         <el-table-column prop="merchantNo" label="商户编号" width="180"></el-table-column>
-        <el-table-column prop="departmentName" label="商户名称" width="180"></el-table-column>
+        <el-table-column prop="companyName" label="商户名称" width="180"></el-table-column>
         <el-table-column prop="status" label="交易状态" width="180"></el-table-column>
         <el-table-column prop="cardType" label="支付卡类型" width="180"></el-table-column>
         <el-table-column prop="extraParams" label="备注" width="180"></el-table-column>

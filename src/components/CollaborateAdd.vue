@@ -500,7 +500,6 @@
       checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
         for (var i = 0; i < 4; i++) {
           if (!this.inputData.certificateList[i].picSavePath) {
-//            console.log(this.inputData.certificateList[i].picSavePath);
             return false
           }
         }

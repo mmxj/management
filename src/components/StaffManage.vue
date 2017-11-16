@@ -72,6 +72,8 @@
         var vm = this;
         if (name) {
           vm.inputData.name = name;
+        } else {
+          vm.inputData.name = null;
         }
         vm.inputData.pageInfo.pageNum = vm.currentPage;
         var staffGet = new RemoteCall();

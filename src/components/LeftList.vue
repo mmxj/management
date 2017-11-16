@@ -44,6 +44,8 @@
           </el-menu-item>
           <el-menu-item index="/staffmanage" class="menu-border-bottom el-lvthree" @click="getIndex(31)">{{listArr[31]}}
           </el-menu-item>
+          <!--<el-menu-item index="/resourceadd" class="menu-border-bottom el-lvthree" @click="getIndex(32)">{{listArr[32]}}-->
+          <!--</el-menu-item>-->
         </el-submenu>
 
       </el-submenu>
@@ -107,7 +109,7 @@
         <template slot="title">系统管理</template>
         <el-menu-item index="/systemmange" class="menu-border-bottom el-lvtwo" @click="getIndex(23)">{{listArr[23]}}
         </el-menu-item>
-        <el-menu-item index="/systemthrones" class="menu-border-bottom el-lvtwo" @click="getIndex(24)">{{listArr[24]}}
+        <el-menu-item index="/resourceadd" class="menu-border-bottom el-lvtwo" @click="getIndex(24)">{{listArr[24]}}
         </el-menu-item>
         <el-menu-item index="/systemmaintenance" class="menu-border-bottom el-lvtwo" @click="getIndex(28)">{{listArr[28]}}
         </el-menu-item>
@@ -127,8 +129,8 @@
           '添加部门', '添加角色', '系统维护', '管理部门', '管理角色', '管理员工'],
         listUrl: ['/user', '/merchant', '/merchantadd', '/merchantcheck', '/merchantchannel', '/collaborate', '/collaborateadd', '/collaboratecheck',
           '/order', '/channel', '/uploaddir', '/dirlist', '/dirmanage', '/healthstationadd', '/healthstation', '/doctoradd', '/doctormanage',
-          '/businessissue', '/informationup', '/paydata', '/dataadministration', '/datareport', '/terminal', '/systemmange', '/systemthrones', '/staff',
-          '/department', '/roleadd', '/systemmaintenance', '/departmentmanage', '/rolemanage', '/staffmanage'],//staff是25 最后一个为31
+          '/businessissue', '/informationup', '/paydata', '/dataadministration', '/datareport', '/terminal', '/systemmange', '/resourceadd', '/staff',
+          '/department', '/roleadd', '/systemmaintenance', '/departmentmanage', '/rolemanage', '/staffmanage',],//staff是25 最后一个为32
         saveList: [],
         saveUrl: [],
       }

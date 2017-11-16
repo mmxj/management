@@ -3,11 +3,11 @@
     <div>
       <el-row :gutter="20">
         <el-col :span="2">
-          <label for="">社保卡类型</label>
+          <label for="">绑卡类型</label>
         </el-col>
         <el-col :span="6">
           <!--<input type="text" v-model="inputData.cardType">-->
-          <el-select v-model="inputData.cardType">
+          <el-select v-model="inputData.cardType" multiple>
             <el-option v-for="item in cardData" :value="item.value" :label="item.label" :key="item.value"></el-option>
           </el-select>
         </el-col>
@@ -73,7 +73,7 @@
         <el-table-column prop="userName" label="姓名" width="180"></el-table-column>
         <el-table-column prop="account" label="社保卡号" width="220"></el-table-column>
         <el-table-column prop="cardTypeName" label="社保卡类型" width="180"></el-table-column>
-        <el-table-column prop="areaId" label="卡归属地" width="180"></el-table-column>
+        <el-table-column prop="areaName" label="卡归属地" width="180"></el-table-column>
         <el-table-column prop="merchantNo" label="绑卡商户号" width="180"></el-table-column>
         <el-table-column prop="terminalNo" label="绑卡终端号" width="180"></el-table-column>
         <el-table-column prop="idCardNo" label="身份证号" width="220"></el-table-column>
@@ -136,7 +136,7 @@
         tableData: [],
         session: sessionStorage.getItem('session'),
         inputData: {
-          cardType: null,
+          cardType: [],
           pageInfo: {
             pageSize: 20,
           },
@@ -243,8 +243,12 @@
       },
       //地市联动结束
       dataUp(){ //提交查找
+        console.log(111)
         if (this.inputData.areaId == "") {
           this.inputData.areaId = null;
+        }
+        if (this.inputData.cardType.length == 0) {
+          this.inputData.cardType = null;
         }
         this.inputData.pageInfo.pageNum = this.currentPage;
         var vm = this;
@@ -254,13 +258,25 @@
           session: this.session,
           data: this.inputData,
           callback: function (data) {
-            if (data.pageInfo) {
-              vm.total = data.pageInfo.total;
+            if (data.ret.errorCode === 0) {
+              if (data.pageInfo) {
+                vm.total = data.pageInfo.total;
+              }
+              vm.tableData = data.rows;
+              for (var i = 0; i < vm.tableData.length; i++) {
+                vm.tableData[i].index = i + 1;
+              }
+            } else {
+              vm.$alert('搜索失败' + data.ret.errorMessage, '提示', {
+                confirmButtonText: '确定',
+              });
             }
-            vm.tableData = data.rows;
-            for (var i = 0; i < vm.tableData.length; i++) {
-              vm.tableData[i].index = i + 1;
-            }
+
+          },
+          errorCallback: function (data) {
+            vm.$alert('搜索失败' + data.responseText, '提示', {
+              confirmButtonText: '确定',
+            });
           }
         })
       },

@@ -109,7 +109,8 @@
           this.loginData(data)
           sessionStorage.setItem('session', session);
           sessionStorage.setItem('userName', data.staffName)
-          sessionStorage.setItem('companyName', data.companyName)
+          sessionStorage.setItem('companyName', data.companyName);
+          sessionStorage.setItem('companyId', data.companyId)
           this.resSize()
           this.$router.push({path: '/homepage'});
         } else if (data.ret.errorCode === -1) {

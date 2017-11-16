@@ -125,9 +125,9 @@
         <el-col :offset="2" :span="2">
           <el-button @click="dataUp">添加</el-button>
         </el-col>
-        <el-col :span="4">
-          <a href="javascript:">下载所有数据</a>
-        </el-col>
+        <!--<el-col :span="4">-->
+        <!--<a href="javascript:">下载所有数据</a>-->
+        <!--</el-col>-->
       </el-row>
     </div>
     <div>
@@ -144,6 +144,20 @@
         <el-table-column prop="summary" label="商户主营业务" width="180"></el-table-column>
         <el-table-column prop="terminalCompany" label="终端厂家" width="180"></el-table-column>
         <el-table-column prop="model" label="终端型号" width="180"></el-table-column>
+        <el-table-column
+          fixed="right"
+          label="操作"
+          width="120">
+          <template slot-scope="scope">
+            <el-button
+              @click.native.prevent="deleteRow(scope.$index, tableData)"
+              type="text"
+              class="deletebtn"
+              size="small">
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <el-pagination
@@ -380,7 +394,7 @@
           vm.inputData.companyId = null;
         }
         if (vm.inputData.companyId == null) {
-          vm.$alert('公司不能为空', '提示', {
+          vm.$alert('商户名不能为空', '提示', {
             confirmButtonText: '确定',
           })
           return
@@ -527,7 +541,6 @@
         })
       },
       remoteMethod(data){//远程搜索公司名收单机构
-        console.log(data);
         if (data == '') {
           this.companyTypeName = null
         }
@@ -541,7 +554,7 @@
         if (data == '') {
           this.companyName = null;
         }
-        if (data !== '') {
+        if (data != '') {
           this.companyNameInit(data)
         } else {
           this.companyNameInit(null)
@@ -605,6 +618,10 @@
       handleCurrentChange(data){
         console.log(vm.currentPage)
         this.getTerminal();
+      },
+      deleteRow(i, data){
+        console.log(i);
+        console.log(data);
       }
     },
     mounted: function () {
@@ -687,6 +704,11 @@
     background: #32BC6F;
     border: 0;
     color: #fff;
+  }
+
+  .deletebtn {
+    background: transparent;
+    color: red;
   }
   a {
     line-height: 30px;

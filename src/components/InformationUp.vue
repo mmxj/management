@@ -15,14 +15,15 @@
             <label for="">上传文件：</label>
           </el-col>
           <el-col :span="12">
-            <input type="text" v-model="fileName">
+            <input type="text" v-model="fileName" disabled="disabled" placeholder="请上传PDF文件">
           </el-col>
           <el-col :span="4">
             <form enctype="multipart/form-data" name="form" id="form" style="position:relative;">
               <el-button>点击浏览上传</el-button>
-              <input type="file" name="file" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;"
-                     v-on:change="pdfUrl">
-              <input type="text" name="uload_type" value="4" style="display:none">
+              <input type="file" name="file" ref="pdfInput"
+                     style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;"
+                     v-on:change="pdfUrl" accept=".pdf">
+              <input type="text" name="upload_type" value="4" style="display:none">
             </form>
           </el-col>
         </el-row>
@@ -98,7 +99,8 @@
           readType: 1,
           title: null
         },
-        fileName: null
+        fileName: null,
+        pdfName: null
       }
     },
     methods: {
@@ -113,9 +115,16 @@
         var vm = this;
         if (index == 0) {
 //            this.checkedNames = this.checkBoxData;
-          for (var i = 0; i < this.checkBoxData.length; i++) {
+          if (vm.checkedNames[0] == '全选') {
+            for (var i = 0; i < this.checkBoxData.length; i++) {
 //              this.checkedNames[i]=this.checkBoxData[i]
-            this.$set(vm.checkedNames, i, this.checkBoxData[i])
+              this.$set(vm.checkedNames, i, null)
+            }
+          } else {
+            for (var i = 0; i < this.checkBoxData.length; i++) {
+//              this.checkedNames[i]=this.checkBoxData[i]
+              this.$set(vm.checkedNames, i, this.checkBoxData[i])
+            }
           }
 //            this.checkedNames = []
         } else {
@@ -134,9 +143,18 @@
         }
       },
       upData(){
-        console.log(this.inputData.readType)
+        var vm = this;
         this.inputData.areaRange = this.checkedNames.join();
-        this.setPdf();
+        if (this.fileName == '' || this.fileName == null) {
+          vm.$alert("请上传PDF文件", '提示', {
+            confirmButtonText: '确定',
+            callback: function () {
+              return;
+            }
+          })
+        } else {
+          this.setPdf();
+        }
 //        var dataUp=new RemoteCall();
 //        dataUp.init({
 //          router:'/ips/message/add',
@@ -147,20 +165,63 @@
 //          }
 //        })
       },
+      pdfUp(){
+        var vm = this;
+        if (this.inputData.title == '' || this.inputData.title == null) {
+          vm.$alert("请填写信息标题", '提示', {
+            confirmButtonText: '确定',
+            callback: function () {
+              return;
+            }
+          })
+        } else {
+          var dataUp = new RemoteCall();
+          dataUp.init({
+            router: '/ips/message/add',
+            session: this.session,
+            data: this.inputData,
+            callback: function (data) {
+              if (data.ret.errorCode === 0) {
+                vm.$alert("信息发布成功", '提示', {
+                  confirmButtonText: '确定',
+                  callback: function () {
+                    vm.checkOn = false;
+                    vm.checkedNames = [];
+                    vm.inputData = {
+                      filePath: null,
+                      readType: 1,
+                      title: null
+                    };
+                    vm.fileName = null;
+                    vm.pdfName = null;
+                    vm.$refs.pdfInput.value = null;
+                  }
+                })
+              }
+            }
+          })
+        }
+
+      },
       setPdf(){
         var vm = this;
         $('#form').ajaxSubmit({
           type: 'POST',
           url: 'http://www.yxunionpay.com:8087/yxsj-openapi-web/openapi/upload/upload.do',
           success: function (data) {
-            console.log(data)
+            var Data = JSON.parse(data).data[0];
+            if (Data.saved == true) {
+              vm.pdfName = Data.saved_file;
+              vm.inputData.filePath = Data.saved_file
+              vm.pdfUp();
+            }
           }
         })
       },
       pdfUrl(e){
         var files = e.target.files || e.dataTransfer.files;
         if (!files.length)return;
-        console.log(files[0])
+        this.fileName = files[0].name
       }
     },
     mounted: function () {
@@ -211,6 +272,10 @@
       height: 30px;
       width: 100%;
       padding: 0;
+    }
+    input[type="text"]:disabled {
+      background: #fff;
+      border: 0;
     }
     .up-data {
       text-align: right;

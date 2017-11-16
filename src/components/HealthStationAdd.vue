@@ -360,7 +360,7 @@
         var mySelect = document.getElementById('province');
         var index = mySelect.selectedIndex;
         var parentId = mySelect.getElementsByTagName('option')[index].value;
-        if (parentId == '') {
+        if (parentId == '' || parentId == null) {
           return
         }
         this.inputData.addressPathId.proviceId = parentId;
@@ -385,7 +385,7 @@
         var parentId = myCity.getElementsByTagName('option')[index].value;
         this.inputData.addressPathId.cityId = parentId;
         this.inputData.cityCode = parentId;
-        if (parentId == '') {
+        if (parentId == '' || parentId == null) {
           return
         }
         var getDistrict = new RemoteCall();
@@ -406,7 +406,7 @@
         var myCity = document.getElementById('district');
         var index = myCity.selectedIndex;
         var parentId = myCity.getElementsByTagName('option')[index].value;
-        if (parentId == '') {
+        if (parentId == '' || parentId == null) {
           return
         }
         this.inputData.addressPathId.areaId = parentId;
@@ -460,27 +460,28 @@
         }
       },
       addMerchant(){//点击进行添加
-        console.log(this.inputData.certificateList[this.imgIndex].imgVal);
+//        console.log(this.inputData.certificateList[this.imgIndex].imgVal);
         var vm = this;
-        this.setPicture("#form1", 0, this.addCompany);
-        this.setPicture("#form2", 1, this.addCompany);
-        this.setPicture("#form3", 2, this.addCompany);
+        vm.setPictures();
+//
+      },
+      setPictures(){
+        this.setPicture("#form1", 0);
+        this.setPicture("#form2", 1);
+        this.setPicture("#form3", 2);
         this.setPicture("#form4", 3, this.addCompany);
-//        var addMerchant = new RemoteCall();
-//        addMerchant.init({
-//          router: "/company/add",
-//          session: this.session,
-//          data: {
-//            parentAreaId: this.inputData
-//          }
-//        })
       },
       addCompany(){//检测图片是否全部成功的函数
+        var vm = this;
+        console.log(this.checkPictureUrl())
         if (this.checkPictureUrl()) {
           for (var i = 0; i < this.inputData.certificateList.length; i++) {
             this.inputData.certificateList[i].imgUrls = null;
             this.inputData.certificateList[i].imgVal = null;
             this.inputData.certificateList[i].certificateName = null;
+          }
+          if (this.inputData.parentCompanyId == null) {
+            this.inputData.parentCompanyId = sessionStorage.getItem('companyId')
           }
           var addMerchant = new RemoteCall(); //添加到数据库
           addMerchant.init({
@@ -489,6 +490,13 @@
             data: this.inputData,
             callback: this.routerGo
           })
+        } else {
+          this.$alert('添加失败请上传完整的图片信息', '提示', {
+            confirmButtonText: '确定',
+            callback: function () {
+              return false;
+            }
+          });
         }
       },
       routerGo(data){
@@ -499,6 +507,10 @@
               window.location.reload()
             }
           });
+        } else {
+          this.$alert(data.ret.errorMessage, '提示', {
+            confirmButtonText: '确定'
+          })
         }
       },
       checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
@@ -513,6 +525,7 @@
         var vm = this;
         $(id).ajaxSubmit({//为了获取跨域的iframe的内容 没办法动用了jq插件
           type: "POST",
+          async: false,
           url: "http://www.yxunionpay.com:8087/yxsj-openapi-web/openapi/upload/upload.do",
           success: function (data) {
             if (data) {
@@ -521,32 +534,50 @@
               } else {
                 switch (index) {
                   case 0:
-                    alert("营业执照上传失败")
+//                    alert("营业执照上传失败")
+                    vm.$alert("营业执照上传失败", '提示', {
+                      confirmButtonText: '确定'
+                    })
                     break;
                   case 1:
-                    alert("从业资格证上传")
+//                    alert("从业资格证上传")
+                    vm.$alert("从业资格证上传", '提示', {
+                      confirmButtonText: '确定'
+                    })
                     break;
                   case 2:
-                    alert("银行卡资料上传")
+//                    alert("银行卡资料上传")
+                    vm.$alert("银行卡资料上传", '提示', {
+                      confirmButtonText: '确定'
+                    })
                     break;
                   case 3:
-                    alert("法人身份证照片上传")
+//                    alert("法人身份证照片上传")
+                    vm.$alert("法人身份证照片上传", '提示', {
+                      confirmButtonText: '确定'
+                    })
                     break;
                   default:
-                    alert("照片上传错误请重新上传")
-                    break
+//                    alert("照片上传错误请重新上传");
+                    vm.$alert("照片上传错误请重新上传", '提示', {
+                      confirmButtonText: '确定'
+                    })
+                    break;
                 }
               }
             }
 
           }
-        })
-      },
-      callback(data, index, addcompany){//图片调用成功后的回调函数
-        this.inputData.certificateList[index].picSavePath = JSON.parse(data).data[0].saved_file;
+        });
         if (addcompany) {
           addcompany();//判断所有图片上传成功后回调
         }
+      },
+      callback(data, index, addcompany){//图片调用成功后的回调函数
+        this.inputData.certificateList[index].picSavePath = JSON.parse(data).data[0].saved_file;
+//        if (addcompany) {
+//          addcompany();//判断所有图片上传成功后回调
+//        }
       },
       getParentId(name){//获取父级卫生院数据 插入到节点中
         var companyName = null;
@@ -580,14 +611,9 @@
       },
       getparentChange(data){
         this.getParentId(data);
-//        var index = this.$refs.mySelect.selectedIndex - 1;
-//        if (index >= 0) {
-//          console.log(this.$refs.options[index].value)
-//          this.inputData.parentCompanyId = this.$refs.options[index].value;
-//        }
       },
       companyChange(data){
-        console.log(data);
+        this.inputData.parentCompanyId = data;
       }
     },
     mounted: function () {
@@ -668,6 +694,7 @@
       top: 0;
       left: 0;
       opacity: 0;
+      cursor: pointer;
     }
   }
 

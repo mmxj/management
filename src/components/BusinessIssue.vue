@@ -170,12 +170,20 @@
       },
       getAll(index){
         var vm = this;
-        if (index == 0) {
+        if (index === 0) {
 //            this.checkedNames = this.checkBoxData;
-          for (var i = 0; i < this.checkBoxData.length; i++) {
+          if (vm.checkedNames[0] == '全选') {
+            for (var i = 0; i < this.checkBoxData.length; i++) {
 //              this.checkedNames[i]=this.checkBoxData[i]
-            this.$set(vm.checkedNames, i, this.checkBoxData[i])
+              this.$set(vm.checkedNames, i, null)
+            }
+          } else {
+            for (var i = 0; i < this.checkBoxData.length; i++) {
+//              this.checkedNames[i]=this.checkBoxData[i]
+              this.$set(vm.checkedNames, i, this.checkBoxData[i])
+            }
           }
+
 //            this.checkedNames = []
         } else {
           function getIndex() {

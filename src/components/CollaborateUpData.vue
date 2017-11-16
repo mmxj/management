@@ -124,7 +124,7 @@
         <el-col :span="8">
           <div class="girid-content girid-ipt">
 
-            <input type="text" name="" v-model="inputData.certificateList[0].certificateName">
+            <input type="text" name="" v-model="certificateList[0].certificateName">
 
           </div>
         </el-col>
@@ -151,7 +151,7 @@
 
           <div class="girid-content girid-ipt">
 
-            <input type="text" name="" v-model="inputData.certificateList[1].certificateName">
+            <input type="text" name="" v-model="certificateList[1].certificateName">
 
           </div>
         </el-col>
@@ -176,7 +176,7 @@
         </el-col>
         <el-col :span="8">
           <div class="girid-content girid-ipt"><input type="text" name=""
-                                                      v-model="inputData.certificateList[2].certificateName"></div>
+                                                      v-model="certificateList[2].certificateName"></div>
         </el-col>
         <el-col :span="3">
           <div class="upload-btn" @click="changeIndex(2)">浏览选择附件
@@ -199,7 +199,7 @@
         </el-col>
         <el-col :span="8">
           <div class="girid-content girid-ipt"><input type="text" name=""
-                                                      v-model="inputData.certificateList[3].certificateName"></div>
+                                                      v-model="certificateList[3].certificateName"></div>
         </el-col>
         <el-col :span="3">
           <div class="upload-btn" @click="changeIndex(3)">浏览选择附件
@@ -310,38 +310,38 @@
           accountName: null,//银行账号名
           account: null,//银行账号
           certificateList: [
-            {
-              isPersonal: 0,
-              certificateType: 1,
-              certificateTypeName: "营业执照",
-              certificateName: null,
-              picSavePath: null,//保存路径
-              imgUrls: null
-            },
-            {
-              isPersonal: 0,
-              certificateType: 1,
-              certificateTypeName: "从业资格证",
-              certificateName: null,
-              picSavePath: null,
-              imgUrls: null
-            },
-            {
-              isPersonal: 0,
-              certificateType: 1,
-              certificateTypeName: "银行卡资料",
-              certificateName: null,
-              picSavePath: null,
-              imgUrls: null
-            },
-            {
-              isPersonal: 0,
-              certificateType: 1,
-              certificateTypeName: "法人身份证",
-              certificateName: null,
-              picSavePath: null,
-              imgUrls: null
-            }
+//            {
+//              isPersonal: 0,
+//              certificateType: 1,
+//              certificateTypeName: "营业执照",
+//              certificateName: null,
+//              picSavePath: null,//保存路径
+//              imgUrls: null
+//            },
+//            {
+//              isPersonal: 0,
+//              certificateType: 1,
+//              certificateTypeName: "从业资格证",
+//              certificateName: null,
+//              picSavePath: null,
+//              imgUrls: null
+//            },
+//            {
+//              isPersonal: 0,
+//              certificateType: 1,
+//              certificateTypeName: "银行卡资料",
+//              certificateName: null,
+//              picSavePath: null,
+//              imgUrls: null
+//            },
+//            {
+//              isPersonal: 0,
+//              certificateType: 1,
+//              certificateTypeName: "法人身份证",
+//              certificateName: null,
+//              picSavePath: null,
+//              imgUrls: null
+//            }
           ]
         },
         imgIndex: 0,
@@ -374,6 +374,15 @@
           label: '卫计局'
         }],
         companyType: null,
+        certificateList: [{
+          certificateName: null
+        }, {
+          certificateName: null
+        }, {
+          certificateName: null
+        }, {
+          certificateName: null
+        }]
       }
     },
     compontents: {
@@ -485,11 +494,11 @@
         var files = e.target.files || e.dataTransfer.files;
         if (!files.length)return;
         this.getObjectURL(files[0]);
-        this.inputData.certificateList[this.imgIndex].imgVal = e.target.value
+        this.certificateList[this.imgIndex].imgVal = e.target.value
       },
       changeUrl(file){//点击上传后修改路径
-        this.inputData.certificateList[this.imgIndex].imgUrls = this.Url;
-        this.inputData.certificateList[this.imgIndex].certificateName = file.name;
+        this.certificateList[this.imgIndex].imgUrls = this.Url;
+        this.certificateList[this.imgIndex].certificateName = file.name;
       },
       changeIndex(index){//获取不同点击上传按钮的事件
         this.imgIndex = index;
@@ -509,25 +518,43 @@
         document.getElementsByClassName('showImg')[0].style.display = 'none';
       },
       showImg(index){ //显示图片
-        if (this.inputData.certificateList[index].imgUrls) {
-          this.imgUrls = this.inputData.certificateList[index].imgUrls;
+        var vm = this;
+        if (this.certificateList[index].imgUrls) {
+          this.imgUrls = this.certificateList[index].imgUrls;
           document.getElementsByClassName('showImg')[0].style.display = 'block';
+        } else if (this.certificateList[index].imgName) {
+          var vm = this;
+          $.ajax({
+            url: "http://www.yxunionpay.com:8087/yxsj-openapi-web/openapi/download/download_base64.do",
+            type: 'post',
+            data: {
+              'download_type': '4',
+              'file_name': this.certificateList[index].imgName,
+              'id': '0'
+            },
+            success: function (res) {
+              if (res) {
+                vm.imgUrls = 'data:image/png;base64,' + JSON.parse(res).data;
+                document.getElementsByClassName('showImg')[0].style.display = 'block';
+              }
+            }
+          })
         }
       },
       addMerchant(){//点击进行添加
         var vm = this;
 //        console.log(this.inputData.certificateList[this.imgIndex].imgVal);
         var vm = this;
-        if (vm.inputData.certificateList[0].certificateName) {
+        if (vm.certificateList[0].imgUrls) {
           this.setPicture("#form1", 0);
         }
-        if (vm.inputData.certificateList[1].certificateName) {
+        if (vm.certificateList[1].imgUrls) {
           this.setPicture("#form2", 1);
         }
-        if (vm.inputData.certificateList[2].certificateName) {
+        if (vm.certificateList[2].imgUrls) {
           this.setPicture("#form3", 2);
         }
-        if (vm.inputData.certificateList[3].certificateName) {
+        if (vm.certificateList[3].imgUrls) {
           this.setPicture("#form4", 3);
         }
         vm.inputData.leaderName = vm.inputData.leader;
@@ -556,16 +583,6 @@
             }
           }
         })
-      },
-      checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
-        for (var i = 0; i < 4; i++) {
-          if (!this.inputData.certificateList[i].picSavePath) {
-//            console.log(this.inputData.certificateList[i].picSavePath);
-
-            return false
-          }
-        }
-        return true
       },
       setPicture(id, index, addcompany){//调用图片接口
         var vm = this;
@@ -615,7 +632,28 @@
         }
       },
       callback(data, index, addcompany){//图片调用成功后的回调函数
-        this.inputData.certificateList[index].picSavePath = JSON.parse(data).data[0].saved_file;
+//        this.inputData.certificateList[index].picSavePath = JSON.parse(data).data[0].saved_file;
+        var certificateName = null;
+        switch (index) {
+          case 0:
+            certificateName = '营业执照';
+            break;
+          case 1:
+            certificateName = '从业资格证';
+            break;
+          case 2:
+            certificateName = '银行卡资料';
+            break;
+          case 3:
+            certificateName = '法人身份证';
+            break;
+        }
+        var json = {};
+        json.isPersonal = 0;
+        json.certificateType = 1;
+        json.certificateTypeName = certificateName;
+        json.picSavePath = JSON.parse(data).data[0].saved_file;//修改上传图片的结构
+        this.inputData.certificateList[index] = json;
       },
       collaborChange(data){
         if (isNaN(data)) {
@@ -624,6 +662,53 @@
           this.inputData.cooperationType = data;
         }
 
+      },
+      getcertifiateName(){//获取证书名称
+        var vm = this;
+        var getPic = new RemoteCall();
+        getPic.init({
+          router: '/company/certificate/get',
+          session: this.session,
+          data: {
+            companyName: this.saveHealthData.name,
+            pageInfo: {
+              pageSize: 100,
+              pageNum: 1
+            }
+          },
+          callback: function (data) {
+            if (data.ret.errorCode === 0) {
+              console.log(data);
+              data.rows.forEach(function (item, i) {
+                item.companyName = null;
+                item.companyNo = null;
+                item.picSavePath = item.certificatePic;
+                switch (item.certificateTypeName) {
+                  case '营业执照':
+                    vm.inputData.certificateList[0] = item;
+                    vm.certificateList[0].certificateName = item.certificatePic.split('-')[1];
+                    vm.certificateList[0].imgName = item.certificatePic;
+                    break;
+                  case '从业资格证':
+                    vm.inputData.certificateList[1] = item;
+                    vm.certificateList[1].certificateName = item.certificatePic.split('-')[1];
+                    vm.certificateList[1].imgName = item.certificatePic;
+                    break;
+                  case '银行卡资料':
+                    vm.inputData.certificateList[2] = item;
+                    vm.certificateList[2].certificateName = item.certificatePic.split('-')[1];
+                    vm.certificateList[2].imgName = item.certificatePic;
+                    break;
+                  case '法人身份证':
+                    vm.inputData.certificateList[3] = item;
+                    vm.certificateList[3].certificateName = item.certificatePic.split('-')[1];
+                    vm.certificateList[3].imgName = item.certificatePic;
+                    break;
+                }
+              })
+            }
+          }
+        })
       }
     },
     mounted: function () {
@@ -648,6 +733,7 @@
         vm.inputData.id = this.saveHealthData.id;
         vm.collabor = this.saveHealthData.cooperationTypeName;
         vm.certificateType = this.saveHealthData.certificateType;
+        this.getcertifiateName();
       }
 
     }
