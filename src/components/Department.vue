@@ -3,7 +3,7 @@
 
     <el-row :gutter="20">
       <el-col :span="2">
-        <label for="">归属公司</label>
+        <label for="">归属公司<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <el-select v-model="company" filterable placeholder="请选择公司" @change="companyChange">
@@ -11,13 +11,13 @@
         </el-select>
       </el-col>
       <el-col :span="2">
-        <label for="">部门名称</label>
+        <label for="">部门名称<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <input type="text" v-model="inputData.name">
       </el-col>
       <el-col :span="2">
-        <label for="">部门编号</label>
+        <label for="">部门编号<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <input type="text" v-model="inputData.code">
@@ -72,10 +72,27 @@
         })
       },
       companyChange(data){
-        console.log(data);
         this.inputData.companyId = data;
       },
       addDepartment(){
+        if (this.inputData.companyId == null || this.inputData.companyId == "") {
+          this.$alert('归属公司不能为空', '提示', {
+            confirmButtonText: '确定',
+          })
+          return false;
+        }
+        if (this.inputData.code == null || this.inputData.companyId == "") {
+          this.$alert('归属部门编号不能为空', '提示', {
+            confirmButtonText: '确定',
+          })
+          return false;
+        }
+        if (this.inputData.name == null || this.inputData.companyId == "") {
+          this.$alert('归属部门名称不能为空', '提示', {
+            confirmButtonText: '确定',
+          })
+          return false;
+        }
         var vm = this;
         var departmentAdd = new RemoteCall();
         departmentAdd.init({
@@ -151,6 +168,10 @@
     color: #fff;
   }
 
+  .must {
+    color: red;
+    vertical-align: middle;
+  }
   a {
     line-height: 30px;
   }

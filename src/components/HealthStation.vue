@@ -216,6 +216,7 @@
               confirmButtonText: '确定',
               callback: function () {
                 window.location.reload();
+                vm.radio = null;
               }
             })
           }

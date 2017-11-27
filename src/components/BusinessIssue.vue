@@ -111,7 +111,6 @@
       setPicture(id){
         var vm = this;
         if(vm.$refs.iptimg.value==''||vm.$refs.iptimg.value==null){
-
           vm.$alert('请上传图片', '提示', {
             confirmButtonText: '确定',
           });
@@ -162,6 +161,13 @@
         var vm = this;
         var files = e.target.files || e.dataTransfer.files;
         if (!files.length)return;
+        console.log(files[0].size);
+        if (files[0].size > 500 * 1024) {
+          vm.$alert('你上传的文件过大,请重新上传,图片大小不能大于500kb', '提示', {
+            confirmButtonText: '确定',
+          });
+          return
+        }
         var reader = new FileReader();
         reader.readAsDataURL(files[0]);
         reader.onload = function () {
@@ -252,7 +258,8 @@
       height: 400px;
       overflow: hidden;
       img {
-        width: 250px;
+
+        width: 330px;
       }
     }
   }

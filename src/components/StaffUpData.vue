@@ -116,12 +116,6 @@
       <el-col :span="6">
         <input type="text" v-model="inputData.loginName">
       </el-col>
-      <!--<el-col :span="2">-->
-      <!--<label for="">登录密码</label>-->
-      <!--</el-col>-->
-      <!--<el-col :span="6">-->
-      <!--<input type="password" v-model="inputData.password">-->
-      <!--</el-col>-->
     </el-row>
     <el-row>
       <el-col :offset="22" :span="2">
@@ -264,9 +258,7 @@
               parentData.value = str.rows[i].id;
               vm.roleData.push(parentData);
             }
-            if (vm.inputData.roleTypeId) {
-              vm.role = vm.inputData.roleTypeId;
-            }
+            vm.role = vm.inputData.roleId;
           }
         })
       },
@@ -309,7 +301,7 @@
               vm.$alert('修改成功', '提示', {
                 confirmButtonText: '确定',
                 callback: function () {
-                  vn.$router.push('/doctormanage')
+                  vm.$router.push('/staffManage')
                 }
               });
             } else {

@@ -24,11 +24,6 @@
         <el-col :span="6">
           <div class="girid-content girid-ipt">
             <!--商户证书类型-->
-            <!--<select ref="certificate" @change="certificateType">-->
-            <!--<option>请选择证件类型</option>-->
-            <!--<option>营业执照</option>-->
-            <!--<option>从业资格证</option>-->
-            <!--</select>-->
             <el-select v-model="certificateType" @change="certificateTypeChange">
               <el-option v-for="item in certificateData" :value="item.value" :label="item.label"
                          :key="item.value"></el-option>
@@ -124,7 +119,7 @@
         <el-col :span="8">
           <div class="girid-content girid-ipt">
 
-            <input type="text" name="" v-model="certificateList[0].certificateName">
+            <input type="text" name="" v-model="certificateList[0].certificateName" disabled="disabled">
 
           </div>
         </el-col>
@@ -151,7 +146,7 @@
 
           <div class="girid-content girid-ipt">
 
-            <input type="text" name="" v-model="certificateList[1].certificateName">
+            <input type="text" name="" v-model="certificateList[1].certificateName" disabled="disabled">
 
           </div>
         </el-col>
@@ -176,7 +171,8 @@
         </el-col>
         <el-col :span="8">
           <div class="girid-content girid-ipt"><input type="text" name=""
-                                                      v-model="certificateList[2].certificateName"></div>
+                                                      v-model="certificateList[2].certificateName" disabled="disabled">
+          </div>
         </el-col>
         <el-col :span="3">
           <div class="upload-btn" @click="changeIndex(2)">浏览选择附件
@@ -199,7 +195,8 @@
         </el-col>
         <el-col :span="8">
           <div class="girid-content girid-ipt"><input type="text" name=""
-                                                      v-model="certificateList[3].certificateName"></div>
+                                                      v-model="certificateList[3].certificateName" disabled="disabled">
+          </div>
         </el-col>
         <el-col :span="3">
           <div class="upload-btn" @click="changeIndex(3)">浏览选择附件
@@ -783,6 +780,9 @@
     margin-top: 75px;
   }
 
+  input[type="text"]:disabled {
+    background-color: transparent;
+  }
   .girid-btn {
     button {
       background: #32BC6F;

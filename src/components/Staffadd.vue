@@ -2,13 +2,13 @@
   <div id="Staffadd">
     <el-row :gutter="20">
       <el-col :span="2">
-        <label for="">员工姓名</label>
+        <label for="">员工姓名<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <input type="text" v-model="inputData.name">
       </el-col>
       <el-col :span="2">
-        <label for="">联系手机</label>
+        <label for="">联系手机<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <input type="text" v-model="inputData.mobile">
@@ -22,7 +22,7 @@
     </el-row>
     <el-row :gutter="20">
       <el-col :span="2">
-        <label for="">归属公司</label>
+        <label for="">归属公司<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <el-select v-model="company" filterable placeholder="请选择公司" @change="companyChange">
@@ -30,7 +30,7 @@
         </el-select>
       </el-col>
       <el-col :span="2">
-        <label for="">归属部门</label>
+        <label for="">归属部门<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <el-select v-model="department" filterable placeholder="请选择部门" @change="departmentChange">
@@ -39,7 +39,7 @@
         </el-select>
       </el-col>
       <el-col :span="2">
-        <label for="">性别</label>
+        <label for="">性别<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <el-select v-model="sex" filterable placeholder="请选择性别" @change="sexChange">
@@ -63,7 +63,7 @@
         </el-select>
       </el-col>
       <el-col :span="2">
-        <label for="">证件号码</label>
+        <label for="">证件号码<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <input type="text" v-model="inputData.idCardNo">
@@ -82,7 +82,7 @@
         </el-date-picker>
       </el-col>
       <el-col :span="2">
-        <label for="">角色</label>
+        <label for="">角色<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <el-select v-model="role" filterable placeholder="请选择角色" @change="roleChange">
@@ -103,7 +103,7 @@
     </el-row>
     <el-row :gutter="20">
       <el-col :span="2">
-        <label for="">是否是医生</label>
+        <label for="">是否是医生<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <el-select v-model="doctor" filterable placeholder="是否是医生" @change="doctorChange">
@@ -111,13 +111,13 @@
         </el-select>
       </el-col>
       <el-col :span="2">
-        <label for="">登录名称</label>
+        <label for="">登录名称<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <input type="text" v-model="inputData.loginName">
       </el-col>
       <el-col :span="2">
-        <label for="">登录密码</label>
+        <label for="">登录密码<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <input type="password" v-model="password">
@@ -240,7 +240,6 @@
             vm.departmentOptions = [];
             for (var i = 0; i < str.rows.length; i++) {
               var parentData = {};
-              console.log(str.rows);
               parentData.label = str.rows[i].name;
               parentData.value = str.rows[i].id;
               vm.$set(vm.departmentOptions, i, parentData);
@@ -295,7 +294,62 @@
       addStaff(){
         var vm = this;
         vm.inputData.password = vm.password;
+        for (var i in vm.inputData) {
+          if (vm.inputData[i] == "") {
+            if (vm.inputData[i] !== 0) {
+              vm.inputData[i] = null;
+            }
+          }
+        }
+        if (vm.inputData.password == "" || vm.inputData.password == null) {
+          this.$alert('登录密码不能为空', '提示', {
+            confirmButtonText: '确定'
+          })
+          return false
+        }
         vm.inputData.password = $.md5(vm.inputData.password).toUpperCase();
+        if (vm.inputData.roleId == "" || vm.inputData.roleId == null) {
+          this.$alert('请选择角色', '提示', {
+            confirmButtonText: '确定'
+          })
+          return false
+        }
+        if (vm.inputData.loginName == "" || vm.inputData.loginName == null) {
+          this.$alert('登录名称不能为空', '提示', {
+            confirmButtonText: '确定'
+          })
+          return false
+        }
+        if (vm.inputData.sex == "" || vm.inputData.sex == null) {
+          this.$alert('请选择性别', '提示', {
+            confirmButtonText: '确定'
+          })
+          return false
+        }
+        if (vm.inputData.departmentId == "" || vm.inputData.departmentId == null) {
+          this.$alert('请选择部门', '提示', {
+            confirmButtonText: '确定'
+          })
+          return false
+        }
+        if (vm.inputData.idCardNo == "" || vm.inputData.idCardNo == null) {
+          this.$alert('证件号码不能为空', '提示', {
+            confirmButtonText: '确定'
+          })
+          return false
+        }
+        if (vm.inputData.name == "" || vm.inputData.name == null) {
+          this.$alert('员工姓名不能为空', '提示', {
+            confirmButtonText: '确定'
+          })
+          return false
+        }
+        if (vm.inputData.mobile == "" || vm.inputData.mobile == null) {
+          this.$alert('联系手机不能为空', '提示', {
+            confirmButtonText: '确定'
+          })
+          return false
+        }
         console.log(vm.inputData);
         var addStaff = new RemoteCall();
         addStaff.init({
@@ -387,6 +441,10 @@
     color: #fff;
   }
 
+  .must {
+    color: red;
+    vertical-align: middle;
+  }
   a {
     line-height: 30px;
   }

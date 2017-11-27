@@ -123,7 +123,7 @@
           <input type="text" v-model="inputData.terminalNo">
         </el-col>
         <el-col :offset="2" :span="2">
-          <el-button @click="dataUp">添加</el-button>
+          <el-button @click="dataUp">确定修改</el-button>
         </el-col>
         <!--<el-col :span="4">-->
         <!--<a href="javascript:">下载所有数据</a>-->
@@ -133,6 +133,7 @@
   </div>
 </template>
 <script>
+  import {mapGetters} from 'vuex'
   export default{
     data() {
       return {
@@ -193,6 +194,7 @@
         currentPage: 1
       }
     },
+    computed: mapGetters(['saveTerminal']),
     methods: {
       //地市联动方法 //找个时间封装
       getArea(){
@@ -222,9 +224,6 @@
         if (mySelect.selectedIndex) {
           var index = mySelect.selectedIndex;
           var parentId = mySelect.getElementsByTagName('option')[index].value;
-          if (parentId == "") {
-            return
-          }
           var getCity = new RemoteCall();
           getCity.init({
             router: "/base/area/idname/get",
@@ -241,9 +240,6 @@
         var index = myCity.selectedIndex;
         var _this = this;
         var parentId = myCity.getElementsByTagName('option')[index].value;
-        if (parentId == "") {
-          return
-        }
         var getDistrict = new RemoteCall();
         getDistrict.init({
           router: "/base/area/idname/get",
@@ -286,7 +282,7 @@
           })
           return
         }
-        if (vm.inputData.terminalNo== "") {
+        if (vm.inputData.terminalNo == "") {
           vm.inputData.terminalNo = null;
         }
         if (vm.inputData.terminalNo == null) {
@@ -295,32 +291,39 @@
           })
           return
         }
-        for (var i in vm.inputData) {
-          if (vm.inputData[i] == "") {
-            console.log(vm.inputData[i]);
-            vm.inputData[i] = null;
-          }
-        }
-        vm.inputData.departmentId = 0
+        var sendData = {};
+        sendData.isAppPay = vm.inputData.isAppPay;
+        sendData.summary = vm.inputData.summary;
+        sendData.mccNo = vm.inputData.mccNo;
+        sendData.terminalNo = vm.inputData.terminalNo;
+        sendData.departmentId = vm.inputData.departmentId;
+        sendData.joinIp = vm.inputData.joinIp;
+        sendData.pSimNo = vm.inputData.pSimNo;
+        sendData.mainKey = vm.inputData.mainKey;
+        sendData.merchantName = vm.inputData.merchantName;
+        sendData.terminalType = vm.inputData.terminalType;
+        sendData.terminalCompany = vm.inputData.terminalCompany;
+        sendData.companyId = vm.inputData.companyId;
+        sendData.id = vm.inputData.id;
+        sendData.acquirerId = vm.inputData.acquirerId;
+        sendData.openDate = vm.inputData.openDate;
+        sendData.enableFlag = vm.inputData.enableFlag;
+        sendData.payChannelId = vm.inputData.payChannelId;
+        sendData.merchantNo = vm.inputData.merchantNo;
+        sendData.model = vm.inputData.model;
+        sendData.maintainCompany = vm.inputData.maintainCompany;
+        sendData.address = vm.inputData.address;
         var terminal = new RemoteCall();
         terminal.init({
-          router: '/base/terminal/add',
+          router: '/base/terminal/update',
           session: this.session,
-          data: this.inputData,
+          data: sendData,
           callback: function (data) {
             if (data.ret.errorCode === 0) {
-              vm.$alert('添加成功', '提示', {
+              vm.$alert('修改成功', '提示', {
                 confirmButtonText: '确定',
-                callback:function(data){
-//                    vm.$router.go(0)
-                  vm.inputData = {
-                    isAppPay: 1,//是否用于移动端支付
-                    departmentId: 0, //部门id
-                    terminalType: 2,//1传统类型 2智能类型 3PDA
-                  };
-                  vm.companyTypeName = null;
-                  vm.value1 = null;
-                  vm.companyName = null;
+                callback: function (data) {
+                  vm.$router.push('/terminalmanage')
                 }
               })
             } else {
@@ -402,6 +405,7 @@
             }
           },
           callback: function (data) {
+            console.log(data);
             for (let i = 0; i < data.rows.length; i++) {
               if (data.rows[i].name == vm.inputData.merchantName) {
                 vm.inputData.companyId = data.rows[i].id;
@@ -435,10 +439,20 @@
         }
       },
       companyTypeChange(data){
-        this.inputData.acquirerId = data;
+        if (isNaN(data)) {
+          this.inputData.acquirerId = null;
+        } else {
+          this.inputData.acquirerId = data;
+        }
+
       },
       companyChange(data){
-        this.inputData.companyId = data;
+        if (isNaN(data)) {
+          this.inputData.companyId = data;
+        } else {
+          this.companyNameInit(name)
+        }
+
       },
       companyInit(name){//初始化公司列表
         var companyName = new RemoteCall();
@@ -455,13 +469,19 @@
             }
           },
           callback: function (data) {
-            vm.companyType = [];
-            for (var i = 0; i < data.rows.length; i++) {
-              var options = {};
-              options.value = data.rows[i].id;
-              options.label = data.rows[i].name;
-              vm.$set(vm.companyType, i, options)
+            if (data.ret.errorCode === 0) {
+              if (name == data.rows[0].name) {
+                vm.inputData.acquirerId = data.rows[0].id
+              }
+              vm.companyType = [];
+              for (var i = 0; i < data.rows.length; i++) {
+                var options = {};
+                options.value = data.rows[i].id;
+                options.label = data.rows[i].name;
+                vm.$set(vm.companyType, i, options)
+              }
             }
+
           }
         })
       },
@@ -479,24 +499,33 @@
             }
           },
           callback: function (data) {
-            vm.companyNames = [];
-            for (var i = 0; i < data.rows.length; i++) {
-              var options = {};
-              options.value = data.rows[i].id;
-              options.label = data.rows[i].name;
-              vm.$set(vm.companyNames, i, options)
+            if (data.ret.errorCode === 0) {
+              if (name == data.rows[0].name) {
+                vm.inputData.companyId = data.rows[0].id
+              }
+              vm.companyNames = [];
+              for (var i = 0; i < data.rows.length; i++) {
+                var options = {};
+                options.value = data.rows[i].id;
+                options.label = data.rows[i].name;
+                vm.$set(vm.companyNames, i, options)
+              }
             }
           }
         })
       },
-
-
     },
     mounted: function () {
       this.getArea();
 //      this.getTerminal();
+//      console.log(this.saveTerminal);
       this.companyInit(null);
-      this.companyNameInit(null)
+      this.companyNameInit(null);
+      this.inputData = this.saveTerminal;
+      this.companyName = this.inputData.companyName;
+      this.companyTypeName = this.inputData.acquirerName;
+      this.value1 = this.inputData.sfsCreate.split(' ')[0];
+      this.inputData.terminalTypeName = null;
     },
     watch: {
       merchantName: function () {
@@ -578,6 +607,7 @@
     background: transparent;
     color: red;
   }
+
   a {
     line-height: 30px;
   }
@@ -585,6 +615,7 @@
   .el-select {
     width: 100%;
   }
+
   @media screen and (max-width: 1760px) {
     label {
       font-size: 14px;

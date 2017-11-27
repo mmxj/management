@@ -215,6 +215,7 @@
                 vm.$alert('删除成功', '提示', {
                   confirmButtonText: '确定',
                   callback: function () {
+                    vm.radio = null;
                     vm.companyChange(vm.saveId);
                   }
                 });

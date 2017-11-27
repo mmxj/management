@@ -49,6 +49,10 @@ import CollaborateUpData from '../components/CollaborateUpData' //合作行业�
 import HomePage from '../components/HomePage' //主页
 import ResourceAdd from '../components/ResourceAdd' //新建资源
 import ResourceAlert from '../components/ResourceAlert' //新建资源弹窗
+import TerminalManage from '../components/TerminalManage' //终端管理
+import TerminalUpData from '../components/TerminalUpData' //修改终端
+import ResourceUpData from '../components/ResourceUpData' //资源更新
+import RoleAccredit from '../components/RoleAccredit' //资源更新
 Vue.use(Router)
 
 export default new Router({
@@ -270,8 +274,14 @@ export default new Router({
         },
         {
           path: '/rolemanage',
-          name: 'RoleManage',
-          component: RoleManage
+          component: RoleManage,
+          children: [
+            {
+              path: '/rolemanage/accredit',
+              name: 'RoleAccredit',
+              component: RoleAccredit
+            }
+          ]
         },
         {
           path: '/staffmanage',
@@ -302,8 +312,21 @@ export default new Router({
               path: '/resourceadd/add',
               name: 'ResourceAlert',
               component: ResourceAlert
+            },
+            {
+              path: '/resourceadd/updata',
+              name: 'ResourceUpData',
+              component: ResourceUpData
             }
           ]
+        }, {
+          path: '/terminalmanage',
+          name: 'TerminalManage',
+          component: TerminalManage
+        }, {
+          path: '/terminalupdata',
+          name: 'TerminalUpData',
+          component: TerminalUpData
         }
       ]
     }

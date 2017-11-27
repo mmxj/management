@@ -32,7 +32,7 @@
         <!--<el-table-column prop="" label="银行账户名" width="200"></el-table-column>-->
         <!--<el-table-column prop="" label="银行账号" width="200"></el-table-column>-->
         <el-table-column prop="sfsCreate" label="添加日期" width="200"></el-table-column>
-        <el-table-column prop="auditFlag" label="医生状态" width="200"></el-table-column><!--屏蔽的效果还没做-->
+        <!--<el-table-column prop="auditFlag" label="医生状态" width="200"></el-table-column>&lt;!&ndash;屏蔽的效果还没做&ndash;&gt;-->
       </el-table>
       <el-pagination
         @size-change="handleSizeChange"
@@ -73,6 +73,8 @@
         var vm = this;
         if (name) {
           vm.inputData.name = name;
+        } else {
+          vm.inputData.name = null;
         }
         vm.inputData.pageInfo.pageNum = vm.currentPage;
         var staffGet = new RemoteCall();
@@ -156,6 +158,7 @@
                       confirmButtonText: '确定',
                       callback: function () {
                         vm.getStaff();
+                        vm.radio = null;
                       }
                     });
                   } else {

@@ -3,7 +3,7 @@
 
     <el-row :gutter="20">
       <el-col :span="2">
-        <label for="">归属公司</label>
+        <label for="">归属公司<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <el-select v-model="company" filterable placeholder="请选择公司" @change="companyChange">
@@ -11,13 +11,13 @@
         </el-select>
       </el-col>
       <el-col :span="2">
-        <label for="">角色名称</label>
+        <label for="">角色名称<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <input type="text" v-model="inputData.name">
       </el-col>
       <el-col :span="2">
-        <label for="">角色编号</label>
+        <label for="">角色编号<span class="must">*</span></label>
       </el-col>
       <el-col :span="6">
         <input type="text" v-model="inputData.code">
@@ -65,8 +65,6 @@
               parentData.value = data.rows[i].id;
               vm.options.push(parentData);
             }
-            ;
-//            console.log(this.parentId)
           }
         })
       },
@@ -75,6 +73,24 @@
         this.inputData.companyId = data;
       },
       addDepartment(){
+        if (this.inputData.companyId == null || this.inputData.companyId == "") {
+          this.$alert('归属公司不能为空', '提示', {
+            confirmButtonText: '确定',
+          })
+          return false;
+        }
+        if (this.inputData.code == null || this.inputData.companyId == "") {
+          this.$alert('角色编号不能为空', '提示', {
+            confirmButtonText: '确定',
+          })
+          return false;
+        }
+        if (this.inputData.name == null || this.inputData.companyId == "") {
+          this.$alert('角色名称不能为空', '提示', {
+            confirmButtonText: '确定',
+          })
+          return false;
+        }
         var vm = this;
         var departmentAdd = new RemoteCall();
         departmentAdd.init({
@@ -83,10 +99,9 @@
           data: vm.inputData,
           callback: function (data) {
             if (data.ret.errorCode === 0) {
-              vm.$alert('角色添加成功', '提示', {
+              vm.$alert('角色添加成功,请前往角色管理页面为角色添加权限', '提示', {
                 confirmButtonText: '确定',
                 callback: function () {
-//                  vm.$router.go(0)
                   vm.inputData.name = null;
                   vm.inputData.code = null;
                   vm.inputData.description = null;
@@ -142,6 +157,10 @@
     }
   }
 
+  .must {
+    color: red;
+    vertical-align: middle;
+  }
   .el-button {
     width: 100%;
     background: #32BC6F;

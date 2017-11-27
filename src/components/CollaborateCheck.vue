@@ -4,15 +4,20 @@
       <el-row :gutter="10">
         <el-col :span="6">
           <div class="el-ipt">
-            <input type="text" :placeholder="placeholder" v-model="valChange" @keyup="holder">
-            <ul class="company" ref="searchBox">
-              <li v-for="name in companyName" v-on:click="getText(name)">{{name}}</li>
-            </ul>
+            <!--<input type="text" :placeholder="placeholder" v-model="valChange" @keyup="holder" @keydown.13="getText2">-->
+            <!--<ul class="company" ref="searchBox">-->
+            <!--<li v-for="name in companyName" @click="changeChose(name)">{{name}}</li>-->
+            <!--</ul>-->
+            <el-select v-model="valChange" filterable remote reserve-keyword placeholder="请输入合作行业名称搜索对应合作行业图片信息"
+                       :remote-method="remoteMethod">
+              <el-option v-for="item in companyName" :value="item.value" :label="item.label"
+                         :key="item.value"></el-option>
+            </el-select>
           </div>
         </el-col>
         <el-col :span="2">
           <div class="el-btn">
-            <button type="button" @click="getText2">搜索</button>
+            <button type="button" @click="getText">搜索</button>
           </div>
         </el-col>
       </el-row>
@@ -25,95 +30,35 @@
       </el-row>
       <el-row class="el-page-btns">
         <el-col :offset="9" :span="2">
-          <el-button @click="pageDown">上一页</el-button>
+          <el-button @click="pageAdd">上一页</el-button>
         </el-col>
         <el-col :span="4">
           <div class="el-page-title">{{pictureName}}</div>
         </el-col>
         <el-col :span="2">
-          <el-button @click="pageAdd">下一页</el-button>
+          <el-button @click="pageDown">下一页</el-button>
         </el-col>
       </el-row>
     </div>
   </div>
 </template>
 <script type="text/javascript">
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapActions} from 'vuex'
   export default{
     data(){
       return {
         imgUrl: require("@/assets/img/login_bg.png"),
         pictureName: '合作行业证件显示',
-        session: null,
+        session: sessionStorage.getItem('session'),
         valChange: null,
         companyName: [],
-        dataList: null,
-        saveData: [],
-        index: 0,
-        valChange: null,
-        placeholder: '请输入合作行业名称或编号搜索对应商户图片信息'
+        picList: [],
+        index: 0
       }
     },
-    computed: mapGetters(['saveCollaborate']),
+    computed: mapGetters(['getCollaborate']),
     methods: {
-      getPicture(name){
-        if (name) {
-          this.valChange = name;
-        }
-        if (this.valChange == '') {
-          this.valChange = null;
-        }
-        if (this.valChange) {
-          var pictureMessage = new RemoteCall();
-          pictureMessage.init({
-            router: "/company/certificate/get",
-            session: this.session,
-            data: {
-              companyName: this.valChange,
-              pageInfo: {
-                pageSize: 15,
-                pageNum: 1
-              }
-            },
-            callback: this.dataCallback
-          })
-        }
-
-      },
-      dataCallback(data){//对数据进行检查 将公司名字提取出来
-        this.dataList = data.rows;
-        this.companyName = [];
-        if (data.rows) {
-          if (data.rows.length > 0) {
-            addArr:
-              for (var i = 0; i < data.rows.length; i++) {
-                for (var j = 0; j < this.companyName.length; j++) {
-                  if (data.rows[i].companyName == this.companyName[j]) {
-                    continue addArr
-                  }
-                }
-                this.companyName.push(data.rows[i].companyName);
-              }
-          }
-        }
-
-      },
-      getSession(){
-        if (sessionStorage.getItem('session')) {
-          this.session = sessionStorage.getItem('session');//获取本地存储保存session状态
-        } else {
-          this.$router.push({path: '/login'})
-        }
-      },
-      showPic(i){//展示照片和信息到页面中
-        if (i) {
-          this.index = i;
-        }
-        if (this.saveData[this.index]) {
-          this.pictureName = this.saveData[this.index].certificateTypeName;
-          this.getPic(this.saveData[this.index].certificatePic)
-        }
-      },
+      ...mapActions(['saveCollaborate']),
       getPic(name){//根据名字查找图片
         var vm = this;
         $.ajax({
@@ -131,63 +76,115 @@
           }
         })
       },
-      getText(name){//点击获取
-        this.placeholder = name;
-        this.valChange = null;
-        this.saveData = [];
-        console.log(this.dataList)
-        if (this.dataList.length == 0) {
-          this.$alert('查无该公司的证件信息', '提示', {
-            confirmButtonText: '确定'
-          });
-        }
-        for (var i = 0; i < this.dataList.length; i++) {
-          if (name == this.dataList[i].companyName) {
-            this.saveData.push(this.dataList[i])//将匹配的信息保存的到数组中
-          }
-        }
-        this.$refs.searchBox.style.display = 'none';
-        this.showPic()
-      },
-      getText2(){//点击搜索触发
-        this.getText(this.valChange);
-      },
+
       pageAdd(){//上一页
-        if (this.index < this.saveData.length - 1) {
-          this.index++
-          this.showPic(this.index);
+        var vm = this;
+        if (vm.index > 0) {
+          vm.index--;
+          vm.pictureName = vm.picList[vm.index].certificateTypeName;
+          vm.getPic(vm.picList[vm.index].certificatePic);
+
+        } else {
+          vm.$alert('已经是第一张图片了', '提示', {
+            confirmButtonText: '确定',
+          })
         }
       },
       pageDown(){//下一页
-        if (this.index > 0) {
-          this.index--
-          this.showPic(this.index);
+        var vm = this;
+        if (vm.index < vm.picList.length - 1) {
+          vm.index++
+          vm.pictureName = vm.picList[vm.index].certificateTypeName;
+          vm.getPic(vm.picList[vm.index].certificatePic)
+        } else {
+          vm.$alert('已经是最后一张图片了', '提示', {
+            confirmButtonText: '确定',
+          })
         }
       },
-      holder(){
-        if (!this.valChange) {
-          this.placeholder = '请输入合作行业名称或编号搜索对应商户图片信息'
+      remoteMethod(data){//搜索框文字变化是触发
+        if (data == '') {
+          data = null;
         }
+        this.getCompany(data);
+      },
+      getText(){//点击时候触发
+        var vm = this;
+        if (vm.valChange != '' && vm.valChange != null) {
+          var getPicList = new RemoteCall();
+          getPicList.init({
+            router: '/company/certificate/get',
+            session: vm.session,
+            data: {
+              companyName: vm.valChange,
+              pageInfo: {
+                pageSize: 100,
+                pageNum: 1
+              }
+            },
+            callback: function (data) {
+              if (data.ret.errorCode === 0) {
+                if (data.rows.length > 0) {
+                  vm.picList = data.rows;
+                  vm.pictureName = vm.picList[vm.index].certificateTypeName;
+                  vm.getPic(vm.picList[vm.index].certificatePic)
+                } else {
+                  vm.$alert('查无该公司的证件信息请添加', '提示', {
+                    confirmButtonText: '确定',
+                  })
+                }
+              } else {
+                vm.$alert('查询失败' + data.ret.errorMessage, '提示', {
+                  confirmButtonText: '确定',
+                })
+              }
+            }
+          })
+        } else {
+          vm.$alert('请输入公司名', '提示', {
+            confirmButtonText: '确定',
+          })
+        }
+      },
+      getCompany(name){//初始化公司列表
+        var vm = this;
+        var componyname = null;
+        if (name) {
+          componyname = name
+        }
+        vm.companyName = [];
+        var getCompany = new RemoteCall();
+        getCompany.init({
+          router: '/company/get',
+          session: vm.session,
+          data: {
+            name: componyname,
+            pageInfo: {
+              pageSize: 100,
+              pageNum: 1
+            }
+          },
+          callback: function (data) {
+            if (data.ret.errorCode === 0) {
+              vm.companyName = data.rows.map(item => {
+                return {value: item.name, label: item.name}
+              });
+            }
+          }
+        })
       }
     },
     mounted: function () {
-      this.getSession();
-      if (this.saveCollaborate) {
-        this.getPicture(this.saveCollaborate);
-        this.getText(this.saveCollaborate)
+      var vm = this;
+      if (this.getCollaborate != null) {
+        vm.valChange = vm.getCollaborate;
+        vm.getText();
+        vm.saveCollaborate(null);
       }
+      this.getCompany();
     },
     watch: {
-      valChange: function () {
-        this.getPicture();
-        if (this.companyName != '[]') {
-          if (this.companyName.length > 0) {
-            this.$refs.searchBox.style.display = 'block';
-          } else {
-            this.$refs.searchBox.style.display = 'none';
-          }
-        }
-      }
+
     }
   }
 </script>
@@ -201,6 +198,9 @@
     border-radius: 4px;
   }
 
+  .el-select {
+    width: 100%;
+  }
   .el-ipt {
     position: relative;
     input {
@@ -222,11 +222,13 @@
       color: #fff;
       border: 0;
       border-radius: 4px;
+      cursor: pointer;
     }
   }
 
   .MerchantImg {
     height: 900px;
+
   }
 
   .el-page-btns {
@@ -239,6 +241,10 @@
 
   .logoContent {
     margin: 40px 0;
+  }
+
+  .el-col-offset-9 {
+    margin-left: 33%;
   }
 
   .imgBox {
@@ -266,9 +272,6 @@
     li:hover {
       background: #bbbbbb;
     }
-  }
 
-  .el-col-offset-9 {
-    margin-left: 33%;
   }
 </style>

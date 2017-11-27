@@ -287,7 +287,6 @@
         this.inputData.birthday = data;
       },
       roleChange(data){
-        console.log(data)
         this.inputData.roleId = data;
       },
       doctorChange(data){
@@ -298,7 +297,6 @@
         if (vm.inputData.password) {
           vm.inputData.password = $.md5(vm.inputData.password).toUpperCase();
         }
-        console.log(vm.inputData);
         var addStaffs = new RemoteCall();
         addStaffs.init({
           router: '/company/staff/update',
@@ -309,7 +307,7 @@
               vm.$alert('修改成功', '提示', {
                 confirmButtonText: '确定',
                 callback: function () {
-                  vn.$router.push('/doctormanage')
+                  vm.$router.push('/doctormanage')
                 }
               });
             } else {
@@ -330,6 +328,7 @@
           this.doctor = this.inputData.staffType;
           this.value1 = this.inputData.beginDoctorDate;
           this.value2 = this.inputData.sfsCreate.split(' ')[0];
+          this.role = this.inputData.roleId;
         } else {
           this.$router.push('/doctormanage')
         }

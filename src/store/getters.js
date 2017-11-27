@@ -26,8 +26,20 @@ export default{
   getUrlArr: (state) => {
     return state.urlArr
   },
-  saveCollaborate: (state) => {
+  getCollaborate: (state) => {
     return state.saveCollaborate
+  },
+  saveTerminal: (state) => {
+    return state.saveTerminal
+  },
+  saveFatherResource: (state) => {
+    return state.saveFatherResource
+  },
+  saveChangeResource: (state) => {
+    return state.saveChangeResource
+  },
+  saveRole: (state) => {
+    return state.saveRole
   }
 }
 

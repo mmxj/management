@@ -302,6 +302,7 @@
                   confirmButtonText: '确定',
                   callback: function () {
                     vm.getCollaborate();
+                    vm.radio = null;
                   }
                 });
               } else {

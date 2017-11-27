@@ -29,6 +29,7 @@
         <el-table-column prop="summary" label="角色职责"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
+            <el-button @click="accredit(scope.row)" size="small">授权</el-button>
             <el-button @click="handleClick(scope.row)" type="danger" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -41,9 +42,11 @@
         :total="total">
       </el-pagination>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 <script>
+  import {mapActions} from 'vuex'
   export default{
     data(){
       return {
@@ -58,6 +61,7 @@
       }
     },
     methods: {
+      ...mapActions(['saveRole']),
       getParentId(name){//获取父级卫生院数据 插入到节点中
         var vm = this;
         var dataVal = {};
@@ -108,24 +112,18 @@
                 vm.total = str.pageInfo.total;
               }
               if (str.rows.length === 0) {
-                vm.total = null
+                vm.total = null;
+                vm.$alert('查无数据', '提示', {
+                  confirmButtonText: '确定',
+                })
+
               }
               vm.tableData = str.rows;
-              console.log(vm.tableData)
             } else {
               vm.$alert(str.ret.errorMessage, '提示', {
                 confirmButtonText: '确定',
               })
             }
-//              vm.department = null;
-//              vm.departmentOptions = [];
-//              for (var i = 0; i < str.rows.length; i++) {
-//                var parentData = {};
-//                console.log(str.rows);
-//                parentData.label = str.rows[i].name;
-//                parentData.value = str.rows[i].id;
-//                vm.$set(vm.departmentOptions, i, parentData);
-//              }
           }
         })
       },
@@ -204,6 +202,7 @@
                   confirmButtonText: '确定',
                   callback: function () {
 //                    vm.$router.go(0)
+                    vm.radio = null;
                     vm.clickCompany();
                   }
                 });
@@ -217,6 +216,10 @@
         }).catch(() => {
 
         });
+      },
+      accredit(data){
+        this.saveRole(data);
+        this.$router.push('/rolemanage/accredit')
       }
     },
     mounted: function () {
@@ -243,7 +246,7 @@
   .el-row label {
     line-height: 36px;
     display: block;
-    text-align: right;
+    /*text-align: right;*/
   }
 
   .el-button {

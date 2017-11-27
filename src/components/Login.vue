@@ -87,6 +87,18 @@
         var loginName = document.getElementById("loginName").value;
         var validateCode = document.getElementById("validateCode").value;
 //        this.$router.push({path: '/Message'});//点击跳转测试用记得删除这个事件
+        if (loginName == '' || loginName == null) {
+          this.$alert('登录账号不能为空', '提示', {
+            confirmButtonText: '确定'
+          });
+          return
+        }
+        if (validateCode == '' || validateCode == null) {
+          this.$alert('验证码不能为空', '提示', {
+            confirmButtonText: '确定'
+          });
+          return
+        }
         var login = new RemoteCall();
         login.init({
           router: "/company/staff/login",
@@ -104,13 +116,16 @@
       },
       loginCallback(data){
         if (data.ret.errorCode === 0) {
+          var loginName = document.getElementById("loginName").value;
           var session = data.session;
           this.saveSession(session);
           this.loginData(data)
           sessionStorage.setItem('session', session);
           sessionStorage.setItem('userName', data.staffName)
           sessionStorage.setItem('companyName', data.companyName);
-          sessionStorage.setItem('companyId', data.companyId)
+          sessionStorage.setItem('roleId', data.roleId)
+          sessionStorage.setItem('companyId', data.companyId);
+          sessionStorage.setItem('loginName', loginName);
           this.resSize()
           this.$router.push({path: '/homepage'});
         } else if (data.ret.errorCode === -1) {
@@ -132,6 +147,11 @@
               break;
             case  'ValidateCode error':
               this.$alert('验证码错误', '提示', {
+                confirmButtonText: '确定'
+              });
+              break;
+            case  'departmentStaff not exist':
+              this.$alert('账号不存在', '提示', {
                 confirmButtonText: '确定'
               });
               break;

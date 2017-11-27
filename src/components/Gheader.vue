@@ -44,7 +44,6 @@
 //        },
       setTime(){
         var time = new Date();
-        console.log(time);
         this.time = time.getFullYear() + '年' + (time.getMonth() + 1) + '月' + time.getDate() + '日'
       },
       goBack(){

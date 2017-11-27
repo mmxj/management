@@ -157,6 +157,7 @@
                       confirmButtonText: '确定',
                       callback: function () {
                         vm.getStaff();
+                        vm.radio = null;
                       }
                     });
                   } else {

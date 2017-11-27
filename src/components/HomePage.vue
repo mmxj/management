@@ -25,7 +25,9 @@
     data(){
       return {
         loading: true,
-        loadingFn: null
+        loadingFn: null,
+        roleId: sessionStorage.getItem('roleId'),
+        roleArr: []
       }
     },
     components: {
@@ -50,7 +52,7 @@
             parentAreaId: 0
           },
           callback: function (data) {
-            console.log(data)
+
           }
         });
       },
@@ -84,27 +86,58 @@
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)'
         });
+      },
+      getRole(){
+        var vm = this;
+        var getRole = new RemoteCall();
+        getRole.init({
+          router: '/base/roleresource/get',
+          session: vm.session,
+          data: {
+            pageInfo: {
+              pageSize: 100,
+              pageNum: 1
+            },
+            id: vm.roleId
+          },
+          callback: function (data) {
+            if (data.ret.errorCode === 0) {
+              data.resourceRows.forEach(function (item) {
+                vm.roleArr.push(item.sfsResourceName)
+              })
+              console.log(vm.roleArr)
+            }
+          }
+        })
+      },
+      checkUrl(name){
+        var vm = this;
+        for (var i = 0; i < vm.roleArr.length; i++) {
+          if (vm.roleArr[i] == name) {
+            return true
+          }
+        }
+        return false
       }
     },
     mounted: function () {
-
+      var vm = this;
       if (sessionStorage.getItem('session')) {
         this.saveSession(sessionStorage.getItem('session'));
       } else {
         this.$router.push('/login')
       }
       this.getArea();
-      var timer;
-      clearTimeout(timer);
-      timer = setTimeout(function () {
-//        console.log(document.getElementById('RightPage').clientHeight);
+      this.$nextTick(function () {
         document.getElementById('LeftList').style.height = document.getElementById('RightPage').clientHeight + 'px';
-      }, 500)
+      })
+      if (vm.roleId) {
+        vm.getRole();
+      }
     },
     watch: {
       $route(){
         var vm = this;
-//      vm.openFullScreen2();
         if (sessionStorage.getItem('session')) {
           this.saveSession(sessionStorage.getItem('session'));
         }
@@ -114,13 +147,134 @@
           document.getElementsByTagName('body')[0].style.height = "";
           document.getElementsByTagName('body')[0].style.overflow = "";
         }
-        var timer;
-        clearTimeout(timer);
-        timer = setTimeout(function () {
-//        console.log(document.getElementById('RightPage').clientHeight);
+        this.$nextTick(function () {
           document.getElementById('LeftList').style.height = document.getElementById('RightPage').clientHeight + 'px';
-        }, 500)
-//      vm.loadingFn.close();
+        })
+        if (vm.$route.path == '/rolemanage') { //判断是否具有权限
+          if (vm.checkUrl('管理角色')) {
+            return
+          }
+        } else if (vm.$route.path == '/merchant') {
+          if (vm.checkUrl('管理商户')) {
+            return
+          }
+        } else if (vm.$route.path == '/merchantadd') {
+          if (vm.checkUrl('添加新商户')) {
+            return
+          }
+        } else if (vm.$route.path == '/merchantchannel') {
+          if (vm.checkUrl('导入商户信息')) {
+            return
+          }
+        } else if (vm.$route.path == '/collaborate') {
+          if (vm.checkUrl('管理合作行业')) {
+            return
+          }
+        } else if (vm.$route.path == '/collaborateadd') {
+          if (vm.checkUrl('新增合作行业客户')) {
+            return
+          }
+        } else if (vm.$route.path == '/department') {
+          if (vm.checkUrl('添加部门')) {
+            return
+          }
+        } else if (vm.$route.path == '/departmentmanage') {
+          if (vm.checkUrl('管理部门')) {
+            return
+          }
+        } else if (vm.$route.path == '/roleadd') {
+          if (vm.checkUrl('添加角色')) {
+            return
+          }
+        } else if (vm.$route.path == '/staffadd') {
+          if (vm.checkUrl('添加员工')) {
+            return
+          }
+        } else if (vm.$route.path == '/staffmanage') {
+          if (vm.checkUrl('管理员工')) {
+            return
+          }
+        } else if (vm.$route.path == '/order') {
+          if (vm.checkUrl('订单管理')) {
+            return
+          }
+        } else if (vm.$route.path == '/channel') {
+          if (vm.checkUrl('产品通道基础管理')) {
+            return
+          }
+        } else if (vm.$route.path == '/uploaddir') {
+          if (vm.checkUrl('三大目录上传')) {
+            return
+          }
+        } else if (vm.$route.path == '/dirlist') {
+          if (vm.checkUrl('三大目录列表')) {
+            return
+          }
+        } else if (vm.$route.path == '/dirmanage') {
+          if (vm.checkUrl('三大目录管理')) {
+            return
+          }
+        } else if (vm.$route.path == '/healthstationadd') {
+          if (vm.checkUrl('添加卫生站')) {
+            return
+          }
+        } else if (vm.$route.path == '/healthstation') {
+          if (vm.checkUrl('管理卫生站')) {
+            return
+          }
+        } else if (vm.$route.path == '/doctoradd') {
+          if (vm.checkUrl('添加村医')) {
+            return
+          }
+        } else if (vm.$route.path == '/doctormanage') {
+          if (vm.checkUrl('管理村医')) {
+            return
+          }
+        } else if (vm.$route.path == '/paydata') {
+          if (vm.checkUrl('支付流水数据')) {
+            return
+          }
+        } else if (vm.$route.path == '/dataadministration') {
+          if (vm.checkUrl('绑卡数据管理')) {
+            return
+          }
+        } else if (vm.$route.path == '/datareport') {
+          if (vm.checkUrl('数据报表')) {
+            return
+          }
+        } else if (vm.$route.path == '/businessissue') {
+          if (vm.checkUrl('业务专区发布')) {
+            return
+          }
+        } else if (vm.$route.path == '/informationup') {
+          if (vm.checkUrl('信息专区发布')) {
+            return
+          }
+        } else if (vm.$route.path == '/resourceadd') {
+          if (vm.checkUrl('系统资源管理')) {
+            return
+          }
+        } else if (vm.$route.path == '/systemmaintenance') {
+          if (vm.checkUrl('系统维护')) {
+            return
+          }
+        } else if (vm.$route.path == '/terminal') {
+          if (vm.checkUrl('添加终端')) {
+            return
+          }
+        } else if (vm.$route.path == '/terminalmanage') {
+          if (vm.checkUrl('终端管理')) {
+            return
+          }
+        } else {
+          return
+        }
+        this.$alert('您没有访问该页面的权限', '提示', {
+          confirmButtonText: '确定',
+          callback: function () {
+            vm.$router.go(-1);
+          }
+        })
       }
 
     }

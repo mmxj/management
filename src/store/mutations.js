@@ -1,7 +1,21 @@
 /**
  * Created by 银信数据科技 on 2017/9/27.
  */
-import {INCREMENT, SAVEDATA, SESSION, USER, USERNAME, HEALTH, LIST, URL, COLL} from './types'
+import {
+  INCREMENT,
+  SAVEDATA,
+  SESSION,
+  USER,
+  USERNAME,
+  HEALTH,
+  LIST,
+  URL,
+  COLL,
+  TERMINAL,
+  RESOURCE,
+  CHANGERESOURCE,
+  ROLE
+} from './types'
 import getters from './getters'
 const state={
   show:false,
@@ -12,7 +26,11 @@ const state={
   saveHealthData: null,
   addList: null,
   urlArr: null,
-  saveCollaborate: null
+  saveCollaborate: null,
+  saveTerminal: null,
+  saveFatherResource: null,
+  saveChangeResource: null,
+  saveRole: null
 }
 const mutations = {
   [INCREMENT](state){
@@ -41,6 +59,18 @@ const mutations = {
   },
   [COLL](state, saveCollaborate){
     state.saveCollaborate = saveCollaborate
+  },
+  [TERMINAL](state, saveTerminal){
+    state.saveTerminal = saveTerminal
+  },
+  [RESOURCE](state, saveFatherResource){
+    state.saveFatherResource = saveFatherResource
+  },
+  [CHANGERESOURCE](state, saveChangeResource){
+    state.saveChangeResource = saveChangeResource
+  },
+  [ROLE](state, saveRole){
+    state.saveRole = saveRole
   }
 }
 export default{

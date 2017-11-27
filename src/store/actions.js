@@ -35,5 +35,17 @@ export default {
   },
   saveCollaborate: ({commit}, saveCollaborate) => {
     commit(types.COLL, saveCollaborate)
+  },
+  saveTerminal: ({commit}, saveTerminal) => {
+    commit(types.TERMINAL, saveTerminal)
+  },
+  saveFatherResource: ({commit}, saveFatherResource) => {
+    commit(types.RESOURCE, saveFatherResource)
+  },
+  saveChangeResource: ({commit}, saveChangeResource) => {
+    commit(types.CHANGERESOURCE, saveChangeResource)
+  },
+  saveRole: ({commit}, saveRole) => {
+    commit(types.ROLE, saveRole)
   }
 }

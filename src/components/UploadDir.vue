@@ -30,10 +30,14 @@
     </el-row>
     <el-row :gutter="20">
       <el-col :offset="3" :span="3">
-        <el-button class="upExcelBox">浏览上传三大目录列表 <input type="file" class="upExcel" @change="importf"></el-button>
+        <el-button class="upExcelBox">浏览上传三大目录<input type="file" class="upExcel" @change="importf"></el-button>
       </el-col>
       <el-col :span="3">
         <el-button @click="importData">导入目录列表</el-button>
+      </el-col>
+      <el-col :span="3">
+        <!--<el-button @click="downExcel">下载三大目录模板</el-button>-->
+        <a class="downExcel" href="static/xlsx/three_charge_catalog.xlsx">下载三大目录导入模板</a>
       </el-col>
     </el-row>
     <el-table :data="tableData" border width="100%" max-height="800" align="center">
@@ -56,10 +60,35 @@
       <el-table-column porp="remark" label="备注" width="100"></el-table-column>
       <el-table-column porp="socialSecurityCode" label="社保项目编码" width="100"></el-table-column>
     </el-table>
+    <div style="display:none">
+      <table id="tableExcel" width="100%" border="1" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>医院编号</td>
+          <td>项目类别</td>
+          <td>项目编码</td>
+          <td>项目中文名称</td>
+          <td>项目英文名称</td>
+          <td>通用名</td>
+          <td>规格</td>
+          <td>剂型</td>
+          <td>材料类别</td>
+          <td>材料分类</td>
+          <td>医院分类代码</td>
+          <td>单价</td>
+          <td>单位</td>
+          <td>国际码</td>
+          <td>助记码</td>
+          <td>生效日期</td>
+          <td>备注</td>
+          <td>社保项目编码</td>
+        </tr>
+      </table>
+    </div>
   </div>
 </template>
 <script type="text/javascript">
   import {mapGetters, mapActions} from 'vuex'
+  import '@/assets/js/jquery-table2excel.js'
   export default{
     data(){
       return {
@@ -69,7 +98,8 @@
         session: null,
         tableData: [],
         MerchantUp: null,
-        areaId: null
+        areaId: null,
+
       }
     },
     computed: mapGetters(['saveSession']),
@@ -298,9 +328,8 @@
         }
       },
       importDatas(cb){
-        console.log(this.areaId);
+        var vm = this;
         var _this = this;
-        console.log(this.saveSession)
         for (let i = 0; i < _this.tableData.length; i++) {
           _this.MerchantUp = new RemoteCall();
           _this.MerchantUp.init({
@@ -328,12 +357,40 @@
               socialSecurityCode: _this.tableData[i].socialSecurityCode,
               enableFlag: 1,
               areaId: this.areaId
+            },
+            callback: function (data) {
+              if (data.ret.errorCode === 0) {
+                if (i == vm.tableData.length - 1) {
+                  vm.$alert('上传成功', '提示', {
+                    confirmButtonText: '确定',
+                    callback: function () {
+                      document.getElementsByClassName("el-table")[0].style.display = 'none';
+                      vm.tableData = [];
+                      document.getElementsByClassName("upExcel")[0].value = null;
+                    }
+                  });
+                }
+              } else {
+                vm.$alert('上传失败', '提示', {
+                  confirmButtonText: '确定',
+                })
+              }
             }
           })
         }
         if (cb) {
           cb()
         }
+      },
+      downExcel(){
+        $("#tableExcel").table2excel({
+          exclude: ".noExl", //过滤位置的 css 类名
+          filename: "三大目录模板" + new Date().getTime() + ".xls", //文件名称
+          name: "Excel Document Name.xlsx",
+          exclude_img: true,
+          exclude_links: true,
+          exclude_inputs: true
+        });
       }
     },
     mounted: function () {
@@ -359,8 +416,21 @@
     }
     .el-button {
       border: 0;
+      width: 100%;
       color: #fff;
       background: #32BC6F;
+    }
+    .downExcel {
+      display: block;
+      width: 100%;
+      height: 32px;
+      line-height: 32px;
+      text-decoration: none;
+      color: #fff;
+      background: #32BC6F;
+      text-align: center;
+      border-radius: 4px;
+      font-size: 14px;
     }
   }
   label {

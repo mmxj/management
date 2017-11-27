@@ -3,7 +3,7 @@
     <div>
       <el-row :gutter="20">
         <el-col :span="2">
-          <div class="girid-content"><label>商户类型</label></div>
+          <div class="girid-content"><label>商户类型</label><span class="must">*</span></div>
         </el-col>
         <el-col :span="6">
           <div class="girid-content girid-ipt">
@@ -19,7 +19,7 @@
           </div>
         </el-col>
         <el-col :span="2">
-          <div class="girid-content"><label>商户名称</label></div>
+          <div class="girid-content"><label>商户名称<span class="must">*</span></label></div>
         </el-col>
         <el-col :span="6">
           <div class="girid-content girid-ipt"><input type="text" name="" v-model="inputData.name"></div>
@@ -130,7 +130,7 @@
         <el-col :span="8">
           <div class="girid-content girid-ipt">
 
-            <input type="text" name="" v-model="inputData.certificateList[0].certificateName">
+            <input type="text" name="" v-model="certificateList[0].certificateName" disabled="disabled">
 
           </div>
         </el-col>
@@ -157,7 +157,7 @@
 
           <div class="girid-content girid-ipt">
 
-            <input type="text" name="" v-model="inputData.certificateList[1].certificateName">
+            <input type="text" name="" v-model="certificateList[1].certificateName" disabled="disabled">
 
           </div>
         </el-col>
@@ -182,7 +182,8 @@
         </el-col>
         <el-col :span="8">
           <div class="girid-content girid-ipt"><input type="text" name=""
-                                                      v-model="inputData.certificateList[2].certificateName"></div>
+                                                      v-model="certificateList[2].certificateName" disabled="disabled">
+          </div>
         </el-col>
         <el-col :span="3">
           <div class="upload-btn" @click="changeIndex(2)">浏览选择附件
@@ -205,7 +206,8 @@
         </el-col>
         <el-col :span="8">
           <div class="girid-content girid-ipt"><input type="text" name=""
-                                                      v-model="inputData.certificateList[3].certificateName"></div>
+                                                      v-model="certificateList[3].certificateName" disabled="disabled">
+          </div>
         </el-col>
         <el-col :span="3">
           <div class="upload-btn" @click="changeIndex(3)">浏览选择附件
@@ -279,38 +281,6 @@
           accountName: null,//银行账号名
           account: null,//银行账号
           certificateList: [
-            {
-              isPersonal: 0,
-              certificateType: 1,
-              certificateTypeName: "营业执照",
-              certificateName: null,
-              picSavePath: null,//保存路径
-              imgUrls: null
-            },
-            {
-              isPersonal: 0,
-              certificateType: 1,
-              certificateTypeName: "从业资格证",
-              certificateName: null,
-              picSavePath: null,
-              imgUrls: null
-            },
-            {
-              isPersonal: 0,
-              certificateType: 1,
-              certificateTypeName: "银行卡资料",
-              certificateName: null,
-              picSavePath: null,
-              imgUrls: null
-            },
-            {
-              isPersonal: 0,
-              certificateType: 1,
-              certificateTypeName: "法人身份证",
-              certificateName: null,
-              picSavePath: null,
-              imgUrls: null
-            }
           ]
         },
         imgIndex: 0,
@@ -343,6 +313,15 @@
           label: '卫计局'
         }],
         companyType: null,
+        certificateList: [{
+          certificateName: null
+        }, {
+          certificateName: null
+        }, {
+          certificateName: null
+        }, {
+          certificateName: null
+        }]
       }
     },
     compontents: {
@@ -438,12 +417,11 @@
         var files = e.target.files || e.dataTransfer.files;
         if (!files.length)return;
         this.getObjectURL(files[0]);
-        this.inputData.certificateList[this.imgIndex].imgVal = e.target.value
+        this.certificateList[this.imgIndex].imgVal = e.target.value
       },
       changeUrl(file){//点击上传后修改路径
-        this.inputData.certificateList[this.imgIndex].imgUrls = this.Url;
-        console.log(file.name)
-        this.inputData.certificateList[this.imgIndex].certificateName = file.name;
+        this.certificateList[this.imgIndex].imgUrls = this.Url;
+        this.certificateList[this.imgIndex].certificateName = file.name;
       },
       changeIndex(index){//获取不同点击上传按钮的事件
         this.imgIndex = index;
@@ -471,35 +449,41 @@
         document.getElementsByClassName('showImg')[0].style.display = 'none';
       },
       showImg(index){ //显示图片
-        if (this.inputData.certificateList[index].imgUrls) {
-          this.imgUrls = this.inputData.certificateList[index].imgUrls;
+        if (this.certificateList[index].imgUrls) {
+          this.imgUrls = this.certificateList[index].imgUrls;
           document.getElementsByClassName('showImg')[0].style.display = 'block';
         }
       },
       addMerchant(){//点击进行添加
-        console.log(this.inputData.certificateList[this.imgIndex].imgVal);
+        if (this.inputData.name == "" || this.inputData.name == null) {
+          this.$alert('商户名不能为空', '提示', {
+            confirmButtonText: '确定',
+          });
+          return false
+        }
+        if (this.inputData.companyTypeId == "" || this.inputData.companyTypeId == null) {
+          this.$alert('请选择商户类型', '提示', {
+            confirmButtonText: '确定',
+          });
+          return false
+        }
         var vm = this;
-        this.setPicture("#form1", 0);
-        this.setPicture("#form2", 1);
-        this.setPicture("#form3", 2);
-        this.setPicture("#form4", 3, this.addCompany);
-//        var addMerchant = new RemoteCall();
-//        addMerchant.init({
-//          router: "/company/add",
-//          session: this.session,
-//          data: {
-//            parentAreaId: this.inputData
-//          }
-//        })
+        if (vm.certificateList[0].imgUrls) {
+          this.setPicture("#form1", 0);
+        }
+        if (vm.certificateList[1].imgUrls) {
+          this.setPicture("#form2", 1);
+        }
+        if (vm.certificateList[2].imgUrls) {
+          this.setPicture("#form3", 2);
+        }
+        if (vm.certificateList[3].imgUrls) {
+          this.setPicture("#form4", 3);
+        }
+        this.addCompany()
       },
       addCompany(){//检测图片是否全部成功的函数
         var vm = this;
-        if (this.checkPictureUrl()) {
-          for (var i = 0; i < this.inputData.certificateList.length; i++) {
-            this.inputData.certificateList[i].imgUrls = null;
-            this.inputData.certificateList[i].imgVal = null;
-            this.inputData.certificateList[i].certificateName = null;
-          }
           var addMerchant = new RemoteCall();
           addMerchant.init({
             router: "/company/add",
@@ -507,18 +491,10 @@
             data: this.inputData,
             callback: vm.routerGo
           })
-        } else {
-          this.$alert('添加失败请上传完整的图片信息', '提示', {
-            confirmButtonText: '确定',
-            callback: function () {
-//              window.location.reload()
-            }
-          });
-        }
       },
       routerGo(data){
+        var vm = this;
         if (data.ret.errorMessage == 'success') {
-//          window.location.reload()
           this.$alert('添加成功', '提示', {
             confirmButtonText: '确定',
             callback: function () {
@@ -533,17 +509,7 @@
           }
         }
       },
-      checkPictureUrl(){//检测图片接口中的信息是否完整 不完整停止接口调用
-        for (var i = 0; i < 4; i++) {
-          if (!this.inputData.certificateList[i].picSavePath) {
-//            console.log(this.inputData.certificateList[i].picSavePath);
-
-            return false
-          }
-        }
-        return true
-      },
-      setPicture(id, index, addcompany){//调用图片接口
+      setPicture(id, index){//调用图片接口
         var vm = this;
         $(id).ajaxSubmit({//为了获取跨域的iframe的内容 没办法动用了jq插件
           type: "POST",
@@ -552,7 +518,7 @@
           success: function (data) {
             if (data) {
               if (JSON.parse(data).data.length > 0) {
-                vm.callback(data, index, addcompany)
+                vm.callback(data, index)
               } else {
                 switch (index) {
                   case 0:
@@ -586,17 +552,40 @@
 
           }
         });
-        if (addcompany) {
-          addcompany();//判断所有图片上传成功后回调
-        }
       },
-      callback(data, index, addcompany){//图片调用成功后的回调函数
-        this.inputData.certificateList[index].picSavePath = JSON.parse(data).data[0].saved_file;
-//        if (addcompany) {
-//          addcompany();//判断所有图片上传成功后回调
-//        }
-
-//        console.log(JSON.parse(data).data[0].saved_file)
+      callback(data, index){//图片调用成功后的回调函数
+//        this.inputData.certificateList[index].picSavePath = JSON.parse(data).data[0].saved_file
+        var certificateName = null;
+        switch (index) {
+          case 0:
+            certificateName = '营业执照';
+            break;
+          case 1:
+            certificateName = '从业资格证';
+            break;
+          case 2:
+            certificateName = '银行卡资料';
+            break;
+          case 3:
+            certificateName = '法人身份证';
+            break;
+        }
+        var json = {};
+        json.isPersonal = 0;
+        json.certificateType = 1;
+        json.certificateTypeName = certificateName;
+        json.picSavePath = JSON.parse(data).data[0].saved_file;//修改上传图片的结构
+        if (this.inputData.certificateList.length > 0) {
+          for (var i = 0; i < this.inputData.certificateList; i++) {
+            if (this.inputData.certificateList[i].certificateTypeName == json.certificateTypeName) {
+              this.inputData.certificateList[i] = json;
+              return;
+            }
+          }
+          this.inputData.certificateList.push(json)
+        } else {
+          this.inputData.certificateList.push(json)
+        }
       }
     },
     mounted: function () {
@@ -622,6 +611,9 @@
     }
   }
 
+  input[type="text"]:disabled {
+    background-color: transparent;
+  }
   .girid-content {
     line-height: 30px;
     text-align: right;
@@ -696,6 +688,10 @@
     cursor: pointer;
   }
 
+  .must {
+    color: red;
+    vertical-align: middle;
+  }
   /*媒体查询做兼容*/
   @media screen and (max-width: 1760px) {
     label {

@@ -70,7 +70,7 @@
           </el-select>
         </el-col>
       </el-row>
-      <el-button @click="addResource">点击添加资源</el-button>
+      <el-button @click="addResource">点击修改资源</el-button>
       <div class="close" @click="close"><img :src="urlImg" alt=""></div>
     </div>
     <div class="alertBg"></div>
@@ -113,7 +113,7 @@
         ]
       }
     },
-    computed: mapGetters(['saveFatherResource']),
+    computed: mapGetters(['saveFatherResource', 'saveChangeResource']),
     methods: {
       close(){
         var vm = this;
@@ -148,25 +148,25 @@
         }
         var resource = new RemoteCall();
         resource.init({
-          router: '/base/resource/add',
+          router: '/base/resource/update',
           session: vm.session,
           data: vm.inputData,
           callback: function (data) {
             if (data.ret.errorCode === 0) {
-              vm.$alert('资源添加成功', '提示', {
+              vm.$alert('资源修改成功', '提示', {
                 confirmButtonText: '确定',
                 callback: function () {
                   vm.$router.push('/resourceadd')
                 }
               })
             } else {
-              vm.$alert('资源添加失败', '提示', {
+              vm.$alert('资源修改失败', '提示', {
                 confirmButtonText: '确定',
               })
             }
           },
           errorCallback: function (data) {
-            vm.$alert('资源添加失败', '提示', {
+            vm.$alert('资源修改失败', '提示', {
               confirmButtonText: '确定',
             })
           }
@@ -188,8 +188,22 @@
       }
     },
     mounted: function () {
+      var vm = this;
       if (this.saveFatherResource) {
         this.fatherResource();
+        console.log(this.saveChangeResource);
+        vm.inputData.id = vm.saveChangeResource.id;
+        vm.inputData.parenyId = vm.saveChangeResource.parenyId;
+        vm.inputData.code = vm.saveChangeResource.code;
+        vm.inputData.auth = vm.saveChangeResource.auth;
+        vm.inputData.showOrders = vm.saveChangeResource.showOrders;
+        vm.inputData.webUrl = vm.saveChangeResource.webUrl;
+        vm.inputData.name = vm.saveChangeResource.name;
+        vm.inputData.icon = vm.saveChangeResource.icon;
+        vm.inputData.description = vm.saveChangeResource.description;
+        vm.inputData.resourceType = vm.saveChangeResource.resourceType;
+        vm.fatherResourceName = vm.saveChangeResource.parenyId;
+        vm.resourceType = vm.saveChangeResource.resourceType;
       } else {
         this.$router.push('/resourceadd')
       }
@@ -203,8 +217,7 @@
     left: 0;
     width: 100%;
     height: 110%;
-    min-height: 1035px;
-    z-index: 10;
+    z-index: 20;
   }
 
   .el-col {
