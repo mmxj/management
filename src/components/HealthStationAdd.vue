@@ -35,11 +35,6 @@
           <label for="">卫生院证件类型</label>
         </el-col>
         <el-col :span="5">
-          <!--<select ref="certificate" @change="certificateType">-->
-          <!--<option>请选择证件类型</option>-->
-          <!--<option>营业执照</option>-->
-          <!--<option>从业资格证</option>-->
-          <!--</select>-->
           <el-select v-model="certificateType" @change="certificateTypeChange">
             <el-option v-for="item in certificateData" :value="item.value" :label="item.label"
                        :key="item.value"></el-option>
@@ -47,12 +42,6 @@
         </el-col>
         <el-col :span="3"><label for="">归属卫生院</label></el-col>
         <el-col :span="5">
-          <!--<select ref="mySelect" @change="getparentChange">-->
-          <!--<option>-->
-          <!--请选择归属卫生院-->
-          <!--</option>-->
-          <!--<option v-for="data in parentId" v-bind:value="data.id" ref="options">{{data.name}}</option>-->
-          <!--</select>-->
           <el-select
             v-model="mySelect"
             filterable
@@ -349,13 +338,16 @@
           session: this.session,
           data: {
             parentAreaId: parentId
+          },
+          callback: function (data) {
+            if (data.ret.errorCode === 0) {
+              _this.cityData = data.rows;
+              _this.$nextTick(function () {
+                _this.setDistrict();
+              })
+            }
           }
         });
-        this.cityData = getCity.res.rows;
-        clearTimeout(timer);
-        var timer = setTimeout(function () {
-          _this.setDistrict();
-        }, 10)
       },
       setDistrict(){//县区获取
         var myCity = document.getElementById('city');
@@ -373,13 +365,14 @@
           session: this.session,
           data: {
             parentAreaId: parentId
+          },
+          callback: function (data) {
+            _this.districtData = data.rows;
+            _this.$nextTick(function () {
+              _this.setAreaId();
+            })
           }
         });
-        this.districtData = getDistrict.res.rows;
-        clearTimeout(timer);
-        var timer = setTimeout(function () {
-          _this.setAreaId();
-        }, 10)
       },
       setAreaId(){//获取areaid 给inputData赋值
         var myCity = document.getElementById('district');
@@ -556,7 +549,7 @@
         json.certificateTypeName = certificateName;
         json.picSavePath = JSON.parse(data).data[0].saved_file;//修改上传图片的结构
         if (this.inputData.certificateList.length > 0) {
-          for (var i = 0; i < this.inputData.certificateList; i++) {
+          for (var i = 0; i < this.inputData.certificateList.length; i++) {
             if (this.inputData.certificateList[i].certificateTypeName == json.certificateTypeName) {
               this.inputData.certificateList[i] = json;
               return;
@@ -595,9 +588,12 @@
             }
           }
         }
-
       },
       getparentChange(data){
+        if (data == '' || data == null) {
+          data = null;
+          this.mySelect = null;
+        }
         this.getParentId(data);
       },
       companyChange(data){

@@ -193,25 +193,36 @@
 //        var timer = setTimeout(function () {
 ////          _this.setCity();
 //        }, 0)
+        this.$nextTick(function () {
+          _this.setCity();
+        })
       },
       setCity(){
         var _this = this;
         var mySelect = document.getElementById('province');
         var index = mySelect.selectedIndex;
         var parentId = mySelect.getElementsByTagName('option')[index].value;
-        if(parentId!="")
-        var getCity = new RemoteCall();
-        getCity.init({
-          router: "/base/area/idname/get",
-          session: this.session,
-          data: {
-            parentAreaId: parentId
-          }
-        });
-        this.cityData = getCity.res.rows;
+        if (parentId != "") {
+          var getCity = new RemoteCall();
+          getCity.init({
+            router: "/base/area/idname/get",
+            session: this.session,
+            data: {
+              parentAreaId: parentId
+            },
+            callback: function (data) {
+              if (data.ret.errorCode === 0) {
+                _this.cityData = getCity.res.rows;
+                _this.$nextTick(function () {
+                  _this.setDistrict();
+                })
+              }
+            }
+          });
+        }
 //        clearTimeout(timer);
 //        var timer = setTimeout(function () {
-//          _this.setDistrict();
+//
 //        }, 10)
       },
       setDistrict(){//县区获取
@@ -219,20 +230,24 @@
         var index = myCity.selectedIndex;
         var _this = this;
         var parentId = myCity.getElementsByTagName('option')[index].value;
-        if(parentId!="")
-        var getDistrict = new RemoteCall();
-        getDistrict.init({
-          router: "/base/area/idname/get",
-          session: this.session,
-          data: {
-            parentAreaId: parentId
-          }
-        });
-        this.districtData = getDistrict.res.rows;
-//        clearTimeout(timer);
-//        var timer = setTimeout(function () {
-//          _this.setAreaId();
-//        }, 10)
+        if (parentId != "") {
+          var getDistrict = new RemoteCall();
+          getDistrict.init({
+            router: "/base/area/idname/get",
+            session: this.session,
+            data: {
+              parentAreaId: parentId
+            },
+            callback: function (data) {
+              if (data.ret.errorCode === 0) {
+                _this.districtData = getDistrict.res.rows;
+                _this.$nextTick(function () {
+                  _this.setAreaId();
+                })
+              }
+            }
+          });
+        }
       },
       setAreaId(){//获取areaid 给inputData赋值
         var myCity = document.getElementById('district');

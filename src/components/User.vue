@@ -103,24 +103,29 @@
           session: this.session,
           data: this.setData,
           callback: function (data) {
-            if (data.pageInfo.total) {
-              vm.total = data.pageInfo.total;
-            }
-            vm.tableData = data.rows;
-            for (let i = 0; i < vm.tableData.length; i++) {
-              vm.tableData[i].ordinal = (i + 1) + vm.pageSize * (vm.currentPage - 1);
-              if (vm.tableData[i].bindSecurityCardFlag == 1) {
-                vm.tableData[i].bindSecurityCardFlag = '是'
-              } else {
-                vm.tableData[i].bindSecurityCardFlag = '否'
+            if (data.ret.errorCode === 0) {
+              if (data.pageInfo.total) {
+                vm.total = data.pageInfo.total;
               }
-              if (vm.tableData[i].bindBankCardFlag == 1) {
-                vm.tableData[i].bindBankCardFlag = '是'
-              } else {
-                vm.tableData[i].bindBankCardFlag = '否'
+              vm.tableData = data.rows;
+              for (let i = 0; i < vm.tableData.length; i++) {
+                vm.tableData[i].ordinal = (i + 1) + vm.pageSize * (vm.currentPage - 1);
+                if (vm.tableData[i].bindSecurityCardFlag == 1) {
+                  vm.tableData[i].bindSecurityCardFlag = '是'
+                } else {
+                  vm.tableData[i].bindSecurityCardFlag = '否'
+                }
+                if (vm.tableData[i].bindBankCardFlag == 1) {
+                  vm.tableData[i].bindBankCardFlag = '是'
+                } else {
+                  vm.tableData[i].bindBankCardFlag = '否'
+                }
               }
+            } else {
+              vm.$alert('搜索失败：' + data.ret.errorMessage, '提示', {
+                confirmButtonText: '确定',
+              });
             }
-            console.log(vm.tableData);
           },
           errorCallback: function (data) {
             if (data) {
@@ -221,6 +226,7 @@
       vertical-align: middle;
       color: #fff;
       border: 5px;
+      cursor: pointer;
     }
   }
 

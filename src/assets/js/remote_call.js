@@ -10,6 +10,7 @@
 */
 function RemoteCall(){
 	this.setting={//外部传进来的参数http://192.168.0.104
+    // openUrl : "http://onlinepay.site:8091",//设置请求的域名
     openUrl: "http://www.yxunionpay.com:8091",//设置请求的域名
 		router:"/base/validatecode/picture/get", //设置请求的地址路径
     appid: 3,

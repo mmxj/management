@@ -5,14 +5,15 @@
       <input type="file" id="demo" v-on:change="importf($event)">
     </div>
     <el-button v-on:click="importData">确定上传</el-button>
-    <!--<el-button @click="upExcel">下载商户导入模板</el-button>-->
     <a class="downExcel" href="static/xlsx/social_security_merchant_template.xlsx">下载商户导入模板</a>
     <el-table :data="tableData" border width="100%" max-height="800">
+      <el-table-column prop="index" label="序号" width="120"></el-table-column>
       <el-table-column prop="cityCode" label="城市代码" width="120"></el-table-column>
       <el-table-column prop="companyType" label="商户类型" width="150"></el-table-column>
       <el-table-column prop="merchantNo" label="商户编号" width="150"></el-table-column>
       <el-table-column prop="merchantName" label="商户名称" width="200"></el-table-column>
       <el-table-column prop="terminalNo" label="POS终端号" width="200"></el-table-column>
+      <el-table-column prop="mainKey" label="明文秘钥" width="200"></el-table-column>
       <el-table-column prop="pSimNo" label="PSAM卡号" width="200"></el-table-column>
       <el-table-column prop="leaderName" label="联系人" width="150"></el-table-column>
       <el-table-column prop="telephone" label="联系电话" width="150"></el-table-column>
@@ -23,26 +24,6 @@
       <el-table-column prop="scope" label="适用范围" width="150"></el-table-column>
       <el-table-column prop="enableFlag" label="有效标志" width="100"></el-table-column>
     </el-table>
-    <div style="display:none">
-      <table id="tableExcel" width="100%" border="1" cellspacing="0" cellpadding="0">
-        <tr>
-          <td>城市代码</td>
-          <td>商户类型</td>
-          <td>商户编号</td>
-          <td>商户名称</td>
-          <td>POS终端号</td>
-          <td>PSAM卡号</td>
-          <td>联系人</td>
-          <td>联系电话</td>
-          <td>联系手机</td>
-          <td>详细地址</td>
-          <td>装机日期</td>
-          <td>状态</td>
-          <td>适用范围</td>
-          <td>有效标志</td>
-        </tr>
-      </table>
-    </div>
   </div>
 </template>
 <!--<script src="http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js"></script>-->
@@ -55,19 +36,43 @@
       return {
         tableData: [],
         MerchantUp: null,
-        index: 0
+        index: 0,
+        ev: null
       }
     },
     computed: mapGetters(['saveSession']),
     methods: {
       importf(e) {//导入
+        var vm = this;
+        if (e.currentTarget.files.length > 0) {
+          this.ev = e.currentTarget;
+          this.loading = this.$loading({
+            lock: true,
+            text: '正在读取文件',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
+          setTimeout(function () {
+            vm.inputChange();
+          }, 100)
+        }
+      },
+      inputChange(){
         var _this = this;
-        var obj = e.currentTarget;
+        var vm = this;
+        var obj = this.ev;
         var wb;//读取完成的数据
         var wbData;//存储json
         var rABS = false; //是否将文件读取为二进制字符串
         if (!obj.files) {
           return false;
+        }
+        if (obj.files[0].name.split('.')[1] != 'xlsx') {
+          vm.loading.close();
+          vm.$alert('请上传格式后缀为xlsx的文件', '提示', {
+            confirmButtonText: '确定'
+          })
+          return
         }
         var f = obj.files[0];
         var reader = new FileReader();
@@ -109,15 +114,21 @@
         }
         this.tableData = [];
         for (var i = 0; i < data.length; i++) {
-          var table = {};
+          var table = {
+            status: 1,
+            enableFlag: 1
+          };
           if (data[i].序号) {
-            table.index = data[i].序号;
+            table.index = parseInt(data[i].序号);
           }
           if (data[i].城市代码) {
             table.cityCode = data[i].城市代码;
           }
           if (data[i].商户类型) {
             table.companyType = parseInt(data[i].商户类型);
+          }
+          if (data[i].明文秘钥) {
+            table.mainKey = data[i].明文秘钥
           }
           if (data[i].商户编号) {
             table.merchantNo = data[i].商户编号;
@@ -144,80 +155,101 @@
             table.address = data[i].详细地址;
           }
           if (data[i].装机日期) {
-            table.openDate = data[i].装机日期;
+            var date = data[i].装机日期;
+            var dates = date.replace(/^(\d{4})(\d{2})(\d{2})(\d{2})$/, "$1-$2-$3 $4:00:00")
+            table.openDate = dates;
           }
-          if (data[i].状态) {
-            table.status = data[i].状态;
-          }
+//          if (data[i].状态) {
+//            table.status = data[i].状态;
+//          }
           if (data[i].适用范围) {
             table.scope = data[i].适用范围;
           }
-          if (data[i].有效标志) {
-            table.enableFlag = data[i].有效标志;
-          }
+//          if (data[i].有效标志) {
+//            table.enableFlag = data[i].有效标志;
+//          }
           if (JSON.stringify(table) != "{}") {
             this.tableData.push(table);
           }
         }
+        this.loading.close();
       },
       importData(){
         var vm = this;
-
+        if (this.tableData.length <= 0) {
+          vm.$alert('请选择文件', '提示', {
+            confirmButtonText: '确定',
+            callback: function () {
+              vm.index = 0;
+            }
+          })
+          return
+        }
         this.tableData[vm.index].companyType = parseInt(this.tableData[vm.index].companyType);
         if (isNaN(this.tableData[vm.index].companyType) || this.tableData[vm.index].companyType === 0) {
           this.tableData[vm.index].companyType = 4;
         }
-        this.MerchantUp = new RemoteCall();
-        this.MerchantUp.init({
-          router: "/company/import",
-          session: this.saveSession,
-          data: this.tableData[vm.index],
-          callback: function (data) {
-            if (data.ret.errorCode === 0) {
-              if (vm.index == vm.tableData.length - 1) {
-                vm.$alert('上传成功', '提示', {
-                  confirmButtonText: '确定',
-                  callback: function () {
-                    document.getElementsByClassName("el-table")[0].style.display = 'none';
-                    document.getElementById('demo').value = null;
-                    vm.index = 0;
-                  }
-                });
+        var timer = vm.tableData.length * 400 / 1000;
+        if (timer > 60) {
+          timer = Math.round(timer / 60);
+          vm.text = vm.text = '正在上传大概需要' + timer + '分钟';
+        } else {
+          timer = Math.round(timer)
+          vm.text = vm.text = '正在上传大概需要' + timer + '秒';
+        }
+
+        this.loadings = this.$loading({
+          lock: true,
+          text: vm.text,
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+
+        setTimeout(function () {
+          vm.MerchantUp = new RemoteCall();
+          vm.MerchantUp.init({
+            router: "/company/import",
+            session: vm.saveSession,
+            data: vm.tableData[vm.index],
+            async: false,
+            callback: function (data) {
+              if (data.ret.errorCode === 0) {
+                if (vm.index == vm.tableData.length - 1) {
+                  vm.loadings.close()
+                  vm.$alert('上传成功', '提示', {
+                    confirmButtonText: '确定',
+                    callback: function () {
+                      document.getElementsByClassName("el-table")[0].style.display = 'none';
+                      document.getElementById('demo').value = null;
+                      vm.index = 0;
+                    }
+                  });
+                } else {
+                  vm.index++;
+                  vm.importData();
+                }
               } else {
-                vm.index++;
-                vm.importData();
-              }
-            } else {
-              if (data.ret.errorMessage == '同名公司多于一个') {
-                vm.$alert(vm.tableData[vm.index].merchantName + '，这个商户已存在，请修改', '提示', {
-                  confirmButtonText: '确定',
-                  callback: function () {
-                    vm.index = 0;
-                  }
-                });
-              } else {
-                vm.$alert('上传失败,' + data.ret.errorMessage, '提示', {
-                  confirmButtonText: '确定',
-                  callback: function () {
-                    vm.index = 0;
-                  }
-                })
+                if (data.ret.errorMessage == '同名公司多于一个') {
+                  vm.loadings.close()
+                  vm.$alert(vm.tableData[vm.index].merchantName + '，这个商户已存在，请修改', '提示', {
+                    confirmButtonText: '确定',
+                    callback: function () {
+                      vm.index = 0;
+                    }
+                  });
+                } else {
+                  vm.loadings.close()
+                  vm.$alert('上传失败,' + data.ret.errorMessage, '提示', {
+                    confirmButtonText: '确定',
+                    callback: function () {
+                      vm.index = 0;
+                    }
+                  })
+                }
               }
             }
-          }
-        })
-
-
-      },
-      upExcel(){
-        $("#tableExcel").table2excel({
-          exclude: ".noExl", //过滤位置的 css 类名
-          filename: "商户导入模板" + new Date().getTime() + ".xls", //文件名称
-          name: "Excel Document Name.xlsx",
-          exclude_img: true,
-          exclude_links: true,
-          exclude_inputs: true
-        });
+          })
+        }, 20)
       }
     },
     mounted: function () {

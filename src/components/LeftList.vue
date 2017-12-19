@@ -4,9 +4,18 @@
              theme="dark" :unique-opened="opened">
       <el-submenu index="1" v-show="listArrName[33]==showArrName[33]">
         <template slot="title">{{listArrName[33]}}</template>
-        <el-menu-item index="/user" v-show="listArrName[0]==showArrName[0]" class="menu-border-bottom el-lvtwo"
-                      @click="getIndex(0)">{{listArr[0]}}
-        </el-menu-item>
+        <el-submenu index="1-1">
+          <template slot="title" v-show="listArrName[44]==showArrName[44]">
+            {{listArrName[44]}}
+          </template>
+          <el-menu-item index="/user" v-show="listArrName[0]==showArrName[0]" class="menu-border-bottom el-lvthree"
+                        @click="getIndex(0)">{{listArr[0]}}
+          </el-menu-item>
+          <el-menu-item index="/userchannel" v-show="listArrName[45]==showArrName[45]"
+                        class="menu-border-bottom el-lvthree"
+                        @click="getIndex(33)">{{listArr[33]}}
+          </el-menu-item>
+        </el-submenu>
         <el-submenu index="1-2" v-show="listArrName[42]==showArrName[42]">
           <template slot="title">
             {{listArrName[42]}}
@@ -24,6 +33,10 @@
           </el-menu-item>
           <el-menu-item index="/merchantchannel" class="menu-border-bottom el-lvthree"
                         v-show="listArrName[4]==showArrName[4]" @click="getIndex(4)">{{listArr[4]}}
+          </el-menu-item>
+          <el-menu-item index="/importbankpfx" class="menu-border-bottom el-lvthree"
+                        v-show="listArrName[46]==showArrName[46]" @click="getIndex(34)">
+            {{listArr[34]}}
           </el-menu-item>
         </el-submenu>
         <el-submenu index="1-3" v-show="listArrName[43]==showArrName[43]">
@@ -63,6 +76,19 @@
           </el-menu-item>
           <el-menu-item index="/staffmanage" class="menu-border-bottom el-lvthree"
                         v-show="listArrName[31]==showArrName[31]" @click="getIndex(31)">{{listArr[31]}}
+          </el-menu-item>
+        </el-submenu>
+
+        <el-submenu index="7" v-show="listArrName[40]==showArrName[40]">
+          <template slot="title">
+            {{listArrName[40]}}
+          </template>
+          <el-menu-item index="/terminal" class="menu-border-bottom el-lvthree"
+                        v-show="listArrName[22]==showArrName[22]"
+                        @click="getIndex(22)">{{listArr[22]}}
+          </el-menu-item>
+          <el-menu-item index="/terminalmanage" class="menu-border-bottom el-lvthree"
+                        v-show="listArrName[32]==showArrName[32]" @click="getIndex(32)">{{listArr[32]}}
           </el-menu-item>
         </el-submenu>
 
@@ -114,33 +140,33 @@
                         v-show="listArrName[18]==showArrName[18]" @click="getIndex(18)">{{listArr[18]}}
           </el-menu-item>
         </el-submenu>
-        <el-submenu index="4-6" v-show="listArrName[39]==showArrName[39]">
-          <template slot="title">{{listArrName[39]}}</template>
-          <el-menu-item index="/paydata" class="menu-border-bottom el-lvthree" v-show="listArrName[19]==showArrName[19]"
-                        @click="getIndex(19)">{{listArr[19]}}
-          </el-menu-item>
-          <el-menu-item index="/dataadministration" class="menu-border-bottom el-lvthree"
-                        v-show="listArrName[20]==showArrName[20]" @click="getIndex(20)">
-            {{listArr[20]}}
-          </el-menu-item>
-          <el-menu-item index="/datareport" class="menu-border-bottom el-lvthree"
-                        v-show="listArrName[21]==showArrName[21]" @click="getIndex(21)">
-            {{listArr[21]}}
-          </el-menu-item>
-        </el-submenu>
       </el-submenu>
-      <el-submenu index="7" v-show="listArrName[40]==showArrName[40]">
-        <template slot="title">
-          {{listArrName[40]}}
-          <!--<router-link class="el-lvone" to="/terminal" @click.native="getIndex(22)">{{listArr[22]}}</router-link>-->
-        </template>
-        <el-menu-item index="/terminal" class="menu-border-bottom el-lvtwo" v-show="listArrName[22]==showArrName[22]"
-                      @click="getIndex(22)">{{listArr[22]}}
+      <el-submenu index="5" v-show="listArrName[39]==showArrName[39]">
+        <template slot="title">{{listArrName[39]}}</template>
+        <el-menu-item index="/paydata" class="menu-border-bottom el-lvtwo" v-show="listArrName[19]==showArrName[19]"
+                      @click="getIndex(19)">{{listArr[19]}}
         </el-menu-item>
-        <el-menu-item index="/terminalmanage" class="menu-border-bottom el-lvtwo"
-                      v-show="listArrName[32]==showArrName[32]" @click="getIndex(32)">{{listArr[32]}}
+        <el-menu-item index="/dataadministration" class="menu-border-bottom el-lvtwo"
+                      v-show="listArrName[20]==showArrName[20]" @click="getIndex(20)">
+          {{listArr[20]}}
+        </el-menu-item>
+        <el-menu-item index="/datareport" class="menu-border-bottom el-lvtwo"
+                      v-show="listArrName[21]==showArrName[21]" @click="getIndex(21)">
+          {{listArr[21]}}
         </el-menu-item>
       </el-submenu>
+      <!--<el-submenu index="7" v-show="listArrName[40]==showArrName[40]">-->
+      <!--<template slot="title">-->
+      <!--{{listArrName[40]}}-->
+      <!--&lt;!&ndash;<router-link class="el-lvone" to="/terminal" @click.native="getIndex(22)">{{listArr[22]}}</router-link>&ndash;&gt;-->
+      <!--</template>-->
+      <!--<el-menu-item index="/terminal" class="menu-border-bottom el-lvtwo" v-show="listArrName[22]==showArrName[22]"-->
+      <!--@click="getIndex(22)">{{listArr[22]}}-->
+      <!--</el-menu-item>-->
+      <!--<el-menu-item index="/terminalmanage" class="menu-border-bottom el-lvtwo"-->
+      <!--v-show="listArrName[32]==showArrName[32]" @click="getIndex(32)">{{listArr[32]}}-->
+      <!--</el-menu-item>-->
+      <!--</el-submenu>-->
       <el-submenu index="6" v-show="listArrName[41]==showArrName[41]">
         <template slot="title">{{listArrName[41]}}</template>
         <el-menu-item index="/systemmange" class="menu-border-bottom el-lvtwo" v-show="listArrName[23]==showArrName[23]"
@@ -162,21 +188,21 @@
     data(){
       return {
         opened: true,
-        listArr: ['用户信息', '管理商户', '添加新商户', '查阅商户证件', '导入商户信息', '管理合作行业', '新增合作行业客户', '查阅行业客户证件',
-          '订单管理', '产品通道基础管理', '三大目录上传', '三大目录列表', '三大目录管理', '添加卫生站', '管理卫生站', '添加村医',
-          '管理村医', '业务专区发布', '信息专区发布', '支付流水数据', '绑卡数据管理', '数据报表', '添加终端', '系统用户管理', '系统资源管理', '添加员工',
-          '添加部门', '添加角色', '系统维护', '管理部门', '管理角色', '管理员工', '终端管理'],
+        listArr: ['用户管理', '管理商户', '添加新商户', '查阅商户证件', '导入商户信息', '管理合作行业', '新增合作行业客户', '查阅行业客户证件', '订单管理', '产品通道基础管理',
+          '三大目录上传', '三大目录列表', '三大目录管理', '添加卫生站', '管理卫生站', '添加村医', '管理村医', '业务专区发布', '信息专区发布', '支付流水数据',
+          '绑卡数据管理', '数据报表', '添加终端', '系统用户管理', '系统资源管理', '添加员工', '添加部门', '添加角色', '系统维护', '管理部门',
+          '管理角色', '管理员工', '终端管理', '用户导入', '导入银联证书'],
         listUrl: ['/user', '/merchant', '/merchantadd', '/merchantcheck', '/merchantchannel', '/collaborate', '/collaborateadd', '/collaboratecheck',
           '/order', '/channel', '/uploaddir', '/dirlist', '/dirmanage', '/healthstationadd', '/healthstation', '/doctoradd', '/doctormanage',
           '/businessissue', '/informationup', '/paydata', '/dataadministration', '/datareport', '/terminal', '/systemmange', '/resourceadd', '/staff',
-          '/department', '/roleadd', '/systemmaintenance', '/departmentmanage', '/rolemanage', '/staffmanage', '/terminalmanage'],//staff是25 最后一个为32
+          '/department', '/roleadd', '/systemmaintenance', '/departmentmanage', '/rolemanage', '/staffmanage', '/terminalmanage', '/userchannel', '/importbankpfx'],//staff是25 //最后为34
         saveList: [],
         saveUrl: [],
-        listArrName: ['用户信息', '管理商户', '添加新商户', '查阅商户证件', '导入商户信息', '管理合作行业', '新增合作行业客户', '查阅行业客户证件',
-          '订单管理', '产品通道基础管理', '三大目录上传', '三大目录列表', '三大目录管理', '添加卫生站', '管理卫生站', '添加村医',
-          '管理村医', '业务专区发布', '信息专区发布', '支付流水数据', '绑卡数据管理', '数据报表', '添加终端', '系统用户管理', '系统资源管理', '添加员工',
-          '添加部门', '添加角色', '系统维护', '管理部门', '管理角色', '管理员工', '终端管理', '基础信息管理', '部门管理', '产品管理', '医疗后台管理', '卫生站管理',
-          '医疗后台信息发布', '数据管理系统', '社保受理终端管理平台', '系统管理', '商户信息', '合作行业'],//43
+        listArrName: ['用户管理', '管理商户', '添加新商户', '查阅商户证件', '导入商户信息', '管理合作行业', '新增合作行业客户', '查阅行业客户证件', '订单管理', '产品通道基础管理',
+          '三大目录上传', '三大目录列表', '三大目录管理', '添加卫生站', '管理卫生站', '添加村医', '管理村医', '业务专区发布', '信息专区发布', '支付流水数据',
+          '绑卡数据管理', '数据报表', '添加终端', '系统用户管理', '系统资源管理', '添加员工', '添加部门', '添加角色', '系统维护', '管理部门',
+          '管理角色', '管理员工', '终端管理', '基础信息管理', '部门管理', '产品管理', '医疗后台管理', '卫生站管理', '医疗后台信息发布', '数据管理系统',
+          '社保受理终端管理平台', '系统管理', '商户信息', '合作行业', '用户信息', '用户导入', '导入银联证书'],//46
         session: sessionStorage.getItem('session'),
         showArrName: []
       }
@@ -245,6 +271,8 @@
                   }
                 })
               }
+
+//            vm.showArrName=vm.listArrName;
             }
           }
         })
@@ -374,14 +402,14 @@
     border-bottom-color: #EEEEEE !important;
   }
 
-  @media screen and (max-width: 1450px) {
+  @media screen and (max-width: 1550px) {
     .el-menu-item {
-      padding-left: 6% !important;
+      padding-left: 14% !important;
       /*min-width: 5em;*/
     }
 
     .el-submenu__title {
-      padding-left: 6% !important;
+      padding-left: 14% !important;
     }
 
     .el-submenu__icon-arrow {
@@ -389,7 +417,7 @@
     }
 
     #Gheader .left-title {
-      padding-left: 1.16% !important;
+      padding-left: 2.16% !important;
     }
   }
 </style>

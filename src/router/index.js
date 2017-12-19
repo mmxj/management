@@ -53,6 +53,8 @@ import TerminalManage from '../components/TerminalManage' //终端管理
 import TerminalUpData from '../components/TerminalUpData' //修改终端
 import ResourceUpData from '../components/ResourceUpData' //资源更新
 import RoleAccredit from '../components/RoleAccredit' //资源更新
+import UserChannel from '../components/UserChannel' //用户导入
+import ImportBankPFX from '../components/ImportBankPFX' //用户导入
 Vue.use(Router)
 
 export default new Router({
@@ -327,6 +329,16 @@ export default new Router({
           path: '/terminalupdata',
           name: 'TerminalUpData',
           component: TerminalUpData
+        },
+        {
+          path: '/userchannel',
+          name: 'UserChannel',
+          component: UserChannel
+        },
+        {
+          path: '/importbankpfx',
+          name: 'ImportBankPFX',
+          component: ImportBankPFX
         }
       ]
     }

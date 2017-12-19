@@ -63,8 +63,8 @@
         </el-table-column>
         <el-table-column prop="sfsCreate" label="添加日期" width="220">
         </el-table-column>
-        <el-table-column prop="auditFlag" label="卫生站状态" width="220">
-        </el-table-column>
+        <!--<el-table-column prop="auditFlag" label="卫生站状态" width="220">-->
+        <!--</el-table-column>-->
       </el-table>
       <el-pagination
         @size-change="handleSizeChange"
@@ -140,6 +140,11 @@
             router: '/company/get',
             session: this.session,
             data: {
+              pageInfo: {
+                pageSize: 20,
+                pageNum: 1
+              },
+              enableFlag: 1,
               parentCompanyId: this.choose.id
             },
             callback: function (data) {
@@ -215,7 +220,7 @@
             vm.$alert('删除成功', '提示', {
               confirmButtonText: '确定',
               callback: function () {
-                window.location.reload();
+                vm.initData(vm.health);
                 vm.radio = null;
               }
             })
@@ -236,6 +241,7 @@
           session: this.session,
           data: {
 //            aredId:parseInt(this.inputData.areaId);
+            enableFlag: 1,
             name: companyName,
             companyType: 4,
             pageInfo: {
@@ -251,7 +257,7 @@
       },
       handleCurrentChange(val) {
         this.currentPage = val;
-        this.initData();
+        this.initData(this.health);
       },
       parentCallback(data){
         var vm = this;

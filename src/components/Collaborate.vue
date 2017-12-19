@@ -124,6 +124,7 @@
         radio: null,
         inputData: {
 //          companyType: 4,//默认为4原因新建合作行业哪里好像缺少公司类型填写入口
+          enableFlag: 1,
           pageInfo: {
             pageSize: 20,
             pageNum: 1
@@ -394,13 +395,6 @@
     line-height: 36px;
     text-align: center;
   }
-
-  /*.search {*/
-  /*margin-left: 20px;*/
-  /*}*/
-  /*.addColl {*/
-  /*margin-left: 10px;*/
-  /*}*/
   /*媒体查询做兼容*/
   .el-col-2 {
     min-width: 8em;

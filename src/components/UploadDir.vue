@@ -16,18 +16,18 @@
           </select>
         </div>
       </el-col>
-      <el-col :span="6">
-        <input type="text" placeholder="请填写所属镇区或街区办">
-      </el-col>
+      <!--<el-col :span="6">-->
+      <!--<input type="text" placeholder="请填写所属镇区或街区办">-->
+      <!--</el-col>-->
     </el-row>
-    <el-row :gutter="20">
-      <el-col :span="3">
-        <label for="">文件标识名称：</label>
-      </el-col>
-      <el-col :span="6">
-        <input type="text">
-      </el-col>
-    </el-row>
+    <!--<el-row :gutter="20">-->
+    <!--<el-col :span="3">-->
+    <!--<label for="">文件标识名称：</label>-->
+    <!--</el-col>-->
+    <!--<el-col :span="6">-->
+    <!--<input type="text">-->
+    <!--</el-col>-->
+    <!--</el-row>-->
     <el-row :gutter="20">
       <el-col :offset="3" :span="3">
         <el-button class="upExcelBox">浏览上传三大目录<input type="file" class="upExcel" @change="importf"></el-button>
@@ -37,7 +37,7 @@
       </el-col>
       <el-col :span="3">
         <!--<el-button @click="downExcel">下载三大目录模板</el-button>-->
-        <a class="downExcel" href="static/xlsx/three_charge_catalog.xlsx">下载三大目录导入模板</a>
+        <a class="downExcel" href="static/xlsx/three_charge_catalog.xlsx">下载三大目录模板</a>
       </el-col>
     </el-row>
     <el-table :data="tableData" border width="100%" max-height="800" align="center">
@@ -99,7 +99,7 @@
         tableData: [],
         MerchantUp: null,
         areaId: null,
-
+        ev: null
       }
     },
     computed: mapGetters(['saveSession']),
@@ -114,40 +114,44 @@
           session: this.session,
           data: {
             parentAreaId: 0
+          },
+          callback: function (data) {
+            if (data.ret.errorCode === 0) {
+              _this.provinceData = data.rows;
+              _this.$nextTick(function () {
+                _this.setCity();
+              })
+            }
           }
         });
-        this.provinceData = getArea.res.rows;
-        clearTimeout(timer)
-        var timer = setTimeout(function () {
-          _this.setCity();
-        }, 0)
       },
       setCity(){
         var _this = this;
         var mySelect = document.getElementById('province');
         var index = mySelect.selectedIndex;
         var parentId = mySelect.getElementsByTagName('option')[index].value;
-
         var getCity = new RemoteCall();
         getCity.init({
           router: "/base/area/idname/get",
           session: this.session,
           data: {
             parentAreaId: parentId
+          },
+          callback: function (data) {
+            if (data.ret.errorCode === 0) {
+              _this.cityData = data.rows;
+              _this.$nextTick(function () {
+                _this.setDistrict();
+              })
+            }
           }
         });
-        this.cityData = getCity.res.rows;
-        clearTimeout(timer)
-        var timer = setTimeout(function () {
-          _this.setDistrict();
-        }, 0)
       },
       setDistrict(){
         var _this = this;
         var myCity = document.getElementById('city');
         var index = myCity.selectedIndex;
         var parentId = myCity.getElementsByTagName('option')[index].value; //获取父级option的value值
-
         //调用ajax方法
         var getDistrict = new RemoteCall();
         getDistrict.init({
@@ -156,32 +160,52 @@
           data: {
             parentAreaId: parentId
           },
-          callback
+          callback: function (data) {
+            if (data.ret.errorCode === 0) {
+              _this.districtData = data.rows;
+              _this.$nextTick(function () {
+                var myArea = document.getElementById('district');
+                var indexs = myArea.selectedIndex;
+                _this.areaId = myArea.getElementsByTagName('option')[indexs].value;
+                ////            获取本身的option的value值
+              })
+            }
+          }
         });
-        function callback(data) {
-          _this.districtData = data.rows;
-          var timer;
-          clearTimeout(timer);
-          timer = setTimeout(function () {
-            var myArea = document.getElementById('district');
-            var indexs = myArea.selectedIndex;
-            _this.areaId = myArea.getElementsByTagName('option')[indexs].value;
-            ////            获取本身的option的value值
-            console.log(_this.areaId)
-          }, 0)
-        }
-
 
       },
       //地市联动结束
       importf(e) {//导入
+        var vm = this;
+        if (e.currentTarget.files.length > 0) {
+          this.ev = e.currentTarget;
+          this.loading = this.$loading({
+            lock: true,
+            text: '正在读取文件',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
+          setTimeout(function () {
+            vm.inputChange();
+          }, 100)
+        }
+      },
+      inputChange(){
         var _this = this;
-        var obj = e.currentTarget;
+        var obj = this.ev;
+        var vm = this;
         var wb;//读取完成的数据
         var wbData;//存储json
         var rABS = false; //是否将文件读取为二进制字符串
         if (!obj.files) {
           return false;
+        }
+        if (obj.files[0].name.split('.')[1] != 'xlsx') {
+          vm.loading.close();
+          vm.$alert('请上传格式后缀为xlsx的文件', '提示', {
+            confirmButtonText: '确定'
+          })
+          return
         }
         var f = obj.files[0];
         var reader = new FileReader();
@@ -198,9 +222,7 @@
           }
           //wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
           //wb.Sheets[Sheet名]获取第一个Sheet的数据
-//            document.getElementById("demo").innerHTML= JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
           wbData = JSON.stringify(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]));
-          console.log(wbData);
           _this.createTable(wbData)
         };
         if (rABS) {
@@ -282,6 +304,7 @@
           if (JSON.stringify(table) != "{}") {
             this.tableData.push(table);
           }
+          this.loading.close();
         }
         console.log(this.tableData);
         function transition(str) {//处理日期的方法
@@ -300,8 +323,7 @@
       },//在页面中生成表格结束
       importData(){ //处理发送出去的数据
         var _this = this;
-//        console.log(_this.tableData.length)
-//        导入数据
+
         var num = null;//数据长度
         var shartNum = 0; //起始数据的下标
         var saveNum = null; //保存数据的总长度
@@ -322,62 +344,87 @@
               _this.importDatas();
             }
           }
-
           checkNum()
-          console.log(_this.tableData.length);
         }
       },
       importDatas(cb){
         var vm = this;
         var _this = this;
-        for (let i = 0; i < _this.tableData.length; i++) {
-          _this.MerchantUp = new RemoteCall();
-          _this.MerchantUp.init({
-            router: "/base/hospital_charging_item_detail/import",
-            session: this.saveSession,
-            async: true,
-            data: {
-              companyId: _this.tableData[i].companyId,
-              itemCode: _this.tableData[i].itemCode,
-              itemNo: _this.tableData[i].itemNo,
-              itemNameCh: _this.tableData[i].itemNameCh,
-              itemNameEn: _this.tableData[i].itemNameEn,
-              commonNames: _this.tableData[i].commonNames,
-              specifications: _this.tableData[i].specifications,
-              dosageForms: _this.tableData[i].dosageForms,
-              materialCategory: _this.tableData[i].materialCategory,
-              materialType: _this.tableData[i].materialType,
-              hospitalTypeCode: _this.tableData[i].hospitalTypeCode,
-              unitPrice: _this.tableData[i].unitPrice,
-              unit: _this.tableData[i].unit,
-              internationalCode: _this.tableData[i].internationalCode,
-              mnemonicCode: _this.tableData[i].mnemonicCode,
-              effectiveDate: _this.tableData[i].effectiveDate,
-              remark: _this.tableData[i].remark,
-              socialSecurityCode: _this.tableData[i].socialSecurityCode,
-              enableFlag: 1,
-              areaId: this.areaId
-            },
-            callback: function (data) {
-              if (data.ret.errorCode === 0) {
-                if (i == vm.tableData.length - 1) {
-                  vm.$alert('上传成功', '提示', {
-                    confirmButtonText: '确定',
-                    callback: function () {
-                      document.getElementsByClassName("el-table")[0].style.display = 'none';
-                      vm.tableData = [];
-                      document.getElementsByClassName("upExcel")[0].value = null;
-                    }
-                  });
-                }
-              } else {
-                vm.$alert('上传失败', '提示', {
-                  confirmButtonText: '确定',
-                })
-              }
-            }
-          })
+        var timer = vm.tableData.length * 200 / 1000;
+        if (timer > 60) {
+          timer = Math.round(timer / 60);
+          vm.text = vm.text = '正在上传大概需要' + timer + '分钟';
+        } else {
+          timer = Math.round(timer)
+          vm.text = vm.text = '正在上传大概需要' + timer + '秒';
         }
+
+        this.loadings = this.$loading({
+          lock: true,
+          text: vm.text,
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+
+        setTimeout(function () {
+          if (vm.tableData.length == 0) {
+            vm.$alert('请先选择文件，或者您选的文件格式不对；请与下载的模板保持一致', '提示', {
+              confirmButtonText: '确定',
+            });
+            vm.loadings.close();
+            return
+          }
+          for (let i = 0; i < _this.tableData.length; i++) {
+            _this.MerchantUp = new RemoteCall();
+            _this.MerchantUp.init({
+              router: "/base/hospital_charging_item_detail/import",
+              session: vm.saveSession,
+              async: false,
+              data: {
+                companyId: _this.tableData[i].companyId,
+                itemCode: _this.tableData[i].itemCode,
+                itemNo: _this.tableData[i].itemNo,
+                itemNameCh: _this.tableData[i].itemNameCh,
+                itemNameEn: _this.tableData[i].itemNameEn,
+                commonNames: _this.tableData[i].commonNames,
+                specifications: _this.tableData[i].specifications,
+                dosageForms: _this.tableData[i].dosageForms,
+                materialCategory: _this.tableData[i].materialCategory,
+                materialType: _this.tableData[i].materialType,
+                hospitalTypeCode: _this.tableData[i].hospitalTypeCode,
+                unitPrice: _this.tableData[i].unitPrice,
+                unit: _this.tableData[i].unit,
+                internationalCode: _this.tableData[i].internationalCode,
+                mnemonicCode: _this.tableData[i].mnemonicCode,
+                effectiveDate: _this.tableData[i].effectiveDate,
+                remark: _this.tableData[i].remark,
+                socialSecurityCode: _this.tableData[i].socialSecurityCode,
+                enableFlag: 1,
+                areaId: vm.areaId
+              },
+              callback: function (data) {
+                if (data.ret.errorCode === 0) {
+                  if (i == vm.tableData.length - 1) {
+                    vm.loadings.close();
+                    vm.$alert('上传成功', '提示', {
+                      confirmButtonText: '确定',
+                      callback: function () {
+                        document.getElementsByClassName("el-table")[0].style.display = 'none';
+                        vm.tableData = [];
+                        document.getElementsByClassName("upExcel")[0].value = null;
+                      }
+                    });
+                  }
+                } else {
+                  vm.loadings.close();
+                  vm.$alert('上传失败', '提示', {
+                    confirmButtonText: '确定',
+                  })
+                }
+              }
+            })
+          }
+        }, 1000)
         if (cb) {
           cb()
         }

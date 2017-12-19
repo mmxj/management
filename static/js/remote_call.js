@@ -14,9 +14,11 @@ function RemoteCall(){
     openUrl: "http://www.yxunionpay.com:8091",//设置请求的域名
 		router:"/base/validatecode/picture/get", //设置请求的地址路径
     appid: 3,
+    async: true,
     callback: function () {
     },
     errorCallback: function () {
+
     }
 	}
 	//
@@ -52,7 +54,7 @@ RemoteCall.prototype.init = function(opt){
 
     $.ajax({
     	type: 'POST',
-    	async:false,
+      async: this.setting.async,
         url: this.url,
         contentType: "application/json; charset=utf-8",
         data:this.data,

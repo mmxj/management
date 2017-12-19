@@ -105,7 +105,6 @@
               data.resourceRows.forEach(function (item) {
                 vm.roleArr.push(item.sfsResourceName)
               })
-              console.log(vm.roleArr)
             }
           }
         })
@@ -266,6 +265,10 @@
           if (vm.checkUrl('终端管理')) {
             return
           }
+        } else if (vm.$route.path == '/importbankpfx') {
+          if (vm.checkUrl('导入银联证书')) {
+            return
+          }
         } else {
           return
         }
@@ -284,6 +287,7 @@
   body {
     min-width: 1200px;
     background: #EEEEEE;
+    padding: 0 !important;
   }
 
   [class^="el-icon-my"], [class*=" el-icon-my"] {
@@ -308,6 +312,17 @@
     float: left;
     /*height:2000px;*/
     height: 100%;
+  }
+</style>
+<style scoped>
+  @media screen and (max-width: 1366px) {
+    .el-col-4 {
+      width: 19%;
+    }
+
+    .el-col-20 {
+      width: 81%;
+    }
   }
 </style>
 

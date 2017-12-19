@@ -17,19 +17,25 @@
           <input type="text" v-model="name">
         </el-col>
         <el-col :span="2">
-          <label for="">商户证件类型</label>
+          <label for="">商户编号</label>
         </el-col>
         <el-col :span="6">
-          <el-select v-model="companyTypeName" filterable placeholder="请选择证件类型" @change="companyTypeChange">
-            <el-option v-for="item in companyType" :key="item.value" :label="item.label"
-                       :value="item.value"></el-option>
-          </el-select>
+          <input type="text" v-model="inputData.no">
         </el-col>
+        <!--<el-col :span="2">-->
+        <!--<label for="">商户证件类型</label>-->
+        <!--</el-col>-->
+        <!--<el-col :span="6">-->
+        <!--<el-select v-model="companyTypeName" filterable placeholder="请选择证件类型" @change="companyTypeChange">-->
+        <!--<el-option v-for="item in companyType" :key="item.value" :label="item.label"-->
+        <!--:value="item.value"></el-option>-->
+        <!--</el-select>-->
+        <!--</el-col>-->
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="2"><label>商户证件号</label></el-col>
-        <el-col :span="6"><input type="text" v-model="certificateNo"></el-col>
-        <el-col :span="2">
+        <!--<el-col :span="2"><label>商户证件号</label></el-col>-->
+        <!--<el-col :span="6"><input type="text" v-model="certificateNo"></el-col>-->
+        <el-col :span="2" :offset="2">
           <el-button class="search" @click="search">搜索</el-button>
         </el-col>
         <el-col :span="2">
@@ -62,7 +68,7 @@
         </el-table-column>
         <el-table-column prop="index" label="序号" width="120">
         </el-table-column>
-        <el-table-column prop="no" label="商户编码" width="120"></el-table-column>
+        <el-table-column prop="no" label="商户编号" width="120"></el-table-column>
         <el-table-column prop="companyTypeName" label="商户类型" width="120">
         </el-table-column>
         <el-table-column prop="name" label="商户名称" width="180">
@@ -156,6 +162,7 @@
           }],
         inputData: {
           companyType: null,
+          enableFlag: 1,
           pageInfo: {
             pageSize: 20,
             pageNum: 1
@@ -324,10 +331,10 @@
   }
 
   .el-button {
-    min-width: 100%;
+    width: 100%;
     background: #32BC6F;
     border-radius: 5px;
-    width: 120px;
+    /*width: 120px;*/
     height: 36px;
     vertical-align: middle;
     color: #fff;
@@ -335,12 +342,21 @@
     a {
       color: #fff;
       text-decoration: none;
+      display: inline;
     }
   }
 
   a {
+    display: block;
     text-decoration: none;
-    color: #000;
+    width: 100%;
+    background: #32BC6F;
+    border-radius: 5px;
+    /*width: 120px;*/
+    height: 36px;
+    vertical-align: middle;
+    color: #fff;
+    border: 5px;
   }
   input {
     width: 100%;
@@ -376,6 +392,9 @@
     .el-col-2 {
       width: 12%;
     }
+    .el-col-offset-2 {
+      margin-left: 12%;
+    }
     .el-col-6 {
       width: 21.333333%;
     }
@@ -390,6 +409,9 @@
   @media screen and (max-width: 1420px) {
     .el-col-2 {
       width: 12%;
+    }
+    .el-col-offset-2 {
+      margin-left: 12%;
     }
     .el-col-6 {
       width: 21.333333%;

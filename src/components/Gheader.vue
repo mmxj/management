@@ -8,7 +8,7 @@
         <div>今天是<span class="today">{{time}}</span></div>
       </div>
       <div class="site">
-        {{companyName}} <span class="goBack" @click="goBack">退出</span>
+        <span class="companyName">{{companyName}}</span> <span class="goBack" @click="goBack">退出</span>
       </div>
 
     </header>
@@ -105,7 +105,7 @@
     }
     .title-center {
       position: absolute;
-      right: 260px;
+      right: 336px;
       top: 0;
       div {
         padding: 0 40px;
@@ -113,7 +113,7 @@
     }
     .site {
       float: right;
-      width: 260px;
+      width: 336px;
       height: 100%;
       /* line-height: 70px; */
     }
@@ -133,6 +133,15 @@
     margin-left: 30px;
     cursor: pointer;
     padding-bottom: 2px;
+    vertical-align: top;
     border-bottom: 1px solid #fff;
+  }
+
+  .companyName {
+    display: inline-block;
+    width: 220px;
+    overflow: hidden; /*自动隐藏文字*/
+    text-overflow: ellipsis; /*文字隐藏后添加省略号*/
+    white-space: nowrap; /*强制不换行*/
   }
 </style>

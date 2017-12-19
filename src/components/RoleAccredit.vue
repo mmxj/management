@@ -51,6 +51,7 @@
         resourceGet.init({
           router: '/base/resource/get',
           session: vm.session,
+          async: false,
           data: {
             pageInfo: {
               pageSize: 100,
@@ -112,6 +113,7 @@
         getRole.init({
           router: '/base/roleresource/get',
           session: vm.session,
+          async: false,
           data: {
             pageInfo: {
               pageSize: 100,
@@ -120,14 +122,14 @@
             id: vm.roleId
           },
           callback: function (data) {
-            console.log(data);
-            outer:
-              for (let i = 0; i < data.resourceRows.length; i++) {
-                for (let j = 0; j < vm.allData.length; j++) {
-                  if (data.resourceRows[i].sfsResourceId == vm.allData[j].id) {
-                    if (vm.allData[j].children == 0 || !vm.allData[j].children) {
-                      vm.choseArr.push(vm.allData[j].id)
-                    } else {
+            if (data.ret.errorCode === 0) {
+              outer:
+                for (let i = 0; i < data.resourceRows.length; i++) {
+                  for (let j = 0; j < vm.allData.length; j++) {
+                    if (data.resourceRows[i].sfsResourceId == vm.allData[j].id) {
+                      if (vm.allData[j].children == 0 || !vm.allData[j].children) {
+                        vm.choseArr.push(vm.allData[j].id)
+                      } else {
 //                             console.log(vm.allData[j].children);
 //                              for(let k=0;k<vm.allData[j].children.length;k++){
 //                                  vm.allData.forEach(function(item){
@@ -136,13 +138,19 @@
 //                                      }
 //                                  })
 //                              }
+                      }
                     }
                   }
                 }
-              }
+            }
+
           }
         })
-        this.$refs.tree.setCheckedKeys(vm.choseArr);
+        console.log(vm.choseArr)
+        vm.$nextTick(function () {
+          vm.$refs.tree.setCheckedKeys(vm.choseArr);
+        })
+
       },
       getCheckedKeys() {
         this.resourceRows = [];

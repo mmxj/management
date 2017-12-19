@@ -1,6 +1,9 @@
 <template>
   <div id="TerminalManage">
     <el-row :gutter="20">
+      <el-col :span="2">
+        <label for="">商户名</label>
+      </el-col>
       <el-col :span="6">
         <!--<input type="text">-->
         <el-select v-model="companyName"
@@ -13,6 +16,20 @@
         </el-select>
       </el-col>
       <el-col :span="2">
+        <label for="">终端号</label>
+      </el-col>
+      <el-col :span="6">
+        <input type="text" v-model="inputData.terminalNo">
+      </el-col>
+      <el-col :span="2">
+        <label for="">安装地址</label>
+      </el-col>
+      <el-col :span="6">
+        <input type="text" v-model="inputData.address">
+      </el-col>
+    </el-row>
+    <el-row :gutter="20">
+      <el-col :span="2" :offset="2">
         <el-button @click="findTerminal">搜索</el-button>
       </el-col>
       <el-col :span="3">
@@ -31,13 +48,15 @@
         </el-table-column>
         <!--<el-table-column prop="areaId" label="归属地" width="120"></el-table-column>-->
         <el-table-column prop="address" label="安装地址" width="180"></el-table-column>
+        <el-table-column prop="companyName" label="商户名称" width="180"></el-table-column>
         <el-table-column prop="merchantNo" label="商户号" width="180"></el-table-column>
+        <el-table-column prop="terminalNo" label="终端号" width="180"></el-table-column>
+        <el-table-column prop="mainKey" label="终端明文主密钥" width="180"></el-table-column>
         <el-table-column prop="pSimNo" label="PSAM卡" width="180"></el-table-column>
         <el-table-column prop="acquirerName" label="收单机构" width="150"></el-table-column>
         <el-table-column prop="maintainCompany" label="维护公司" width="180"></el-table-column>
         <el-table-column prop="joinIp" label="接入IP地址" width="180"></el-table-column>
         <el-table-column prop="openDate" label="开通日期" width="150"></el-table-column>
-        <el-table-column prop="companyName" label="商户名称" width="180"></el-table-column>
         <el-table-column prop="summary" label="商户主营业务" width="180"></el-table-column>
         <el-table-column prop="terminalCompany" label="终端厂家" width="180"></el-table-column>
         <el-table-column prop="model" label="终端型号" width="180"></el-table-column>
@@ -65,7 +84,8 @@
         radio: null,
         saveData: null,
         companyName: null,
-        companyData: []
+        companyData: [],
+        inputData: {},
       }
     },
     methods: {
@@ -80,14 +100,19 @@
           pageSize: 20,
         };
         pageInfo.pageNum = vm.currentPage;
+        vm.inputData.companyId = companyId;
+        vm.inputData.pageInfo = pageInfo;
+        if (vm.inputData.terminalNo == '') {
+          vm.inputData.terminalNo = null
+        }
+        if (vm.inputData.address == '') {
+          vm.inputData.address = null
+        }
         var getCompanyIp = new RemoteCall();
         getCompanyIp.init({
           router: "/base/terminal/get",
           session: this.session,
-          data: {
-            companyId: companyId,
-            pageInfo: pageInfo
-          },
+          data: vm.inputData,
           callback: function (data) {
             if (data.ret.errorCode === 0) {
               if (data.pageInfo.total) {
@@ -242,6 +267,23 @@
     height: 30px;
     border-radius: 3px;
     border: 1px solid #aaa;
+  }
+
+  label {
+    display: block;
+    width: 100%;
+    text-align: right;
+    line-height: 30px;
+  }
+
+  @media screen and (max-width: 1366px) {
+    .el-col-2 {
+      width: 9.33333%;
+    }
+
+    .el-col-6 {
+      width: 24%;
+    }
   }
 </style>
 <style>

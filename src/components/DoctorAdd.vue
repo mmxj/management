@@ -200,7 +200,6 @@
               pageSize: 100,
               pageNum: 1
             }
-//            aredId:parseInt(this.inputData.areaId)
           },
           callback: function (data) {
             for (var i = 0; i < data.rows.length; i++) {
@@ -211,7 +210,6 @@
               vm.options.push(parentData);
             }
             ;
-//            console.log(this.parentId)
           },
           errorCallback: function (data) {
             if (data) {
@@ -221,7 +219,6 @@
         })
       },
       companyChange(data){
-//        console.log(data);
         var vm = this;
         var gethospital = new RemoteCall();//获取部门
         gethospital.init({

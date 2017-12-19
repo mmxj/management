@@ -37,7 +37,7 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="2">
-          <label for="">商户号</label>
+          <label for="">商户号<span class="must">*</span></label>
         </el-col>
         <el-col :span="6">
           <input type="text" v-model="inputData.merchantNo">
@@ -82,7 +82,7 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="2">
-          <label for="">商户名称</label>
+          <label for="">商户名称<span class="must">*</span></label>
         </el-col>
         <el-col :span="6">
           <!--<input type="text" v-model="merchantName" :placeholder="placeholder" @blur="getText(merchantName)">-->
@@ -117,17 +117,25 @@
           <input type="text" v-model="inputData.model">
         </el-col>
         <el-col :span="2">
-          <label for="">终端号</label>
+          <label for="">终端号<span class="must">*</span></label>
         </el-col>
         <el-col :span="6">
           <input type="text" v-model="inputData.terminalNo">
         </el-col>
-        <el-col :offset="2" :span="2">
-          <el-button @click="dataUp">添加</el-button>
-        </el-col>
+        <!--<el-col :span="2">-->
+        <!--<label for="">明文主密匙</label>-->
+        <!--</el-col>-->
+        <!--<el-col :span="6">-->
+        <!--<input type="text" v-model="inputData.mainKey">-->
+        <!--</el-col>-->
         <!--<el-col :span="4">-->
         <!--<a href="javascript:">下载所有数据</a>-->
         <!--</el-col>-->
+      </el-row>
+      <el-row>
+        <el-col class="rightBtnBox">
+          <el-button class="btnRigiht" @click="dataUp">添加</el-button>
+        </el-col>
       </el-row>
     </div>
   </div>
@@ -214,7 +222,10 @@
       },
       getAreaCallback(data){
         var _this = this;
-        this.provinceData = data.rows
+        this.provinceData = data.rows;
+        this.$nextTick(function () {
+          _this.setCity()
+        })
       },
       setCity(){
         var _this = this;
@@ -231,9 +242,17 @@
             session: this.session,
             data: {
               parentAreaId: parentId
+            },
+            callback: function (data) {
+              if (data.ret.errorCode === 0) {
+                _this.cityData = data.rows;
+                _this.$nextTick(function () {
+                  _this.setDistrict()
+                })
+              }
             }
           });
-          this.cityData = getCity.res.rows;
+
         }
       },
       setDistrict(){//县区获取
@@ -250,15 +269,17 @@
           session: this.session,
           data: {
             parentAreaId: parentId
+          },
+          callback: function (data) {
+            _this.districtData = data.rows;
           }
         });
-        this.districtData = getDistrict.res.rows;
       },
       setAreaId(){//获取areaid 给inputData赋值
-//        var myCity = document.getElementById('district');
-//        var index = myCity.selectedIndex;
-//        var parentId = myCity.getElementsByTagName('option')[index].value;
-//        this.inputData.areaId = parentId;
+        var myCity = document.getElementById('district');
+        var index = myCity.selectedIndex;
+        var parentId = myCity.getElementsByTagName('option')[index].value;
+        this.inputData.areaId = parentId;
       },
       //地市联动结束
       //开通日期获取
@@ -539,6 +560,13 @@
     background: #fff;
   }
 
+  .rightBtnBox {
+    text-align: right;
+  }
+
+  .btnRight {
+    width: 130px;
+  }
   .el-col {
     margin-bottom: 20px;
     label {
@@ -568,7 +596,7 @@
   }
 
   .el-button {
-    width: 100%;
+    width: 130px;
     background: #32BC6F;
     border: 0;
     color: #fff;
@@ -582,6 +610,10 @@
     line-height: 30px;
   }
 
+  .must {
+    color: red;
+    vertical-align: middle;
+  }
   .el-select {
     width: 100%;
   }

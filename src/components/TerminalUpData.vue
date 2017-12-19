@@ -122,12 +122,20 @@
         <el-col :span="6">
           <input type="text" v-model="inputData.terminalNo">
         </el-col>
-        <el-col :offset="2" :span="2">
-          <el-button @click="dataUp">确定修改</el-button>
-        </el-col>
+        <!--<el-col :span="2">-->
+        <!--<label for="">明文主密匙</label>-->
+        <!--</el-col>-->
+        <!--<el-col :span="6">-->
+        <!--<input type="text" v-model="inputData.mainKey">-->
+        <!--</el-col>-->
         <!--<el-col :span="4">-->
         <!--<a href="javascript:">下载所有数据</a>-->
         <!--</el-col>-->
+      </el-row>
+      <el-row>
+        <el-col class="rightBtnBox">
+          <el-button @click="dataUp">确定修改</el-button>
+        </el-col>
       </el-row>
     </div>
   </div>
@@ -596,8 +604,11 @@
     }
   }
 
+  .rightBtnBox {
+    text-align: right;
+  }
   .el-button {
-    width: 100%;
+    width: 130px;
     background: #32BC6F;
     border: 0;
     color: #fff;

@@ -120,13 +120,16 @@
           session: this.session,
           data: {
             parentAreaId: parentId
+          },
+          callback: function (data) {
+            if (data.ret.errorCode === 0) {
+              _this.cityData = data.rows;
+              _this.$nextTick(function () {
+                _this.setDistrict();
+              })
+            }
           }
         });
-        this.cityData = getCity.res.rows;
-        clearTimeout(timer);
-        var timer = setTimeout(function () {
-          _this.setDistrict();
-        }, 10)
       },
       setDistrict(){//县区获取
         var myCity = document.getElementById('city');
@@ -142,13 +145,16 @@
           session: this.session,
           data: {
             parentAreaId: parentId
+          },
+          callback: function (data) {
+            if (data.ret.errorCode === 0) {
+              _this.districtData = data.rows;
+              _this.$nextTick(function () {
+                _this.setAreaId();
+              })
+            }
           }
         });
-        this.districtData = getDistrict.res.rows;
-        clearTimeout(timer);
-        var timer = setTimeout(function () {
-          _this.setAreaId();
-        }, 10)
       },
       setAreaId(){//获取areaid 给inputData赋值
         var myCity = document.getElementById('district');

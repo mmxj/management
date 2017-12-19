@@ -39,10 +39,10 @@
       </el-row>
       <el-row :gutter="20">
         <el-col :span="2">
-          <div class="girid-content"><label>商户证件号</label></div>
+          <div class="girid-content"><label>商户编码</label></div>
         </el-col>
         <el-col :span="6">
-          <div class="girid-content girid-ipt"><input type="text" name="" v-model="inputData.certificateNo"></div>
+          <div class="girid-content girid-ipt"><input type="text" name="" v-model="inputData.no"></div>
         </el-col>
         <el-col :span="2">
           <div class="girid-content"><label>商户地址</label></div>
@@ -101,10 +101,10 @@
           <div class="girid-content girid-ipt"><input type="text" name="" v-model="inputData.summary"></div>
         </el-col>
         <el-col :span="2">
-          <div class="girid-content"><label>商户编码</label></div>
+          <div class="girid-content"><label>商户证件号</label></div>
         </el-col>
         <el-col :span="6">
-          <div class="girid-content girid-ipt"><input type="text" name="" v-model="inputData.no"></div>
+          <div class="girid-content girid-ipt"><input type="text" name="" v-model="inputData.certificateNo"></div>
         </el-col>
       </el-row>
       <el-row :gutter="20">
@@ -119,6 +119,25 @@
         </el-col>
         <el-col :span="6">
           <div class="girid-content girid-ipt"><input type="text" name="" v-model="inputData.account"></div>
+        </el-col>
+        <el-col :span="2">
+          <div class="girid-content"><label>上级商户</label></div>
+        </el-col>
+        <el-col :span="6">
+          <el-select
+            v-model="mySelect"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="输入搜索卫生院"
+            :remote-method="getparentChange" @change="companyChange">
+            <el-option
+              v-for="item in parentId"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </el-col>
       </el-row>
     </div>
@@ -241,6 +260,8 @@
   export default{
     data(){
       return {
+        parentId: [],
+        mySelect: null,
         provinceData: [{'name': '省'}],
         cityData: [{'name': '市'}],
         districtData: [{'name': '区'}],
@@ -375,13 +396,16 @@
           session: this.session,
           data: {
             parentAreaId: parentId
+          },
+          callback: function (data) {
+            if (data.ret.errorCode === 0) {
+              _this.cityData = data.rows;
+              _this.$nextTick(function () {
+                _this.setDistrict();
+              })
+            }
           }
         });
-        this.cityData = getCity.res.rows;
-        clearTimeout(timer);
-        var timer = setTimeout(function () {
-          _this.setDistrict();
-        }, 10)
       },
       setDistrict(){//县区获取
         var myCity = document.getElementById('city');
@@ -396,13 +420,16 @@
           session: this.session,
           data: {
             parentAreaId: parentId
+          },
+          callback: function (data) {
+            if (data.ret.errorCode === 0) {
+              _this.districtData = data.rows;
+              _this.$nextTick(function () {
+                _this.setAreaId();
+              })
+            }
           }
         });
-        this.districtData = getDistrict.res.rows;
-        clearTimeout(timer);
-        var timer = setTimeout(function () {
-          _this.setAreaId();
-        }, 10)
       },
       setAreaId(){//获取areaid 给inputData赋值
         var myCity = document.getElementById('district');
@@ -576,7 +603,7 @@
         json.certificateTypeName = certificateName;
         json.picSavePath = JSON.parse(data).data[0].saved_file;//修改上传图片的结构
         if (this.inputData.certificateList.length > 0) {
-          for (var i = 0; i < this.inputData.certificateList; i++) {
+          for (var i = 0; i < this.inputData.certificateList.length; i++) {
             if (this.inputData.certificateList[i].certificateTypeName == json.certificateTypeName) {
               this.inputData.certificateList[i] = json;
               return;
@@ -586,6 +613,43 @@
         } else {
           this.inputData.certificateList.push(json)
         }
+      },
+      getparentChange(data){
+        if (data == '' || data == null) {
+          data = null;
+          this.mySelect = null;
+        }
+        this.getParentId(data);
+      },
+      getParentId(name){//获取父级卫生院数据 插入到节点中
+        var companyName = null;
+        if (name) {
+          companyName = name
+        }
+        var getParent = new RemoteCall();
+        getParent.init({
+          router: "/company/get",
+          session: this.session,
+          data: {
+            name: companyName,
+            aredId: parseInt(this.inputData.areaId)//对地区进行筛选
+          },
+          callback: this.parentCallback
+        })
+      },
+      parentCallback(data){//成功的回调
+        if (data.ret.errorCode === 0) {
+          this.parentId = [];
+          for (var i = 0; i < data.rows.length; i++) {
+            var option = {};
+            option.value = data.rows[i].id;
+            option.label = data.rows[i].name;
+            this.parentId.push(option);
+          }
+        }
+      },
+      companyChange(data){
+        this.inputData.parentCompanyId = data;
       }
     },
     mounted: function () {
@@ -718,6 +782,17 @@
     }
   }
 
+  @media screen and (max-width: 1280px) {
+    .el-col-2 {
+      width: 13%;
+    }
+    .el-col-6 {
+      width: 19.333333%;
+    }
+    .el-col-3 {
+      width: 13.5%;
+    }
+  }
   .showImg {
     display: none;
     width: 100%;

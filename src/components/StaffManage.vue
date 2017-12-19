@@ -26,12 +26,12 @@
         <el-table-column prop="companyName" label="归属商户" width="180"></el-table-column>
         <el-table-column prop="departmentName" label="归属部门" width="200"></el-table-column>
         <el-table-column prop="id" label="员工编号" width="200"></el-table-column>
+        <el-table-column prop="roleName" label="员工角色" width="200"></el-table-column>
         <el-table-column prop="idCardNo" label="身份证号" width="200"></el-table-column>
         <el-table-column prop="email" label="员工邮箱" width="200"></el-table-column>
         <el-table-column prop="mobile" label="联系电话" width="200"></el-table-column>
-        <!--<el-table-column prop="" label="银行账户名" width="200"></el-table-column>-->
-        <!--<el-table-column prop="" label="银行账号" width="200"></el-table-column>-->
         <el-table-column prop="sfsCreate" label="添加日期" width="200"></el-table-column>
+        <el-table-column prop="staffType" label="是否是医生" width="200"></el-table-column>
       </el-table>
       <el-pagination
         @size-change="handleSizeChange"
@@ -58,7 +58,7 @@
         pageSize: 20,
         total: 0,
         inputData: {
-          staffType: 0,
+//          staffType: 0,
           pageInfo: {
             pageSize: 20,
             pageNum: 1
@@ -90,6 +90,11 @@
                 vm.tableData = data.rows;
                 for (var i = 0; i < vm.tableData.length; i++) {
                   vm.tableData[i].sfsCreate = vm.tableData[i].sfsCreate.split(' ')[0];
+                  if (vm.tableData[i].staffType == 1) {
+                    vm.tableData[i].staffType = '是'
+                  } else {
+                    vm.tableData[i].staffType = '否'
+                  }
                 }
               }
             }
